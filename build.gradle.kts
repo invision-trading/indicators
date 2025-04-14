@@ -3,6 +3,7 @@ import org.jreleaser.model.Active.NEVER
 
 plugins {
     `java-library`
+    id("io.freefair.lombok") version "8.13.1"
     `maven-publish`
     id("org.jreleaser") version "1.17.0"
 }
@@ -20,11 +21,6 @@ dependencies {
 
     // Google Guava
     implementation("com.google.guava", "guava", "33.2.1-jre")
-
-    // Project Lombok
-    val lombokVersion = "1.18.36"
-    implementation("org.projectlombok", "lombok", lombokVersion)
-    annotationProcessor("org.projectlombok", "lombok", lombokVersion)
 
     // num
     api("trade.invision", "num", "1.2.0")

@@ -1,5 +1,6 @@
 package trade.invision.indicators.series.bar;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import trade.invision.num.Num;
@@ -16,7 +17,7 @@ import static java.time.Duration.between;
  *
  * @see <a href="https://www.investopedia.com/terms/c/candlestick.asp">Investopedia</a>
  */
-@Value @Builder(toBuilder = true)
+@Value @AllArgsConstructor @Builder(toBuilder = true)
 public class Bar {
 
     /**
@@ -61,29 +62,6 @@ public class Bar {
     public Bar(Instant start, Duration timespan, Num open, Num high, Num low, Num close, Num volume, long tradeCount) {
         this.start = start;
         end = start.plus(timespan);
-        this.open = open;
-        this.high = high;
-        this.low = low;
-        this.close = close;
-        this.volume = volume;
-        this.tradeCount = tradeCount;
-    }
-
-    /**
-     * Instantiates a new {@link Bar}.
-     *
-     * @param start      the start timestamp {@link Instant}
-     * @param end        the end timestamp {@link Instant}
-     * @param open       the open {@link Num}
-     * @param high       the high {@link Num}
-     * @param low        the low {@link Num}
-     * @param close      the close {@link Num}
-     * @param volume     the volume {@link Num}
-     * @param tradeCount the trade count
-     */
-    public Bar(Instant start, Instant end, Num open, Num high, Num low, Num close, Num volume, long tradeCount) {
-        this.start = start;
-        this.end = end;
         this.open = open;
         this.high = high;
         this.low = low;

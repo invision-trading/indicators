@@ -1,6 +1,5 @@
 package trade.invision.indicators.series.bar;
 
-import org.jetbrains.annotations.Nullable;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.Series;
 
@@ -16,21 +15,19 @@ public class BarSeries extends Series<Bar> {
     /**
      * Instantiates a new {@link BarSeries}.
      *
-     * @param name          the name
      * @param maximumLength the {@link #getMaximumLength()}
      */
-    public BarSeries(@Nullable String name, int maximumLength) {
-        super(name, maximumLength);
+    public BarSeries(int maximumLength) {
+        super(maximumLength);
     }
 
     /**
      * Instantiates a new {@link BarSeries}.
      *
-     * @param name          the name
      * @param initialValues the {@link List} of {@link Bar}s
      * @param maximumLength the {@link #getMaximumLength()}
      */
-    public BarSeries(@Nullable String name, List<Bar> initialValues, int maximumLength) {
-        super(name, initialValues, maximumLength);
+    public BarSeries(List<Bar> initialValues, int maximumLength) {
+        super(initialValues, maximumLength);
     }
 }

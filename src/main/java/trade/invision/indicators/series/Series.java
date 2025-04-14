@@ -1,7 +1,8 @@
 package trade.invision.indicators.series;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,20 +13,17 @@ import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 
 /**
- * {@link Series} is an abstract class that provides a simple interface for storing and retrieving values from a series.
- * Values can only be added to this {@link Series}, except for the last value, which can be replaced with a new value.
- * When the number of values stored in this {@link Series} exceed a configurable maximum upon adding a new value, then
- * values at the beginning of this {@link Series} are removed. Stored values should be of an immutable type. This class
- * is not thread-safe.
+ * {@link Series} is a class that provides a simple interface for storing and retrieving values from a series. Values
+ * can only be added to this {@link Series}, except for the last value, which can be replaced with a new value. When the
+ * number of values stored in this {@link Series} exceed a configurable maximum upon adding a new value, then values at
+ * the beginning of this {@link Series} are removed. Values should be of an immutable type. This class is not
+ * thread-safe.
  *
  * @param <T> the immutable type
  */
-public abstract class Series<T> {
+@ToString @EqualsAndHashCode
+public class Series<T> {
 
-    /**
-     * The name of this {@link Series}.
-     */
-    protected final @Getter @Nullable String name;
     /**
      * The maximum number of values that this {@link Series} will store internally in memory. If the number of values
      * stored in this {@link Series} exceed this limit upon adding a new value, then the values at the beginning of this
@@ -34,39 +32,38 @@ public abstract class Series<T> {
     protected final @Getter int maximumLength;
     protected final List<T> values;
     /**
-     * The index of the first value in this {@link Series}, which changes due to {@link #getMaximumLength()}.
+     * The index of the first value in this {@link Series}, which changes due to {@link #getMaximumLength()}. This will
+     * be <code>-1</code> if {@link #isEmpty()} is <code>true</code>.
      */
-    protected @Getter int startIndex;
+    protected @Getter long startIndex;
     /**
-     * The index of the last value in this {@link Series}, which changes due to {@link #getMaximumLength()}.
+     * The index of the last value in this {@link Series}, which changes due to {@link #getMaximumLength()}. This will
+     * be <code>-1</code> if {@link #isEmpty()} is <code>true</code>.
      */
-    protected @Getter int endIndex;
+    protected @Getter long endIndex;
     /**
-     * A status flag used to track if this {@link Series} has been modified since creation or since the last call to
-     * {@link #resetModifiedStatus()}.
+     * Gets the number of times {@link #add(Object, boolean)} has been called. Use to track if this {@link Series} may
+     * have changed in any way. Number may overflow.
      */
-    protected @Getter boolean modified;
+    protected @Getter long addCallCount;
 
     /**
      * Instantiates a new {@link Series}.
      *
-     * @param name          the name
      * @param maximumLength the {@link #getMaximumLength()}
      */
-    public Series(@Nullable String name, int maximumLength) {
-        this(name, new ArrayList<>(0), maximumLength);
+    public Series(int maximumLength) {
+        this(new ArrayList<>(0), maximumLength);
     }
 
     /**
      * Instantiates a new {@link Series}.
      *
-     * @param name          the name
      * @param initialValues the {@link List} of values
      * @param maximumLength the {@link #getMaximumLength()}
      */
-    public Series(@Nullable String name, List<T> initialValues, int maximumLength) {
+    public Series(List<T> initialValues, int maximumLength) {
         checkArgument(maximumLength > 0, "'maximumLength' must be greater than zero!");
-        this.name = name;
         this.maximumLength = maximumLength;
         values = new ArrayList<>(initialValues); // 'ArrayList' has the fastest sequential access time
         if (initialValues.isEmpty()) {
@@ -103,7 +100,7 @@ public abstract class Series<T> {
      *                    add the value to the end of this {@link Series}
      */
     public void add(T value, boolean replaceLast) {
-        modified = true;
+        addCallCount++;
         if (replaceLast && !values.isEmpty()) {
             values.set(values.size() - 1, value);
             return;
@@ -129,9 +126,9 @@ public abstract class Series<T> {
      *
      * @throws IndexOutOfBoundsException thrown if the index is outside the range of this {@link Series}
      */
-    public T get(int index) {
+    public T get(long index) {
         try {
-            return values.get(max(index - startIndex, 0));
+            return values.get((int) max(index - startIndex, 0));
         } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
             throw new IndexOutOfBoundsException(format("length=%d, startIndex=%d, endIndex=%d, index=%d",
                     getLength(), startIndex, endIndex, index));
@@ -139,7 +136,7 @@ public abstract class Series<T> {
     }
 
     /**
-     * Calls {@link #get(int)} with {@link #getStartIndex()}.
+     * Calls {@link #get(long)} with {@link #getStartIndex()}.
      *
      * @return the first value in this {@link Series}
      */
@@ -148,7 +145,7 @@ public abstract class Series<T> {
     }
 
     /**
-     * Calls {@link #get(int)} with {@link #getEndIndex()}.
+     * Calls {@link #get(long)} with {@link #getEndIndex()}.
      *
      * @return the last value in this {@link Series}
      */
@@ -161,7 +158,7 @@ public abstract class Series<T> {
      *
      * @return the length of this {@link Series}
      */
-    public int getLength() {
+    public long getLength() {
         return endIndex >= 0 ? endIndex - startIndex + 1 : 0;
     }
 
@@ -181,12 +178,5 @@ public abstract class Series<T> {
      */
     public List<T> listView() {
         return unmodifiableList(values);
-    }
-
-    /**
-     * Resets {@link #isModified()}.
-     */
-    public void resetModifiedStatus() {
-        modified = false;
     }
 }

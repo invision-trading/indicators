@@ -1,9 +1,8 @@
 package trade.invision.indicators.indicators;
 
-import org.jetbrains.annotations.Nullable;
 import trade.invision.indicators.series.Series;
-import trade.invision.num.Num;
-import trade.invision.num.NumFactory;
+
+import static java.lang.Math.max;
 
 /**
  * {@link RecursiveIndicator} is for {@link Indicator} subclasses that use recursion in the {@link #calculate(long)}
@@ -16,16 +15,17 @@ import trade.invision.num.NumFactory;
 public abstract class RecursiveIndicator<T> extends Indicator<T> {
 
     /**
-     * Calls {@link Indicator(Series, NumFactory, int, Num, boolean)} with <code>cache</code> set to <code>true</code>.
+     * Calls {@link Indicator#Indicator(Series, int, boolean)} with <code>cache</code> set to <code>true</code>.
      */
-    public RecursiveIndicator(Series<?> series, NumFactory numFactory, int unstableCount, @Nullable Num epsilon) {
-        super(series, numFactory, unstableCount, epsilon, true);
+    public RecursiveIndicator(Series<?> series, int unstableCount) {
+        super(series, unstableCount, true);
     }
 
     @SuppressWarnings("DataFlowIssue")
     @Override
     public T getValue(long index) {
-        for (long seriesIndex = cacheSeries.getEndIndex() + 1; seriesIndex < index; seriesIndex++) {
+        for (long seriesIndex = max(series.getStartIndex() - 1, cacheSeries.getEndIndex() + 1);
+                seriesIndex < index; seriesIndex++) {
             super.getValue(seriesIndex);
         }
         return super.getValue(index);

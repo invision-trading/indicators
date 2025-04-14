@@ -1,6 +1,9 @@
 package trade.invision.indicators.series.number;
 
+import org.jetbrains.annotations.Nullable;
 import trade.invision.indicators.series.Series;
+import trade.invision.num.Num;
+import trade.invision.num.NumFactory;
 
 import java.util.List;
 
@@ -10,21 +13,24 @@ import java.util.List;
 public class NumberSeries extends Series<NumberDatapoint> {
 
     /**
-     * Instantiates a new {@link NumberSeries}.
-     *
-     * @param maximumLength the {@link #getMaximumLength()}
+     * @see Series#Series(int)
      */
     public NumberSeries(int maximumLength) {
         super(maximumLength);
     }
 
     /**
-     * Instantiates a new {@link NumberSeries}.
-     *
-     * @param initialValues the {@link List} of {@link NumberDatapoint}s
-     * @param maximumLength the {@link #getMaximumLength()}
+     * @see Series#Series(List, int)
      */
     public NumberSeries(List<NumberDatapoint> initialValues, int maximumLength) {
         super(initialValues, maximumLength);
+    }
+
+    /**
+     * @see Series#Series(List, int, NumFactory, Num)
+     */
+    public NumberSeries(List<NumberDatapoint> initialValues, int maximumLength,
+            @Nullable NumFactory numFactory, @Nullable Num epsilon) {
+        super(initialValues, maximumLength, numFactory, epsilon);
     }
 }

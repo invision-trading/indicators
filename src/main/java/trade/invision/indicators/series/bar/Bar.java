@@ -8,6 +8,7 @@ import trade.invision.num.NumFactory;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.Temporal;
 
 import static java.time.Duration.between;
 
@@ -74,6 +75,10 @@ public class Bar {
      * Gets the timespan (period) of this {@link Bar}.
      *
      * @return the {@link Duration}
+     *
+     * @see Duration#between(Temporal, Temporal)
+     * @see #getStart()
+     * @see #getEnd()
      */
     public Duration getTimespan() {
         return between(start, end);

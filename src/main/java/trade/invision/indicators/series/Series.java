@@ -3,6 +3,10 @@ package trade.invision.indicators.series;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.jetbrains.annotations.Nullable;
+import trade.invision.num.DoubleNum;
+import trade.invision.num.Num;
+import trade.invision.num.NumFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Math.max;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
+import static trade.invision.num.DoubleNum.doubleNumFactory;
 
 /**
  * {@link Series} is a class that provides a simple interface for storing and retrieving values from a series. Values
@@ -30,6 +35,15 @@ public class Series<T> {
      * {@link Series} are removed.
      */
     protected final @Getter int maximumLength;
+    /**
+     * The {@link NumFactory} that consumers of this {@link Series} may use for creating {@link Num}s.
+     */
+    protected final @Getter NumFactory numFactory;
+    /**
+     * The {@link Num} to use as the epsilon in tolerant comparison operations that consumers of this {@link Series} may
+     * use.
+     */
+    protected final @Getter Num epsilon;
     protected final List<T> values;
     /**
      * The index of the first value in this {@link Series}, which changes due to {@link #getMaximumLength()}. This will
@@ -48,23 +62,34 @@ public class Series<T> {
     protected @Getter long addCallCount;
 
     /**
-     * Instantiates a new {@link Series}.
-     *
-     * @param maximumLength the {@link #getMaximumLength()}
+     * Calls {@link #Series(List, int, NumFactory, Num)} with <code>initialValues</code> set to an empty list,
+     * <code>numFactory</code> set to <code>null</code>, and <code>epsilon</code> set to <code>null</code>.
      */
     public Series(int maximumLength) {
-        this(new ArrayList<>(0), maximumLength);
+        this(new ArrayList<>(0), maximumLength, null, null);
+    }
+
+    /**
+     * Calls {@link #Series(List, int, NumFactory, Num)} with <code>numFactory</code> set to <code>null</code>, and
+     * <code>epsilon</code> set to <code>null</code>.
+     */
+    public Series(List<T> initialValues, int maximumLength) {
+        this(initialValues, maximumLength, null, null);
     }
 
     /**
      * Instantiates a new {@link Series}.
      *
-     * @param initialValues the {@link List} of values
+     * @param initialValues the initial {@link List} of values
      * @param maximumLength the {@link #getMaximumLength()}
+     * @param numFactory    the {@link #getNumFactory()}, or <code>null</code> for {@link DoubleNum#doubleNumFactory()}
+     * @param epsilon       the {@link #getEpsilon()}, or <code>null</code> for {@link NumFactory#zero()}
      */
-    public Series(List<T> initialValues, int maximumLength) {
+    public Series(List<T> initialValues, int maximumLength, @Nullable NumFactory numFactory, @Nullable Num epsilon) {
         checkArgument(maximumLength > 0, "'maximumLength' must be greater than zero!");
         this.maximumLength = maximumLength;
+        this.numFactory = numFactory != null ? numFactory : doubleNumFactory();
+        this.epsilon = epsilon != null ? epsilon : this.numFactory.zero();
         values = new ArrayList<>(initialValues); // 'ArrayList' has the fastest sequential access time
         if (initialValues.isEmpty()) {
             startIndex = -1;

@@ -8,6 +8,8 @@ import trade.invision.indicators.series.Series;
 import trade.invision.num.Num;
 import trade.invision.num.NumFactory;
 
+import java.math.BigDecimal;
+
 /**
  * {@link Indicator} is an abstract class for performing calculations on a {@link Series} or another {@link Indicator},
  * with optional caching. Calculated values should be of an immutable type. This class is not thread-safe.
@@ -24,18 +26,9 @@ public abstract class Indicator<T> {
      */
     protected final @Getter Series<?> series;
     /**
-     * The {@link NumFactory} this {@link Indicator} uses for creating {@link Num}s in calculations.
-     */
-    protected final @Getter NumFactory numFactory;
-    /**
      * The number of input datapoints this {@link Indicator} requires in order to perform calculations correctly.
      */
     protected final @Getter int unstableCount;
-    /**
-     * The {@link Num} to use as the epsilon in tolerant comparison operations this {@link Indicator} may use in
-     * calculations.
-     */
-    protected final @Getter Num epsilon;
     protected @Nullable CacheSeries cacheSeries;
     protected long cachedIndex;
     protected @Nullable T cachedValue;
@@ -45,16 +38,12 @@ public abstract class Indicator<T> {
      * Instantiates a new {@link Indicator}.
      *
      * @param series        the {@link #getSeries()}
-     * @param numFactory    the {@link #getNumFactory()}
      * @param unstableCount the {@link #getUnstableCount()}
-     * @param epsilon       the {@link #getEpsilon()} or <code>null</code> for {@link NumFactory#zero()}
      * @param cache         the <code>boolean</code> passed to {@link #cache(boolean)}
      */
-    public Indicator(Series<?> series, NumFactory numFactory, int unstableCount, @Nullable Num epsilon, boolean cache) {
+    public Indicator(Series<?> series, int unstableCount, boolean cache) {
         this.series = series;
-        this.numFactory = numFactory;
         this.unstableCount = unstableCount;
-        this.epsilon = epsilon == null ? numFactory.zero() : epsilon;
         cache(cache);
         cachedIndex = -1;
         cachedAddCallCount = -1;
@@ -195,5 +184,72 @@ public abstract class Indicator<T> {
      */
     public boolean isStable() {
         return series.getLength() > unstableCount;
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#of(Number)}.
+     */
+    public Num numOf(Number number) {
+        return series.getNumFactory().of(number);
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#of(BigDecimal)}.
+     */
+    public Num numOf(BigDecimal bigDecimal) {
+        return series.getNumFactory().of(bigDecimal);
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#of(String)}.
+     */
+    public Num numOf(String string) {
+        return series.getNumFactory().of(string);
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#of(Num)}.
+     */
+    public Num numOf(Num num) {
+        return series.getNumFactory().of(num);
+    }
+
+    /**
+     * Convenience method for {@link #constant(Object)} with {@link #numOf(Number)}.
+     */
+    public Indicator<Num> constant(Number number) {
+        return constant(numOf(number));
+    }
+
+    /**
+     * Convenience method for {@link #constant(Object)} with {@link #numOf(BigDecimal)}.
+     */
+    public Indicator<Num> constant(BigDecimal bigDecimal) {
+        return constant(numOf(bigDecimal));
+    }
+
+    /**
+     * Convenience method for {@link #constant(Object)} with {@link #numOf(String)}.
+     */
+    public Indicator<Num> constant(String string) {
+        return constant(numOf(string));
+    }
+
+    /**
+     * Convenience method to provide a new {@link Indicator} that always yields the given <code>constant</code>.
+     *
+     * @param <C>      the type of {@link Indicator}
+     * @param constant the constant
+     *
+     * @return the constant {@link Indicator}
+     */
+    public <C> Indicator<C> constant(C constant) {
+        return new Indicator<>(series, 0, false) {
+
+            @Override
+            protected C calculate(long index) {
+                return constant;
+            }
+        };
     }
 }

@@ -3,8 +3,8 @@ package trade.invision.indicators.series.bar;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
+import org.jetbrains.annotations.Nullable;
 import trade.invision.num.Num;
-import trade.invision.num.NumFactory;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -13,8 +13,8 @@ import java.time.temporal.Temporal;
 import static java.time.Duration.between;
 
 /**
- * {@link Bar} represents the price data of an instrument within a span of time. A bar may also be referred to as a
- * "candlestick" or "OHLC" (Open, High, Low, Close).
+ * {@link Bar} represents the price data of an instrument within a span of time. A {@link Bar} may also be referred to
+ * as a "candlestick" or "OHLC" (Open, High, Low, Close).
  *
  * @see <a href="https://www.investopedia.com/terms/c/candlestick.asp">Investopedia</a>
  */
@@ -34,7 +34,7 @@ public class Bar {
     Num low;
     Num close;
     Num volume;
-    long tradeCount;
+    Num tradeCount;
 
     /**
      * Instantiates a new {@link Bar}.
@@ -45,7 +45,7 @@ public class Bar {
      * @param tradeVolume the trade volume {@link Num}
      */
     public Bar(Instant start, Duration timespan, Num tradePrice, Num tradeVolume) {
-        this(start, timespan, tradePrice, tradePrice, tradePrice, tradePrice, tradeVolume, 1);
+        this(start, timespan, tradePrice, tradePrice, tradePrice, tradePrice, tradeVolume, tradePrice.factory().one());
     }
 
     /**
@@ -58,9 +58,9 @@ public class Bar {
      * @param low        the low {@link Num}
      * @param close      the close {@link Num}
      * @param volume     the volume {@link Num}
-     * @param tradeCount the trade count
+     * @param tradeCount the trade count {@link Num}
      */
-    public Bar(Instant start, Duration timespan, Num open, Num high, Num low, Num close, Num volume, long tradeCount) {
+    public Bar(Instant start, Duration timespan, Num open, Num high, Num low, Num close, Num volume, Num tradeCount) {
         this.start = start;
         end = start.plus(timespan);
         this.open = open;
@@ -85,25 +85,24 @@ public class Bar {
     }
 
     /**
-     * Calls {@link #addTrade(Num, Num)} with <code>volume</code> set to {@link Num#factory()}
-     * {@link NumFactory#zero()}.
+     * Calls {@link #addTrade(Num, Num)} with <code>volume</code> set to <code>null</code>.
      */
     public Bar addPrice(Num price) {
-        return addTrade(price, price.factory().zero());
+        return addTrade(price, null);
     }
 
     /**
      * Creates a new {@link Bar} from this {@link Bar} with the new trade data.
      *
      * @param price  the price {@link Num}
-     * @param volume the volume {@link Num}
+     * @param volume the volume {@link Num}, or <code>null</code> to not update {@link #getVolume()}
      *
      * @return the new {@link Bar}
      */
-    public Bar addTrade(Num price, Num volume) {
+    public Bar addTrade(Num price, @Nullable Num volume) {
         return new Bar(start, end,
                 open, high.maximum(price), low.minimum(price), price,
-                this.volume.add(volume), tradeCount + 1);
+                volume == null ? this.volume : this.volume.add(volume), tradeCount.increment());
     }
 
     /**
@@ -118,7 +117,7 @@ public class Bar {
         final boolean otherEnd = !bar.end.isBefore(end);
         return new Bar(thisStart ? start : bar.start, otherEnd ? bar.end : end,
                 thisStart ? open : bar.open, high.maximum(bar.high), low.minimum(bar.low), otherEnd ? bar.close : close,
-                this.volume.add(bar.volume), tradeCount + bar.tradeCount);
+                volume.add(bar.volume), tradeCount.add(bar.tradeCount));
     }
 
     /**

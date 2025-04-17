@@ -15,6 +15,8 @@ repositories {
     mavenCentral()
 }
 
+val numVersion = "1.6.0"
+
 dependencies {
     // Jetbrains Annotations
     implementation("org.jetbrains", "annotations", "24.1.0")
@@ -22,8 +24,8 @@ dependencies {
     // Google Guava
     implementation("com.google.guava", "guava", "33.2.1-jre")
 
-    // num
-    api("trade.invision", "num", "1.2.0")
+    // Num
+    api("trade.invision", "num", numVersion)
 }
 
 java {
@@ -37,6 +39,7 @@ tasks.javadoc.configure {
     options {
         (this as CoreJavadocOptions).addBooleanOption("Xdoclint:none", true)
         addStringOption("link", "https://docs.oracle.com/en/java/javase/21/docs/api/")
+        addStringOption("link", "https://javadoc.io/doc/trade.invision/num/${numVersion}/")
     }
 }
 
@@ -47,8 +50,8 @@ publishing {
             from(components["java"])
             pom {
                 name = "indicators"
-                description = "A Java library that provides a variety of statistical, utility, and technical " +
-                        "indicators for time series data, such as OHLC bars."
+                description = "A Java library that provides a variety of technical indicators for time series data, " +
+                        "such as OHLC bars."
                 url = "https://github.com/invision-trading/indicators"
                 inceptionYear = "2025"
                 licenses {

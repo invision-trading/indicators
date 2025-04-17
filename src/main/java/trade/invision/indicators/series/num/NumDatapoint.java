@@ -1,4 +1,4 @@
-package trade.invision.indicators.series.number;
+package trade.invision.indicators.series.num;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,10 +8,10 @@ import trade.invision.num.Num;
 import java.time.Instant;
 
 /**
- * {@link NumberDatapoint} represents a numeric value at a point in time.
+ * {@link NumDatapoint} represents a {@link Num} value at a point in time.
  */
 @Value @AllArgsConstructor @Builder(toBuilder = true)
-public class NumberDatapoint {
+public class NumDatapoint {
 
     Instant timestamp;
     Num value;

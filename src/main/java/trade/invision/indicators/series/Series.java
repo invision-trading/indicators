@@ -9,6 +9,7 @@ import trade.invision.num.Num;
 import trade.invision.num.NumFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -62,36 +63,39 @@ public class Series<T> {
     protected @Getter long addCallCount;
 
     /**
-     * Calls {@link #Series(List, int, NumFactory, Num)} with <code>initialValues</code> set to an empty list,
-     * <code>numFactory</code> set to <code>null</code>, and <code>epsilon</code> set to <code>null</code>.
+     * Calls {@link #Series(Collection, int, NumFactory, Num)} with <code>initialValues</code> set to
+     * <code>null</code>, <code>numFactory</code> set to <code>null</code>, and <code>epsilon</code> set to
+     * <code>null</code>.
      */
     public Series(int maximumLength) {
-        this(new ArrayList<>(0), maximumLength, null, null);
+        this(null, maximumLength, null, null);
     }
 
     /**
-     * Calls {@link #Series(List, int, NumFactory, Num)} with <code>numFactory</code> set to <code>null</code>, and
-     * <code>epsilon</code> set to <code>null</code>.
+     * Calls {@link #Series(Collection, int, NumFactory, Num)} with <code>numFactory</code> set to <code>null</code>,
+     * and <code>epsilon</code> set to <code>null</code>.
      */
-    public Series(List<T> initialValues, int maximumLength) {
+    public Series(Collection<T> initialValues, int maximumLength) {
         this(initialValues, maximumLength, null, null);
     }
 
     /**
      * Instantiates a new {@link Series}.
      *
-     * @param initialValues the initial {@link List} of values
+     * @param initialValues the initial {@link Collection} of values, or <code>null</code> for no initial values
      * @param maximumLength the {@link #getMaximumLength()}
      * @param numFactory    the {@link #getNumFactory()}, or <code>null</code> for {@link DoubleNum#doubleNumFactory()}
      * @param epsilon       the {@link #getEpsilon()}, or <code>null</code> for {@link NumFactory#zero()}
      */
-    public Series(List<T> initialValues, int maximumLength, @Nullable NumFactory numFactory, @Nullable Num epsilon) {
+    public Series(@Nullable Collection<T> initialValues, int maximumLength,
+            @Nullable NumFactory numFactory, @Nullable Num epsilon) {
         checkArgument(maximumLength > 0, "'maximumLength' must be greater than zero!");
         this.maximumLength = maximumLength;
         this.numFactory = numFactory != null ? numFactory : doubleNumFactory();
         this.epsilon = epsilon != null ? epsilon : this.numFactory.zero();
-        values = new ArrayList<>(initialValues); // 'ArrayList' has the fastest sequential access time
-        if (initialValues.isEmpty()) {
+        // 'ArrayList' has the fastest sequential access time.
+        values = initialValues != null ? new ArrayList<>(initialValues) : new ArrayList<>(0);
+        if (values.isEmpty()) {
             startIndex = -1;
             endIndex = -1;
         } else {
@@ -99,7 +103,7 @@ public class Series<T> {
                 values.subList(0, values.size() - maximumLength).clear();
             }
             startIndex = 0;
-            endIndex = initialValues.size() - 1;
+            endIndex = values.size() - 1;
         }
     }
 

@@ -1,0 +1,39 @@
+package trade.invision.indicators.indicators.bar;
+
+import trade.invision.indicators.indicators.CachelessIndicator;
+import trade.invision.indicators.indicators.Indicator;
+import trade.invision.indicators.series.bar.Bar;
+import trade.invision.indicators.series.bar.BarSeries;
+import trade.invision.num.Num;
+
+/**
+ * {@link TradeCount} is a {@link Num} {@link Indicator} to provide {@link Bar#getTradeCount()}.
+ *
+ * @see <a href="https://www.investopedia.com/articles/investing/082614/how-stock-market-works.asp">Investopedia</a>
+ */
+public class TradeCount extends CachelessIndicator<Num> {
+
+    /**
+     * Convenience static method for {@link #TradeCount(BarSeries)}.
+     */
+    public static TradeCount tradeCount(BarSeries barSeries) {
+        return new TradeCount(barSeries);
+    }
+
+    private final BarSeries barSeries;
+
+    /**
+     * Instantiates a new {@link TradeCount}.
+     *
+     * @param barSeries the {@link BarSeries}
+     */
+    public TradeCount(BarSeries barSeries) {
+        super(barSeries, 0);
+        this.barSeries = barSeries;
+    }
+
+    @Override
+    protected Num calculate(long index) {
+        return barSeries.get(index).getTradeCount();
+    }
+}

@@ -12,7 +12,8 @@ import java.math.BigDecimal;
 
 /**
  * {@link Indicator} is an abstract class for performing calculations on a {@link Series} or another {@link Indicator},
- * with optional caching. Calculated values should be of an immutable type. This class is not thread-safe.
+ * with optional caching (disabled by default). Calculated values should be of an immutable type. This class is not
+ * thread-safe.
  *
  * @param <T> the immutable type
  *
@@ -26,9 +27,10 @@ public abstract class Indicator<T> {
      */
     protected final @Getter Series<?> series;
     /**
-     * The number of input datapoints this {@link Indicator} requires in order to perform calculations correctly.
+     * The minimum <code>index</code> (inclusive) that this {@link Indicator} will start to perform calculations
+     * correctly at.
      */
-    protected final @Getter int unstableCount;
+    protected final @Getter int minimumStableIndex;
     protected @Nullable CacheSeries cacheSeries;
     protected long cachedIndex;
     protected @Nullable T cachedValue;
@@ -37,14 +39,12 @@ public abstract class Indicator<T> {
     /**
      * Instantiates a new {@link Indicator}.
      *
-     * @param series        the {@link #getSeries()}
-     * @param unstableCount the {@link #getUnstableCount()}
-     * @param cache         the <code>boolean</code> passed to {@link #cache(boolean)}
+     * @param series             the {@link #getSeries()}
+     * @param minimumStableIndex the {@link #getMinimumStableIndex()}
      */
-    public Indicator(Series<?> series, int unstableCount, boolean cache) {
+    public Indicator(Series<?> series, int minimumStableIndex) {
         this.series = series;
-        this.unstableCount = unstableCount;
-        cache(cache);
+        this.minimumStableIndex = minimumStableIndex;
         cachedIndex = -1;
         cachedAddCallCount = -1;
     }
@@ -60,7 +60,7 @@ public abstract class Indicator<T> {
 
     /**
      * Computes the value of this {@link Indicator} at the given <code>index</code>. Regardless of {@link #isCaching()},
-     * if {@link #getSeries()} has not been modified since the previous method call was invoked the same
+     * if {@link #getSeries()} has not been modified since the previous method call was invoked with the same
      * <code>index</code> as the current method call, then this {@link Indicator} does not recalculate the value for
      * <code>index</code> and a cached value is returned. If {@link #isCaching()} is <code>true</code>, then the cached
      * value for <code>index</code> is returned if it has been previously calculated, except if <code>index</code> is
@@ -125,9 +125,14 @@ public abstract class Indicator<T> {
 
     /**
      * Sets whether this {@link Indicator} will cache its calculated values in order to optimize
-     * {@link #getValue(long)}. The cache size is equal to {@link #getSeries()} {@link Series#getMaximumLength()}.
+     * {@link #getValue(long)}. The cache size is equal to {@link #getSeries()} {@link Series#getMaximumLength()}. The
+     * cache for this {@link Indicator} should be enabled when consumers of this {@link Indicator} use the calculated
+     * values of previous indices, as opposed to just using the calculated value of the last index (e.g.
+     * {@link Series#getEndIndex()}).
      *
      * @param cache <code>true</code> to enable caching, <code>false</code> otherwise
+     *
+     * @see #getValue(long)
      */
     public void cache(boolean cache) {
         if (cache) {
@@ -175,81 +180,156 @@ public abstract class Indicator<T> {
     }
 
     /**
-     * Checks if the {@link #getSeries()} of this {@link Indicator} contains enough datapoints for the calculations of
-     * this {@link Indicator} to be accurate. The following logic is used to determine if this {@link Indicator} is
-     * stable: <code>isStable = {@link Series#getLength()} > {@link #getUnstableCount()}</code>
-     *
-     * @return <code>true</code> if this {@link Indicator}'s calculations are stable and accurate, <code>false</code> if
-     * calculations are unstable and inaccurate
-     */
-    public boolean isStable() {
-        return series.getLength() > unstableCount;
-    }
-
-    /**
      * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#of(Number)}.
      */
-    public Num numOf(Number number) {
+    protected Num numOf(Number number) {
         return series.getNumFactory().of(number);
     }
 
     /**
      * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#of(BigDecimal)}.
      */
-    public Num numOf(BigDecimal bigDecimal) {
+    protected Num numOf(BigDecimal bigDecimal) {
         return series.getNumFactory().of(bigDecimal);
     }
 
     /**
      * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#of(String)}.
      */
-    public Num numOf(String string) {
+    protected Num numOf(String string) {
         return series.getNumFactory().of(string);
     }
 
     /**
      * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#of(Num)}.
      */
-    public Num numOf(Num num) {
+    protected Num numOf(Num num) {
         return series.getNumFactory().of(num);
     }
 
     /**
-     * Convenience method for {@link #constant(Object)} with {@link #numOf(Number)}.
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#negativeOne()}.
      */
-    public Indicator<Num> constant(Number number) {
-        return constant(numOf(number));
+    protected Num numOfNegativeOne() {
+        return series.getNumFactory().negativeOne();
     }
 
     /**
-     * Convenience method for {@link #constant(Object)} with {@link #numOf(BigDecimal)}.
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#zero()}.
      */
-    public Indicator<Num> constant(BigDecimal bigDecimal) {
-        return constant(numOf(bigDecimal));
+    protected Num numOfZero() {
+        return series.getNumFactory().zero();
     }
 
     /**
-     * Convenience method for {@link #constant(Object)} with {@link #numOf(String)}.
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#one()}.
      */
-    public Indicator<Num> constant(String string) {
-        return constant(numOf(string));
+    protected Num numOfOne() {
+        return series.getNumFactory().one();
     }
 
     /**
-     * Convenience method to provide a new {@link Indicator} that always yields the given <code>constant</code>.
-     *
-     * @param <C>      the type of {@link Indicator}
-     * @param constant the constant
-     *
-     * @return the constant {@link Indicator}
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#two()}.
      */
-    public <C> Indicator<C> constant(C constant) {
-        return new Indicator<>(series, 0, false) {
+    protected Num numOfTwo() {
+        return series.getNumFactory().two();
+    }
 
-            @Override
-            protected C calculate(long index) {
-                return constant;
-            }
-        };
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#three()}.
+     */
+    protected Num numOfThree() {
+        return series.getNumFactory().three();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#four()}.
+     */
+    protected Num numOfFour() {
+        return series.getNumFactory().four();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#five()}.
+     */
+    protected Num numOfFive() {
+        return series.getNumFactory().five();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#six()}.
+     */
+    protected Num numOfSix() {
+        return series.getNumFactory().six();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#seven()}.
+     */
+    protected Num numOfSeven() {
+        return series.getNumFactory().seven();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#eight()}.
+     */
+    protected Num numOfEight() {
+        return series.getNumFactory().eight();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#nine()}.
+     */
+    protected Num numOfNine() {
+        return series.getNumFactory().nine();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#ten()}.
+     */
+    protected Num numOfTen() {
+        return series.getNumFactory().ten();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#hundred()}.
+     */
+    protected Num numOfHundred() {
+        return series.getNumFactory().hundred();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#thousand()}.
+     */
+    protected Num numOfThousand() {
+        return series.getNumFactory().thousand();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#tenth()}.
+     */
+    protected Num numOfTenth() {
+        return series.getNumFactory().tenth();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#hundredth()}.
+     */
+    protected Num numOfHundredth() {
+        return series.getNumFactory().hundredth();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#thousandth()}.
+     */
+    protected Num numOfThousandth() {
+        return series.getNumFactory().thousandth();
+    }
+
+    /**
+     * Convenience method for {@link #getSeries()} {@link Series#getNumFactory()} {@link NumFactory#half()}.
+     */
+    protected Num numOfHalf() {
+        return series.getNumFactory().half();
     }
 }

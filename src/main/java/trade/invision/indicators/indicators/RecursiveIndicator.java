@@ -5,20 +5,19 @@ import trade.invision.indicators.series.Series;
 import static java.lang.Math.max;
 
 /**
- * {@link RecursiveIndicator} is for {@link Indicator} subclasses that use recursion in the {@link #calculate(long)}
- * method implementation. If {@link #getValue(long)} is called with an empty {@link Indicator} cache, a
- * {@link StackOverflowError} may be thrown, so this class replaces recursion with iteration. Caching is enabled by
- * default and cannot be turned off.
+ * {@link RecursiveIndicator} is an abstract {@link CachingIndicator} class for {@link Indicator} subclasses that use
+ * recursion in the {@link #calculate(long)} method implementation. If {@link #getValue(long)} is called with an empty
+ * {@link Indicator} cache, a {@link StackOverflowError} may occur, so this class replaces recursion with iteration.
  *
  * @param <T> the {@link Indicator} type
  */
-public abstract class RecursiveIndicator<T> extends Indicator<T> {
+public abstract class RecursiveIndicator<T> extends CachingIndicator<T> {
 
     /**
-     * Calls {@link Indicator#Indicator(Series, int, boolean)} with <code>cache</code> set to <code>true</code>.
+     * @see CachingIndicator#CachingIndicator(Series, int)
      */
-    public RecursiveIndicator(Series<?> series, int unstableCount) {
-        super(series, unstableCount, true);
+    public RecursiveIndicator(Series<?> series, int minimumStableIndex) {
+        super(series, minimumStableIndex);
     }
 
     @SuppressWarnings("DataFlowIssue")
@@ -29,10 +28,5 @@ public abstract class RecursiveIndicator<T> extends Indicator<T> {
             super.getValue(seriesIndex);
         }
         return super.getValue(index);
-    }
-
-    @Override
-    public void cache(boolean cache) {
-        super.cache(true);
     }
 }

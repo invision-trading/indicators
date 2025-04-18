@@ -25,7 +25,7 @@ public class IsCaching extends Indicator<Boolean> {
     public IsCaching(Indicator<?> indicator) {
         super(indicator.getSeries(), 0);
         this.indicator = indicator;
-        cache(true); // 'isCaching()' is mutable, so prefer to cache result for each 'index'
+        cache(true); // 'isCaching()' is mutable, so prefer to cache so same 'index' yields same result
     }
 
     @Override

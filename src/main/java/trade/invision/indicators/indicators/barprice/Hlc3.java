@@ -14,6 +14,13 @@ import trade.invision.num.Num;
 public class Hlc3 extends Indicator<Num> {
 
     /**
+     * @see #hlc3(BarSeries)
+     */
+    public static Hlc3 typicalPrice(BarSeries barSeries) {
+        return hlc3(barSeries);
+    }
+
+    /**
      * Convenience static method for {@link #Hlc3(BarSeries)}.
      */
     public static Hlc3 hlc3(BarSeries barSeries) {

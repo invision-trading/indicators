@@ -14,6 +14,13 @@ import trade.invision.num.Num;
 public class Hl2 extends Indicator<Num> {
 
     /**
+     * @see #hl2(BarSeries)
+     */
+    public static Hl2 medianPrice(BarSeries barSeries) {
+        return hl2(barSeries);
+    }
+
+    /**
      * Convenience static method for {@link #Hl2(BarSeries)}.
      */
     public static Hl2 hl2(BarSeries barSeries) {

@@ -25,7 +25,7 @@ public class LengthOf extends CachelessIndicator<Num> {
      */
     public LengthOf(Series<?> series) {
         super(series, 0);
-        cache(true); // 'getLength()' is mutable, so prefer to cache result for each 'index'
+        cache(true); // 'getLength()' is mutable, so prefer to cache so same 'index' yields same result
     }
 
     @Override

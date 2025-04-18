@@ -146,7 +146,7 @@ public class Bar {
     }
 
     /**
-     * Checks if this {@link Bar} is bullish ({@link #getClose()} is greater than {@link #getOpen()}).
+     * Checks if {@link #getClose()} is greater than {@link #getOpen()}.
      *
      * @return <code>true</code> if bullish, <code>false</code> otherwise
      */
@@ -155,7 +155,7 @@ public class Bar {
     }
 
     /**
-     * Checks if this {@link Bar} is bearish ({@link #getClose()} is less than {@link #getOpen()}).
+     * Checks if {@link #getClose()} is less than {@link #getOpen()}.
      *
      * @return <code>true</code> if bearish, <code>false</code> otherwise
      */

@@ -6,7 +6,7 @@ import trade.invision.num.Num;
 /**
  * {@link PreviousPrecentChange} is a {@link Num} {@link Indicator} to provide the percent change of the current value
  * from the <i>n</i>-th previous value. This is also referred to as Rate of Change (ROC) or Momentum. The percentage is
- * represented as a fractional. For example, a provided value of 0.15 would represent 15%.
+ * represented as a fractional. For example, a provided value of <code>0.15</code> would represent <code>15%</code>.
  */
 public class PreviousPrecentChange extends PreviousRatio {
 

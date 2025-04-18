@@ -25,7 +25,7 @@ public class StartIndexOf extends CachelessIndicator<Num> {
      */
     public StartIndexOf(Series<?> series) {
         super(series, 0);
-        cache(true); // 'getStartIndex()' is mutable, so prefer to cache result for each 'index'
+        cache(true); // 'getStartIndex()' is mutable, so prefer to cache so same 'index' yields same result
     }
 
     @Override

@@ -25,7 +25,7 @@ public class EndIndexOf extends CachelessIndicator<Num> {
      */
     public EndIndexOf(Series<?> series) {
         super(series, 0);
-        cache(true); // 'getEndIndex()' is mutable, so prefer to cache result for each 'index'
+        cache(true); // 'getEndIndex()' is mutable, so prefer to cache so same 'index' yields same result
     }
 
     @Override

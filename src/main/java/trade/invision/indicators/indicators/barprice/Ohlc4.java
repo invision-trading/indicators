@@ -14,6 +14,13 @@ import trade.invision.num.Num;
 public class Ohlc4 extends Indicator<Num> {
 
     /**
+     * @see #ohlc4(BarSeries)
+     */
+    public static Ohlc4 averagePrice(BarSeries barSeries) {
+        return ohlc4(barSeries);
+    }
+
+    /**
      * Convenience static method for {@link #Ohlc4(BarSeries)}.
      */
     public static Ohlc4 ohlc4(BarSeries barSeries) {

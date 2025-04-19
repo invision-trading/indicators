@@ -6,24 +6,24 @@ import trade.invision.indicators.series.Series;
 import trade.invision.num.Num;
 
 /**
- * {@link EndIndexOf} is a {@link Num} {@link Indicator} to provide the {@link Series#getEndIndex()} of the given
+ * {@link GetEndIndex} is a {@link Num} {@link Indicator} to provide the {@link Series#getEndIndex()} of the given
  * {@link Series}.
  */
-public class EndIndexOf extends CachelessIndicator<Num> {
+public class GetEndIndex extends CachelessIndicator<Num> {
 
     /**
-     * Convenience static method for {@link #EndIndexOf(Series)}.
+     * Convenience static method for {@link #GetEndIndex(Series)}.
      */
-    public static EndIndexOf endIndexOf(Series<?> series) {
-        return new EndIndexOf(series);
+    public static GetEndIndex getEndIndex(Series<?> series) {
+        return new GetEndIndex(series);
     }
 
     /**
-     * Instantiates a new {@link EndIndexOf}.
+     * Instantiates a new {@link GetEndIndex}.
      *
      * @param series the {@link #getSeries()}
      */
-    public EndIndexOf(Series<?> series) {
+    public GetEndIndex(Series<?> series) {
         super(series, 0);
         cache(true); // 'getEndIndex()' is mutable, so prefer to cache so same 'index' yields same result
     }

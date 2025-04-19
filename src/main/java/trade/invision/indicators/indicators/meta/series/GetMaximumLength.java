@@ -6,24 +6,24 @@ import trade.invision.indicators.series.Series;
 import trade.invision.num.Num;
 
 /**
- * {@link MaximumLengthOf} is a {@link Num} {@link Indicator} to provide the {@link Series#getMaximumLength()} of the
+ * {@link GetMaximumLength} is a {@link Num} {@link Indicator} to provide the {@link Series#getMaximumLength()} of the
  * given {@link Series}.
  */
-public class MaximumLengthOf extends ConstantValue<Num> {
+public class GetMaximumLength extends ConstantValue<Num> {
 
     /**
-     * Convenience static method for {@link #MaximumLengthOf(Series)}.
+     * Convenience static method for {@link #GetMaximumLength(Series)}.
      */
-    public static MaximumLengthOf maximumLengthOf(Series<?> series) {
-        return new MaximumLengthOf(series);
+    public static GetMaximumLength getMaximumLength(Series<?> series) {
+        return new GetMaximumLength(series);
     }
 
     /**
-     * Instantiates a new {@link MaximumLengthOf}.
+     * Instantiates a new {@link GetMaximumLength}.
      *
      * @param series the {@link #getSeries()}
      */
-    public MaximumLengthOf(Series<?> series) {
+    public GetMaximumLength(Series<?> series) {
         super(series, series.getNumFactory().of(series.getMaximumLength()));
     }
 }

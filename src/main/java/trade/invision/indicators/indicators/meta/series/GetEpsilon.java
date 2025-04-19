@@ -6,24 +6,24 @@ import trade.invision.indicators.series.Series;
 import trade.invision.num.Num;
 
 /**
- * {@link EpsilonOf} is a {@link Num} {@link Indicator} to provide the {@link Series#getEpsilon()} of the given
+ * {@link GetEpsilon} is a {@link Num} {@link Indicator} to provide the {@link Series#getEpsilon()} of the given
  * {@link Series}.
  */
-public class EpsilonOf extends ConstantValue<Num> {
+public class GetEpsilon extends ConstantValue<Num> {
 
     /**
-     * Convenience static method for {@link #EpsilonOf(Series)}.
+     * Convenience static method for {@link #GetEpsilon(Series)}.
      */
-    public static EpsilonOf epsilonOf(Series<?> series) {
-        return new EpsilonOf(series);
+    public static GetEpsilon getEpsilon(Series<?> series) {
+        return new GetEpsilon(series);
     }
 
     /**
-     * Instantiates a new {@link EpsilonOf}.
+     * Instantiates a new {@link GetEpsilon}.
      *
      * @param series the {@link #getSeries()}
      */
-    public EpsilonOf(Series<?> series) {
+    public GetEpsilon(Series<?> series) {
         super(series, series.getEpsilon());
     }
 }

@@ -8,32 +8,31 @@ import trade.invision.indicators.series.num.NumSeries;
 import java.time.Instant;
 
 /**
- * {@link NumDatapointTimestamp} is an {@link Instant} {@link Indicator} to provide
- * {@link NumDatapoint#getTimestamp()}.
+ * {@link NumDatapointInstant} is an {@link Instant} {@link Indicator} to provide {@link NumDatapoint#getInstant()}.
  */
-public class NumDatapointTimestamp extends CachelessIndicator<Instant> {
+public class NumDatapointInstant extends CachelessIndicator<Instant> {
 
     /**
-     * Convenience static method for {@link #NumDatapointTimestamp(NumSeries)}.
+     * Convenience static method for {@link #NumDatapointInstant(NumSeries)}.
      */
-    public static NumDatapointTimestamp timestampOf(NumSeries numSeries) {
-        return new NumDatapointTimestamp(numSeries);
+    public static NumDatapointInstant instantOf(NumSeries numSeries) {
+        return new NumDatapointInstant(numSeries);
     }
 
     private final NumSeries numSeries;
 
     /**
-     * Instantiates a new {@link NumDatapointTimestamp}.
+     * Instantiates a new {@link NumDatapointInstant}.
      *
      * @param numSeries the {@link NumSeries}
      */
-    public NumDatapointTimestamp(NumSeries numSeries) {
+    public NumDatapointInstant(NumSeries numSeries) {
         super(numSeries, 0);
         this.numSeries = numSeries;
     }
 
     @Override
     protected Instant calculate(long index) {
-        return numSeries.get(index).getTimestamp();
+        return numSeries.get(index).getInstant();
     }
 }

@@ -13,6 +13,6 @@ import java.time.Instant;
 @Value @AllArgsConstructor @Builder(toBuilder = true)
 public class NumDatapoint {
 
-    Instant timestamp;
+    Instant instant;
     Num value;
 }

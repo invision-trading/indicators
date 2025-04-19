@@ -6,24 +6,24 @@ import trade.invision.indicators.series.Series;
 import trade.invision.num.Num;
 
 /**
- * {@link LengthOf} is a {@link Num} {@link Indicator} to provide the {@link Series#getLength()} of the given
+ * {@link GetLength} is a {@link Num} {@link Indicator} to provide the {@link Series#getLength()} of the given
  * {@link Series}.
  */
-public class LengthOf extends CachelessIndicator<Num> {
+public class GetLength extends CachelessIndicator<Num> {
 
     /**
-     * Convenience static method for {@link #LengthOf(Series)}.
+     * Convenience static method for {@link #GetLength(Series)}.
      */
-    public static LengthOf lengthOf(Series<?> series) {
-        return new LengthOf(series);
+    public static GetLength getLength(Series<?> series) {
+        return new GetLength(series);
     }
 
     /**
-     * Instantiates a new {@link LengthOf}.
+     * Instantiates a new {@link GetLength}.
      *
      * @param series the {@link #getSeries()}
      */
-    public LengthOf(Series<?> series) {
+    public GetLength(Series<?> series) {
         super(series, 0);
         cache(true); // 'getLength()' is mutable, so prefer to cache so same 'index' yields same result
     }

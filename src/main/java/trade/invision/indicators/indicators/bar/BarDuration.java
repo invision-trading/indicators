@@ -10,30 +10,30 @@ import java.time.temporal.ChronoUnit;
 import static java.time.ZoneOffset.UTC;
 
 /**
- * {@link BarTimespan} is a {@link Num} {@link Indicator} to provide {@link Bar#getTimespan()} in a specified
+ * {@link BarDuration} is a {@link Num} {@link Indicator} to provide {@link Bar#getDuration()} in a specified
  * {@link ChronoUnit}.
  *
  * @see <a href="https://www.investopedia.com/terms/c/candlestick.asp">Investopedia</a>
  */
-public class BarTimespan extends Indicator<Num> {
+public class BarDuration extends Indicator<Num> {
 
     /**
-     * Convenience static method for {@link #BarTimespan(BarSeries, ChronoUnit)}.
+     * Convenience static method for {@link #BarDuration(BarSeries, ChronoUnit)}.
      */
-    public static BarTimespan barTimespan(BarSeries barSeries, ChronoUnit chronoUnit) {
-        return new BarTimespan(barSeries, chronoUnit);
+    public static BarDuration barDuration(BarSeries barSeries, ChronoUnit chronoUnit) {
+        return new BarDuration(barSeries, chronoUnit);
     }
 
     private final BarSeries barSeries;
     private final ChronoUnit unit;
 
     /**
-     * Instantiates a new {@link BarTimespan}.
+     * Instantiates a new {@link BarDuration}.
      *
      * @param barSeries the {@link BarSeries}
      * @param unit      the {@link ChronoUnit}
      */
-    public BarTimespan(BarSeries barSeries, ChronoUnit unit) {
+    public BarDuration(BarSeries barSeries, ChronoUnit unit) {
         super(barSeries, 0);
         this.barSeries = barSeries;
         this.unit = unit;
@@ -42,6 +42,6 @@ public class BarTimespan extends Indicator<Num> {
     @Override
     protected Num calculate(long index) {
         final Bar bar = barSeries.get(index);
-        return numOf(unit.between(bar.getEnd().atOffset(UTC), bar.getStart().atOffset(UTC)));
+        return numOf(unit.between(bar.getEnd().atZone(UTC), bar.getStart().atZone(UTC)));
     }
 }

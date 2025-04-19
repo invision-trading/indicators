@@ -10,7 +10,7 @@ import java.util.Collection;
 
 /**
  * {@link BarSeries} is a {@link Series} of {@link Bar}s. {@link Bar}s that are added to this {@link BarSeries} that do
- * not have identical {@link Bar#getTimespan()}s or are not added chronologically may cause {@link Indicator}s to behave
+ * not have identical {@link Bar#getDuration()}s or are not added chronologically may cause {@link Indicator}s to behave
  * unexpectedly.
  */
 public class BarSeries extends Series<Bar> {

@@ -126,8 +126,7 @@ public final class NumUnaryOperations {
 
     /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#absoluteValue()} unary operation on the
-     * given
-     * <code>operand</code>.
+     * given <code>operand</code>.
      *
      * @param operand the operand
      *
@@ -337,8 +336,7 @@ public final class NumUnaryOperations {
 
     /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#inverseCosine()} unary operation on the
-     * given
-     * <code>operand</code>.
+     * given <code>operand</code>.
      *
      * @param operand the operand
      *
@@ -668,8 +666,7 @@ public final class NumUnaryOperations {
 
     /**
      * Creates a {@link Boolean} {@link Indicator} that performs the {@link Num#isNaN()} unary comparison using the
-     * given
-     * <code>input</code>.
+     * given <code>input</code>.
      *
      * @param input the input
      *

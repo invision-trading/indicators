@@ -6,24 +6,24 @@ import trade.invision.indicators.series.Series;
 import trade.invision.num.Num;
 
 /**
- * {@link StartIndexOf} is a {@link Num} {@link Indicator} to provide the {@link Series#getStartIndex()} of the given
+ * {@link GetStartIndex} is a {@link Num} {@link Indicator} to provide the {@link Series#getStartIndex()} of the given
  * {@link Series}.
  */
-public class StartIndexOf extends CachelessIndicator<Num> {
+public class GetStartIndex extends CachelessIndicator<Num> {
 
     /**
-     * Convenience static method for {@link #StartIndexOf(Series)}.
+     * Convenience static method for {@link #GetStartIndex(Series)}.
      */
-    public static StartIndexOf startIndexOf(Series<?> series) {
-        return new StartIndexOf(series);
+    public static GetStartIndex getStartIndex(Series<?> series) {
+        return new GetStartIndex(series);
     }
 
     /**
-     * Instantiates a new {@link StartIndexOf}.
+     * Instantiates a new {@link GetStartIndex}.
      *
      * @param series the {@link #getSeries()}
      */
-    public StartIndexOf(Series<?> series) {
+    public GetStartIndex(Series<?> series) {
         super(series, 0);
         cache(true); // 'getStartIndex()' is mutable, so prefer to cache so same 'index' yields same result
     }

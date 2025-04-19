@@ -22,11 +22,11 @@ import static java.time.Duration.between;
 public class Bar {
 
     /**
-     * The start timestamp of this {@link Bar} (inclusive).
+     * The start {@link Instant} of this {@link Bar} (inclusive).
      */
     Instant start;
     /**
-     * The end timestamp of this {@link Bar} (exclusive).
+     * The end {@link Instant} of this {@link Bar} (exclusive).
      */
     Instant end;
     Num open;
@@ -39,20 +39,20 @@ public class Bar {
     /**
      * Instantiates a new {@link Bar}.
      *
-     * @param start       the start timestamp {@link Instant}
-     * @param timespan    the timespan {@link Duration}
+     * @param start       the start {@link Instant}
+     * @param duration    the {@link Duration}
      * @param tradePrice  the trade price {@link Num}
      * @param tradeVolume the trade volume {@link Num}
      */
-    public Bar(Instant start, Duration timespan, Num tradePrice, Num tradeVolume) {
-        this(start, timespan, tradePrice, tradePrice, tradePrice, tradePrice, tradeVolume, tradePrice.factory().one());
+    public Bar(Instant start, Duration duration, Num tradePrice, Num tradeVolume) {
+        this(start, duration, tradePrice, tradePrice, tradePrice, tradePrice, tradeVolume, tradePrice.factory().one());
     }
 
     /**
      * Instantiates a new {@link Bar}.
      *
-     * @param start      the start timestamp {@link Instant}
-     * @param timespan   the timespan {@link Duration}
+     * @param start      the start {@link Instant}
+     * @param duration   the {@link Duration}
      * @param open       the open {@link Num}
      * @param high       the high {@link Num}
      * @param low        the low {@link Num}
@@ -60,9 +60,9 @@ public class Bar {
      * @param volume     the volume {@link Num}
      * @param tradeCount the trade count {@link Num}
      */
-    public Bar(Instant start, Duration timespan, Num open, Num high, Num low, Num close, Num volume, Num tradeCount) {
+    public Bar(Instant start, Duration duration, Num open, Num high, Num low, Num close, Num volume, Num tradeCount) {
         this.start = start;
-        end = start.plus(timespan);
+        end = start.plus(duration);
         this.open = open;
         this.high = high;
         this.low = low;
@@ -72,7 +72,7 @@ public class Bar {
     }
 
     /**
-     * Gets the timespan (period) of this {@link Bar}.
+     * Gets the {@link Duration} (period) of this {@link Bar}.
      *
      * @return the {@link Duration}
      *
@@ -80,7 +80,7 @@ public class Bar {
      * @see #getStart()
      * @see #getEnd()
      */
-    public Duration getTimespan() {
+    public Duration getDuration() {
         return between(start, end);
     }
 
@@ -121,28 +121,28 @@ public class Bar {
     }
 
     /**
-     * Checks if the given {@link Instant} is within the {@link #getStart()} (inclusive) and {@link #getEnd()}
+     * Checks if the given {@link Instant} is contained within {@link #getStart()} (inclusive) and {@link #getEnd()}
      * (exclusive).
      *
-     * @param timestamp a timestamp {@link Instant}
+     * @param instant the {@link Instant}
      *
-     * @return <code>true</code> if within, <code>false</code> otherwise
+     * @return <code>true</code> if contained, <code>false</code> otherwise
      */
-    public boolean isWithinTimespan(Instant timestamp) {
-        return !timestamp.isBefore(start) && timestamp.isBefore(end);
+    public boolean containsInstant(Instant instant) {
+        return !instant.isBefore(start) && instant.isBefore(end);
     }
 
     /**
-     * Checks if the given {@link Bar} {@link #getStart()} (inclusive) is {@link #isWithinTimespan(Instant)} of this
-     * {@link Bar} or if the given {@link Bar} {@link #getEnd()} (exclusive) is {@link #isWithinTimespan(Instant)} of
+     * Checks if the given {@link Bar} {@link #getStart()} (inclusive) is {@link #containsInstant(Instant)} of this
+     * {@link Bar} or if the given {@link Bar} {@link #getEnd()} (exclusive) is {@link #containsInstant(Instant)} of
      * this {@link Bar}.
      *
      * @param bar a {@link Bar}
      *
-     * @return <code>true</code> if within, <code>false</code> otherwise
+     * @return <code>true</code> if overlaps, <code>false</code> otherwise
      */
-    public boolean isWithinTimespan(Bar bar) {
-        return isWithinTimespan(bar.start) || isWithinTimespan(bar.end);
+    public boolean overlaps(Bar bar) {
+        return containsInstant(bar.start) || containsInstant(bar.end);
     }
 
     /**

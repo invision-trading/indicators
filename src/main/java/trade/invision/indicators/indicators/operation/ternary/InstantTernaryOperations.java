@@ -28,7 +28,7 @@ public final class InstantTernaryOperations {
     }
 
     /**
-     * Creates a {@link Instant} {@link Indicator} that performs an if-else ternary operation on the given operands.
+     * Creates an {@link Instant} {@link Indicator} that performs an if-else ternary operation on the given operands.
      *
      * @param conditional    the conditional
      * @param trueCondition  the true condition

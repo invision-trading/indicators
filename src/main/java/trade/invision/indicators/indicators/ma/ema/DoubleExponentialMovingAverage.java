@@ -3,6 +3,8 @@ package trade.invision.indicators.indicators.ma.ema;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * {@link DoubleExponentialMovingAverage} is a {@link Num} {@link Indicator} to provide a Double Exponential Moving
  * Average (DEMA) over a <code>length</code> of values.
@@ -60,6 +62,7 @@ public class DoubleExponentialMovingAverage extends Indicator<Num> {
      */
     public DoubleExponentialMovingAverage(Indicator<Num> indicator, int length, Num smoothing) {
         super(indicator.getSeries(), length * 2);
+        checkArgument(length > 0, "'length' must be greater than zero!");
         ema = new ExponentialMovingAverage(indicator, length, smoothing);
         emaOfEma = new ExponentialMovingAverage(ema, length, smoothing);
     }

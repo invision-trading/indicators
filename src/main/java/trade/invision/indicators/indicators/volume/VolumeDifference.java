@@ -21,8 +21,8 @@ public class VolumeDifference extends PreviousDifference {
     /**
      * Convenience static method for {@link #VolumeDifference(BarSeries, int)}.
      */
-    public static VolumeDifference volumeDifference(BarSeries barSeries, int length) {
-        return new VolumeDifference(barSeries, length);
+    public static VolumeDifference volumeDifference(BarSeries barSeries, int n) {
+        return new VolumeDifference(barSeries, n);
     }
 
     /**

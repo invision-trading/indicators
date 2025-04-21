@@ -80,7 +80,7 @@ public class KaufmansAdaptiveMovingAverage extends RecursiveIndicator<Num> {
         checkArgument(efficiencyRatioLength > 0, "'efficiencyRatioLength' must be greater than zero!");
         checkArgument(fastLength > 0, "'fastLength' must be greater than zero!");
         checkArgument(slowLength > 0, "'slowLength' must be greater than zero!");
-        this.indicator = indicator;
+        this.indicator = indicator.caching();
         this.efficiencyRatioLength = efficiencyRatioLength;
         fastest = numOfTwo().divide(fastLength + 1);
         slowest = numOfTwo().divide(slowLength + 1);

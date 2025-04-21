@@ -23,8 +23,8 @@ public class VolumePercentChange extends PreviousPrecentChange {
     /**
      * Convenience static method for {@link #VolumePercentChange(BarSeries, int)}.
      */
-    public static VolumePercentChange volumePercentChange(BarSeries barSeries, int length) {
-        return new VolumePercentChange(barSeries, length);
+    public static VolumePercentChange volumePercentChange(BarSeries barSeries, int n) {
+        return new VolumePercentChange(barSeries, n);
     }
 
     /**

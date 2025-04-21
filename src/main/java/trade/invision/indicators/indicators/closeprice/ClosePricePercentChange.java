@@ -23,8 +23,8 @@ public class ClosePricePercentChange extends PreviousPrecentChange {
     /**
      * Convenience static method for {@link #ClosePricePercentChange(BarSeries, int)}.
      */
-    public static ClosePricePercentChange closePricePercentChange(BarSeries barSeries, int length) {
-        return new ClosePricePercentChange(barSeries, length);
+    public static ClosePricePercentChange closePricePercentChange(BarSeries barSeries, int n) {
+        return new ClosePricePercentChange(barSeries, n);
     }
 
     /**

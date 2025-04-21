@@ -21,8 +21,8 @@ public class ClosePriceRatio extends PreviousRatio {
     /**
      * Convenience static method for {@link #ClosePriceRatio(BarSeries, int)}.
      */
-    public static ClosePriceRatio closePriceRatio(BarSeries barSeries, int length) {
-        return new ClosePriceRatio(barSeries, length);
+    public static ClosePriceRatio closePriceRatio(BarSeries barSeries, int n) {
+        return new ClosePriceRatio(barSeries, n);
     }
 
     /**

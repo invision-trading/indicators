@@ -22,8 +22,8 @@ public class ClosePriceDifference extends PreviousDifference {
     /**
      * Convenience static method for {@link #ClosePriceDifference(BarSeries, int)}.
      */
-    public static ClosePriceDifference closePriceDifference(BarSeries barSeries, int length) {
-        return new ClosePriceDifference(barSeries, length);
+    public static ClosePriceDifference closePriceDifference(BarSeries barSeries, int n) {
+        return new ClosePriceDifference(barSeries, n);
     }
 
     /**

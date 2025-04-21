@@ -2,6 +2,7 @@ package trade.invision.indicators.indicators.statistical.regression;
 
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.cumulative.CumulativeSum;
+import trade.invision.indicators.indicators.meta.indicator.CurrentIndex;
 import trade.invision.indicators.indicators.statistical.regression.LinearRegressionResult.LinearRegressionResultBuilder;
 import trade.invision.num.Num;
 
@@ -51,12 +52,7 @@ public class LinearRegression extends Indicator<LinearRegressionResult> {
         this.indicator = indicator.caching();
         this.resultTypes = resultTypes;
         this.length = length;
-        sumX = new CumulativeSum(new Indicator<>(series, 0) {
-            @Override
-            protected Num calculate(long index) {
-                return numOf(index + 1);
-            }
-        }, length);
+        sumX = new CumulativeSum(new CurrentIndex(series), length);
         sumY = new CumulativeSum(indicator, length);
     }
 
@@ -70,7 +66,7 @@ public class LinearRegression extends Indicator<LinearRegressionResult> {
         Num xxBar = numOfZero();
         Num xyBar = numOfZero();
         for (long indicatorIndex = startIndex; indicatorIndex <= index; indicatorIndex++) {
-            final Num xDelta = numOf(indicatorIndex + 1).subtract(xBar);
+            final Num xDelta = numOf(indicatorIndex).subtract(xBar);
             xxBar = xxBar.add(xDelta.square());
             xyBar = xyBar.add(xDelta.multiply(indicator.getValue(indicatorIndex).subtract(yBar)));
         }
@@ -80,17 +76,17 @@ public class LinearRegression extends Indicator<LinearRegressionResult> {
         final Num intercept = yBar.subtract(slope.multiply(xBar));
         result.intercept(intercept);
         if (resultTypes.contains(Y)) {
-            result.y(slope.multiply(index + 1).add(intercept));
+            result.y(slope.multiply(index).add(intercept));
         }
         if (resultTypes.contains(NEXT_Y)) {
-            result.y(slope.multiply(index + 2).add(intercept));
+            result.nextY(slope.multiply(index + 1).add(intercept));
         }
         if (resultTypes.contains(RSS) || resultTypes.contains(TSS) || resultTypes.contains(R2)) {
             Num rss = numOfZero();
             Num tss = numOfZero();
             for (long indicatorIndex = startIndex; indicatorIndex <= index; indicatorIndex++) {
                 final Num y = indicator.getValue(indicatorIndex);
-                final Num fit = slope.multiply(indicatorIndex + 1).add(intercept);
+                final Num fit = slope.multiply(indicatorIndex).add(intercept);
                 rss = rss.add(fit.subtract(y).square());
                 tss = tss.add(y.subtract(yBar).square());
             }

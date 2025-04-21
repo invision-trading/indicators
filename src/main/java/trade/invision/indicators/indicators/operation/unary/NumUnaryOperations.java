@@ -125,8 +125,8 @@ public final class NumUnaryOperations {
     }
 
     /**
-     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#absoluteValue()} unary operation on the
-     * given <code>operand</code>.
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#absoluteValue()} unary operation on the given
+     * <code>operand</code>.
      *
      * @param operand the operand
      *
@@ -335,8 +335,8 @@ public final class NumUnaryOperations {
     }
 
     /**
-     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#inverseCosine()} unary operation on the
-     * given <code>operand</code>.
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#inverseCosine()} unary operation on the given
+     * <code>operand</code>.
      *
      * @param operand the operand
      *

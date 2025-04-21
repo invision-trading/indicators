@@ -3,6 +3,8 @@ package trade.invision.indicators.indicators.ma.ema;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * {@link TripleExponentialMovingAverage} is a {@link Num} {@link Indicator} to provide a Triple Exponential Moving
  * Average (TEMA) over a <code>length</code> of values.
@@ -61,6 +63,7 @@ public class TripleExponentialMovingAverage extends Indicator<Num> {
      */
     public TripleExponentialMovingAverage(Indicator<Num> indicator, int length, Num smoothing) {
         super(indicator.getSeries(), length * 3);
+        checkArgument(length > 0, "'length' must be greater than zero!");
         ema = new ExponentialMovingAverage(indicator, length, smoothing);
         emaOfEma = new ExponentialMovingAverage(ema, length, smoothing);
         emaOfEmaOfEma = new ExponentialMovingAverage(emaOfEma, length, smoothing);

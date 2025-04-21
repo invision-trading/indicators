@@ -21,8 +21,8 @@ public class VolumeRatio extends PreviousRatio {
     /**
      * Convenience static method for {@link #VolumeRatio(BarSeries, int)}.
      */
-    public static VolumeRatio volumeRatio(BarSeries barSeries, int length) {
-        return new VolumeRatio(barSeries, length);
+    public static VolumeRatio volumeRatio(BarSeries barSeries, int n) {
+        return new VolumeRatio(barSeries, n);
     }
 
     /**

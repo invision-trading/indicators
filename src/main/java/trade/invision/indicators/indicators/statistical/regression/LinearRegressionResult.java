@@ -9,31 +9,31 @@ import trade.invision.num.Num;
 public class LinearRegressionResult {
 
     /**
-     * The slope value.
+     * The slope.
      */
     Num slope;
     /**
-     * The intercept value.
+     * The <i>y</i>-intercept.
      */
     Num intercept;
     /**
-     * The Y value (at the <code>index</code>).
+     * The <i>y</i> value at <code>index</code>.
      */
     Num y;
     /**
-     * The next Y value (at <code>index + 1</code>).
+     * The <i>y</i> value at <code>index + 1</code>.
      */
     Num nextY;
     /**
-     * Residual sum of squares (RSS).
+     * The residual sum of squares (RSS).
      */
     Num rss;
     /**
-     * Total sum of squares (TSS).
+     * The total sum of squares (TSS).
      */
     Num tss;
     /**
-     * Coefficient of determination (R^2).
+     * The coefficient of determination (R^2).
      */
     Num r2;
 }

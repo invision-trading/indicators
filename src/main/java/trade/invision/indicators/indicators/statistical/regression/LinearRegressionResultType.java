@@ -6,37 +6,37 @@ package trade.invision.indicators.indicators.statistical.regression;
 public enum LinearRegressionResultType {
 
     /**
-     * The slope value.
+     * The slope.
      */
     SLOPE,
 
     /**
-     * The intercept value.
+     * The <i>y</i>-intercept.
      */
     INTERCEPT,
 
     /**
-     * The Y value (at the <code>index</code>).
+     * The <i>y</i> value at <code>index</code>.
      */
     Y,
 
     /**
-     * The next Y value (at <code>index + 1</code>).
+     * The <i>y</i> value at <code>index + 1</code>.
      */
     NEXT_Y,
 
     /**
-     * Residual sum of squares (RSS).
+     * The residual sum of squares (RSS).
      */
     RSS,
 
     /**
-     * Total sum of squares (TSS).
+     * The total sum of squares (TSS).
      */
     TSS,
 
     /**
-     * Coefficient of determination (R^2).
+     * The coefficient of determination (R^2).
      */
     R2
 }

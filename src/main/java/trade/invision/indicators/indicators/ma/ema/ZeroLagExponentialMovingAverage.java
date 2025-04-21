@@ -6,6 +6,7 @@ import trade.invision.indicators.indicators.ma.sma.SimpleMovingAverage;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.Math.rint;
 
 /**
  * {@link ZeroLagExponentialMovingAverage} is a {@link Num} {@link Indicator} to provide a Zero-Lag Exponential Moving
@@ -48,7 +49,7 @@ public class ZeroLagExponentialMovingAverage extends RecursiveIndicator<Num> {
         this.indicator = indicator.caching();
         this.length = length;
         k = numOfTwo().divide(length + 1);
-        lag = (length - 1) / 2;
+        lag = (int) rint((length - 1.0) / 2.0);
         initialSma = new SimpleMovingAverage(indicator, length);
     }
 

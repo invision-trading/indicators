@@ -3,6 +3,7 @@ package trade.invision.indicators.indicators.ma.lsma;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.statistical.regression.LinearRegression;
 import trade.invision.indicators.indicators.statistical.regression.LinearRegressionResult;
+import trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType;
 import trade.invision.num.Num;
 
 import java.util.Set;
@@ -12,7 +13,8 @@ import static trade.invision.indicators.indicators.statistical.regression.Linear
 
 /**
  * {@link LeastSquaresMovingAverage} is a {@link Num} {@link Indicator} to provide a Least Squares Moving Average (LSMA)
- * over a <code>length</code> of values. Also known as the Time Series Moving Average (TSMA).
+ * over a <code>length</code> of values. Also known as the Time Series Moving Average (TSMA). This {@link Indicator}
+ * yields {@link LinearRegressionResultType#Y} from {@link LinearRegression}.
  *
  * @see <a href="https://www.fmlabs.com/reference/default.htm?url=LstSqrMA.htm">FM Labs</a>
  */

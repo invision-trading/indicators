@@ -22,14 +22,14 @@ public class NumSeries extends Series<NumDatapoint> {
     /**
      * @see Series#Series(Collection, int)
      */
-    public NumSeries(Collection<NumDatapoint> initialValues, int maximumLength) {
+    public NumSeries(@Nullable Collection<NumDatapoint> initialValues, int maximumLength) {
         super(initialValues, maximumLength);
     }
 
     /**
      * @see Series#Series(Collection, int, NumFactory, Num)
      */
-    public NumSeries(Collection<NumDatapoint> initialValues, int maximumLength,
+    public NumSeries(@Nullable Collection<NumDatapoint> initialValues, int maximumLength,
             @Nullable NumFactory numFactory, @Nullable Num epsilon) {
         super(initialValues, maximumLength, numFactory, epsilon);
     }

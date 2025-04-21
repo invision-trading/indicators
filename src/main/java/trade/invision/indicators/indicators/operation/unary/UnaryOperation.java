@@ -10,7 +10,7 @@ import java.util.function.Function;
  * @param <I> the input type
  * @param <R> the result type
  *
- * @see <a href="https://en.wikipedia.org/wiki/Unary_operation">Reference</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Unary_operation">Wikipedia</a>
  */
 public class UnaryOperation<I, R> extends Indicator<R> {
 

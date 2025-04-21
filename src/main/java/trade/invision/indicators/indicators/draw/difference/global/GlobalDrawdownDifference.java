@@ -9,7 +9,7 @@ import trade.invision.num.Num;
  * is similar to the global drawdown percentage, but instead of providing a percentage, this provides a difference
  * (subtraction).
  *
- * @see <a href="https://www.investopedia.com/terms/m/maximum-drawdown-mdd.asp">Reference</a>
+ * @see <a href="https://www.investopedia.com/terms/m/maximum-drawdown-mdd.asp">Investopedia</a>
  */
 public class GlobalDrawdownDifference extends AbstractDrawupDrawdown {
 

@@ -13,7 +13,7 @@ import static java.lang.Math.max;
  * @param <C> the third input type
  * @param <R> the result type
  *
- * @see <a href="https://en.wikipedia.org/wiki/Ternary_operation">Reference</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Ternary_operation">Wikipedia</a>
  */
 public class TernaryOperation<A, B, C, R> extends Indicator<R> {
 

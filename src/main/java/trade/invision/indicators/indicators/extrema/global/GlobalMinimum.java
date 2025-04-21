@@ -7,7 +7,7 @@ import trade.invision.num.Num;
  * {@link GlobalMinimum} is a {@link Num} {@link Indicator} to provide the global minimum extrema (all-time lowest
  * value).
  *
- * @see <a href="https://en.wikipedia.org/wiki/Maximum_and_minimum">Reference</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Maximum_and_minimum">Wikipedia</a>
  */
 public class GlobalMinimum extends AbstractGlobalExtrema {
 

@@ -9,7 +9,7 @@ import trade.invision.num.Num;
  * known as the drawup (DU). The percentage is represented as a fractional. For example, a provided value of
  * <code>0.15</code> would represent <code>15%</code>.
  *
- * @see <a href="https://www.investopedia.com/terms/d/drawdown.asp">Reference</a>
+ * @see <a href="https://www.investopedia.com/terms/d/drawdown.asp">Investopedia</a>
  */
 public class LocalDrawupPercentage extends AbstractDrawupDrawdown {
 

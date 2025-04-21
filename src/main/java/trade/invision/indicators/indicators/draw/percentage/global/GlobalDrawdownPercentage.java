@@ -9,7 +9,7 @@ import trade.invision.num.Num;
  * is also known as the maximum drawdown (MDD). The percentage is represented as a fractional. For example, a provided
  * value of <code>0.15</code> would represent <code>15%</code>.
  *
- * @see <a href="https://www.investopedia.com/terms/m/maximum-drawdown-mdd.asp">Reference</a>
+ * @see <a href="https://www.investopedia.com/terms/m/maximum-drawdown-mdd.asp">Investopedia</a>
  */
 public class GlobalDrawdownPercentage extends AbstractDrawupDrawdown {
 

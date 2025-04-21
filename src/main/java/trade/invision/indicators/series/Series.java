@@ -75,7 +75,7 @@ public class Series<T> {
      * Calls {@link #Series(Collection, int, NumFactory, Num)} with <code>numFactory</code> set to <code>null</code>,
      * and <code>epsilon</code> set to <code>null</code>.
      */
-    public Series(Collection<T> initialValues, int maximumLength) {
+    public Series(@Nullable Collection<T> initialValues, int maximumLength) {
         this(initialValues, maximumLength, null, null);
     }
 

@@ -7,7 +7,7 @@ import trade.invision.num.Num;
  * {@link LocalMinimum} is a {@link Num} {@link Indicator} to provide the local minimum extrema (lowest value) over a
  * <code>length</code> of values.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Maximum_and_minimum">Reference</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Maximum_and_minimum">Wikipedia</a>
  */
 public class LocalMinimum extends AbstractLocalExtrema {
 

@@ -9,7 +9,7 @@ import trade.invision.num.Num;
  * similar to the local drawup percentage (MDD), but instead of providing a percentage, this provides a difference
  * (subtraction).
  *
- * @see <a href="https://www.investopedia.com/terms/d/drawdown.asp">Reference</a>
+ * @see <a href="https://www.investopedia.com/terms/d/drawdown.asp">Investopedia</a>
  */
 public class LocalDrawupDifference extends AbstractDrawupDrawdown {
 

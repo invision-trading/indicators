@@ -13,7 +13,7 @@ import static java.lang.Math.max;
  * @param <B> the second input type
  * @param <R> the result type
  *
- * @see <a href="https://en.wikipedia.org/wiki/Binary_operation">Reference</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Binary_operation">Wikipedia</a>
  */
 public class BinaryOperation<A, B, R> extends Indicator<R> {
 

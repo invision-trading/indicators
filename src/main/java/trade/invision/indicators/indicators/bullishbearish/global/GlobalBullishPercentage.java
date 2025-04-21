@@ -10,7 +10,7 @@ import trade.invision.num.Num;
  * {@link Bar#isBullish()} {@link Bar}s over all {@link Bar}s. The percentage is represented as a fractional. For
  * example, a provided value of <code>0.15</code> would represent <code>15%</code>.
  *
- * @see <a href="https://www.investopedia.com/terms/c/candlestick.asp">Reference</a>
+ * @see <a href="https://www.investopedia.com/terms/c/candlestick.asp">Investopedia</a>
  */
 public class GlobalBullishPercentage extends AbstractGlobalBullishBearishPercentage {
 

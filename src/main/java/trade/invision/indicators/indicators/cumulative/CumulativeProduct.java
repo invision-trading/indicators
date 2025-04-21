@@ -11,7 +11,7 @@ import static java.lang.Math.max;
  * a <code>length</code> of values. This is also known as a running product. In mathematical notation, this is denoted
  * by a capital pi.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Multiplication#Capital_pi_notation">Reference</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Multiplication#Capital_pi_notation">Wikipedia</a>
  */
 public class CumulativeProduct extends Indicator<Num> {
 

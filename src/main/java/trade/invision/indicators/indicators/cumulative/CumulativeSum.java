@@ -11,7 +11,7 @@ import static java.lang.Math.max;
  * <code>length</code> of values. This is also known as a running total. In mathematical notation, this is denoted by a
  * capital sigma.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Summation">Reference</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Summation">Wikipedia</a>
  */
 public class CumulativeSum extends Indicator<Num> {
 

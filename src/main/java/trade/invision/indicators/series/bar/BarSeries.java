@@ -25,14 +25,14 @@ public class BarSeries extends Series<Bar> {
     /**
      * @see Series#Series(Collection, int)
      */
-    public BarSeries(Collection<Bar> initialValues, int maximumLength) {
+    public BarSeries(@Nullable Collection<Bar> initialValues, int maximumLength) {
         super(initialValues, maximumLength);
     }
 
     /**
      * @see Series#Series(Collection, int, NumFactory, Num)
      */
-    public BarSeries(Collection<Bar> initialValues, int maximumLength,
+    public BarSeries(@Nullable Collection<Bar> initialValues, int maximumLength,
             @Nullable NumFactory numFactory, @Nullable Num epsilon) {
         super(initialValues, maximumLength, numFactory, epsilon);
     }

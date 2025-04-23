@@ -1,5 +1,6 @@
 package trade.invision.indicators.indicators.constant;
 
+import trade.invision.indicators.indicators.CachelessIndicator;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.Series;
 
@@ -8,7 +9,7 @@ import java.util.Collection;
 /**
  * {@link ConstantArray} is an {@link Indicator} to provide a constant array of values.
  */
-public class ConstantArray<T> extends Indicator<T> {
+public class ConstantArray<T> extends CachelessIndicator<T> {
 
     /**
      * Convenience static method for {@link #ConstantArray(Series, boolean)}.

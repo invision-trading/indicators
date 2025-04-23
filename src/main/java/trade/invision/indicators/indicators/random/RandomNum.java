@@ -1,5 +1,6 @@
 package trade.invision.indicators.indicators.random;
 
+import trade.invision.indicators.indicators.CachingIndicator;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.Series;
 import trade.invision.num.Num;
@@ -9,7 +10,7 @@ import trade.invision.num.NumFactory;
  * {@link RandomNum} is a {@link Num} {@link Indicator} to provide {@link NumFactory#random()} for each
  * <code>index</code>.
  */
-public class RandomNum extends Indicator<Num> {
+public class RandomNum extends CachingIndicator<Num> { // Cache so same 'index' yields same result
 
     /**
      * Convenience static method for {@link #RandomNum(Series)}.
@@ -25,7 +26,6 @@ public class RandomNum extends Indicator<Num> {
      */
     public RandomNum(Series<?> series) {
         super(series, 0);
-        cache(true); // Prefer to cache so same 'index' yields same result
     }
 
     @Override

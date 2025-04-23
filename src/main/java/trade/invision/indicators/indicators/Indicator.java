@@ -127,7 +127,7 @@ public abstract class Indicator<T> {
      * Sets whether this {@link Indicator} will cache its calculated values in order to optimize
      * {@link #getValue(long)}. The cache size is equal to {@link #getSeries()} {@link Series#getMaximumLength()}. The
      * cache for this {@link Indicator} should be enabled when consumers of this {@link Indicator} use the calculated
-     * values of previous indices, as opposed to just using the calculated value of the last index (e.g.
+     * values of previous indices, as opposed to only using the calculated value of the last index (e.g.
      * {@link Series#getEndIndex()}).
      *
      * @param cache <code>true</code> to enable caching, <code>false</code> otherwise

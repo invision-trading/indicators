@@ -23,7 +23,7 @@ abstract class AbstractExponentialMovingAverage extends RecursiveIndicator<Num> 
      * @param multiplier the multiplier
      */
     public AbstractExponentialMovingAverage(Indicator<Num> indicator, int length, Num multiplier) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator;
         this.multiplier = multiplier;

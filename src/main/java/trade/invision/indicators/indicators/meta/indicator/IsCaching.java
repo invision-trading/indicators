@@ -1,12 +1,13 @@
 package trade.invision.indicators.indicators.meta.indicator;
 
+import trade.invision.indicators.indicators.CachingIndicator;
 import trade.invision.indicators.indicators.Indicator;
 
 /**
  * {@link IsCaching} is a {@link Boolean} {@link Indicator} to check if the given {@link Indicator}
  * {@link #isCaching()}.
  */
-public class IsCaching extends Indicator<Boolean> {
+public class IsCaching extends CachingIndicator<Boolean> { // Cache so same 'index' yields same result
 
     /**
      * Convenience static method for {@link #IsCaching(Indicator)}.
@@ -25,7 +26,6 @@ public class IsCaching extends Indicator<Boolean> {
     public IsCaching(Indicator<?> indicator) {
         super(indicator.getSeries(), 0);
         this.indicator = indicator;
-        cache(true); // 'isCaching()' is mutable, so prefer to cache so same 'index' yields same result
     }
 
     @Override

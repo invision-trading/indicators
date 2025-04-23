@@ -39,7 +39,7 @@ public class HullMovingAverage extends Indicator<Num> {
      * @param length    the number of values to look back at
      */
     public HullMovingAverage(Indicator<Num> indicator, int length) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         final WeightedMovingAverage halfWma = new WeightedMovingAverage(indicator, (int) rint(length / 2.0));
         final WeightedMovingAverage wma = new WeightedMovingAverage(indicator, length);

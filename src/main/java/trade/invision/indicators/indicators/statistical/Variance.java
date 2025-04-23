@@ -64,7 +64,7 @@ public class Variance extends Indicator<Num> {
      *                  calculation, <code>false</code> to use <code>n</code> (biased)
      */
     public Variance(Indicator<Num> indicator, int length, boolean unbiased) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator.caching();
         this.length = length;

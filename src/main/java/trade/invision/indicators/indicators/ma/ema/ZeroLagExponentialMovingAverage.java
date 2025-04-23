@@ -44,7 +44,7 @@ public class ZeroLagExponentialMovingAverage extends RecursiveIndicator<Num> {
      * @param length    the number of values to look back at
      */
     public ZeroLagExponentialMovingAverage(Indicator<Num> indicator, int length) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator.caching();
         this.length = length;

@@ -39,7 +39,7 @@ public class WeightedMovingAverage extends Indicator<Num> {
      * @param length    the number of values to look back at
      */
     public WeightedMovingAverage(Indicator<Num> indicator, int length) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator.caching();
         this.length = length;

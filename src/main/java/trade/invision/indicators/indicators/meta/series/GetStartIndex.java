@@ -1,6 +1,6 @@
 package trade.invision.indicators.indicators.meta.series;
 
-import trade.invision.indicators.indicators.CachelessIndicator;
+import trade.invision.indicators.indicators.CachingIndicator;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.Series;
 import trade.invision.num.Num;
@@ -9,7 +9,7 @@ import trade.invision.num.Num;
  * {@link GetStartIndex} is a {@link Num} {@link Indicator} to provide the {@link Series#getStartIndex()} of the given
  * {@link Series}.
  */
-public class GetStartIndex extends CachelessIndicator<Num> {
+public class GetStartIndex extends CachingIndicator<Num> { // Cache so same 'index' yields same result
 
     /**
      * Convenience static method for {@link #GetStartIndex(Series)}.
@@ -25,7 +25,6 @@ public class GetStartIndex extends CachelessIndicator<Num> {
      */
     public GetStartIndex(Series<?> series) {
         super(series, 0);
-        cache(true); // 'getStartIndex()' is mutable, so prefer to cache so same 'index' yields same result
     }
 
     @Override

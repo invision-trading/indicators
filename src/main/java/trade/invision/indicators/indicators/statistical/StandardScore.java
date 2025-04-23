@@ -62,7 +62,7 @@ public class StandardScore extends Indicator<Num> {
      *                  standard score calculation, <code>false</code> to use <code>n</code> (biased)
      */
     public StandardScore(Indicator<Num> indicator, int length, boolean unbiased) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator;
         sma = new SimpleMovingAverage(indicator, length);

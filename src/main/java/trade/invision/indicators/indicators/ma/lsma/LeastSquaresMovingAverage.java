@@ -43,7 +43,7 @@ public class LeastSquaresMovingAverage extends Indicator<Num> {
      * @param length    the number of values to look back at
      */
     public LeastSquaresMovingAverage(Indicator<Num> indicator, int length) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         linearRegression = new LinearRegression(indicator, Set.of(Y), length);
     }

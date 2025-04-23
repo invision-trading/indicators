@@ -68,7 +68,7 @@ public class Covariance extends Indicator<Num> {
      *                 calculation, <code>false</code> to use <code>n</code> (biased)
      */
     public Covariance(Indicator<Num> first, Indicator<Num> second, int length, boolean unbiased) {
-        super(first.getSeries(), length);
+        super(first.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.first = first.caching();
         this.second = second.caching();

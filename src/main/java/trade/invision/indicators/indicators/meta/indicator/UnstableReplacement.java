@@ -1,6 +1,5 @@
 package trade.invision.indicators.indicators.meta.indicator;
 
-import trade.invision.indicators.indicators.CachelessIndicator;
 import trade.invision.indicators.indicators.Indicator;
 
 /**
@@ -11,7 +10,7 @@ import trade.invision.indicators.indicators.Indicator;
  *
  * @param <T> the type
  */
-public class UnstableReplacement<T> extends CachelessIndicator<T> {
+public class UnstableReplacement<T> extends Replacement<T> {
 
     /**
      * Convenience static method for {@link #UnstableReplacement(Indicator, Indicator)}.
@@ -20,9 +19,6 @@ public class UnstableReplacement<T> extends CachelessIndicator<T> {
         return new UnstableReplacement<>(unstable, replacement);
     }
 
-    private final Indicator<T> unstable;
-    private final Indicator<T> replacement;
-
     /**
      * Instantiates a new {@link UnstableReplacement}.
      *
@@ -30,13 +26,6 @@ public class UnstableReplacement<T> extends CachelessIndicator<T> {
      * @param replacement the replacement {@link Indicator}
      */
     public UnstableReplacement(Indicator<T> unstable, Indicator<T> replacement) {
-        super(unstable.getSeries(), replacement.getMinimumStableIndex());
-        this.unstable = unstable;
-        this.replacement = replacement;
-    }
-
-    @Override
-    protected T calculate(long index) {
-        return index < unstable.getMinimumStableIndex() ? replacement.getValue(index) : unstable.getValue(index);
+        super(unstable, replacement, unstable.getMinimumStableIndex());
     }
 }

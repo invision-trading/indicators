@@ -65,7 +65,7 @@ public class CorrelationCoefficient extends Indicator<Num> {
      *                 covariance calculations, <code>false</code> to use <code>n</code> (biased)
      */
     public CorrelationCoefficient(Indicator<Num> first, Indicator<Num> second, int length, boolean unbiased) {
-        super(first.getSeries(), length);
+        super(first.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         variance1 = new Variance(first, length, unbiased);
         variance2 = new Variance(second, length, unbiased);

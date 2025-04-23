@@ -61,7 +61,7 @@ public class StandardError extends Indicator<Num> {
      *                  standard error calculation, <code>false</code> to use <code>n</code> (biased)
      */
     public StandardError(Indicator<Num> indicator, int length, boolean unbiased) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.length = length;
         standardDeviation = new StandardDeviation(indicator, length, unbiased);

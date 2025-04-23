@@ -46,7 +46,7 @@ public class LinearRegression extends Indicator<LinearRegressionResult> {
      * @param length      the number of values to look back at
      */
     public LinearRegression(Indicator<Num> indicator, Set<LinearRegressionResultType> resultTypes, int length) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         checkArgument(!resultTypes.isEmpty(), "'resultTypes' must not be empty!");
         this.indicator = indicator.caching();

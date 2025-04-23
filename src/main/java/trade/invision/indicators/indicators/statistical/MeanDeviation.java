@@ -16,7 +16,7 @@ import static java.lang.Math.max;
 public class MeanDeviation extends Indicator<Num> {
 
     /**
-     * @see #MeanDeviation(Indicator, int)
+     * @see #meanDeviation(Indicator, int)
      */
     public static MeanDeviation md(Indicator<Num> indicator, int length) {
         return meanDeviation(indicator, length);
@@ -40,7 +40,7 @@ public class MeanDeviation extends Indicator<Num> {
      * @param length    the number of values to look back at
      */
     public MeanDeviation(Indicator<Num> indicator, int length) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator.caching();
         this.length = length;

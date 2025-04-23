@@ -1,5 +1,6 @@
 package trade.invision.indicators.indicators.instant;
 
+import trade.invision.indicators.indicators.CachingIndicator;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.Series;
 
@@ -10,7 +11,7 @@ import static java.time.Instant.now;
 /**
  * {@link CurrentRealTime} is an {@link Instant} {@link Indicator} to provide the current real time.
  */
-public class CurrentRealTime extends Indicator<Instant> {
+public class CurrentRealTime extends CachingIndicator<Instant> { // Cache so same 'index' yields same result
 
     /**
      * Convenience static method for {@link #CurrentRealTime(Series)}.
@@ -26,7 +27,6 @@ public class CurrentRealTime extends Indicator<Instant> {
      */
     public CurrentRealTime(Series<?> series) {
         super(series, 0);
-        cache(true); // Prefer to cache so same 'index' yields same result
     }
 
     @Override

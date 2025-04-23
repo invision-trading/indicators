@@ -3,9 +3,8 @@ package trade.invision.indicators.indicators.rsi;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.extrema.local.LocalMaximum;
 import trade.invision.indicators.indicators.extrema.local.LocalMinimum;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.num.Num;
-
-import java.util.function.BiFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -18,19 +17,19 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class StochasticRelativeStrengthIndex extends Indicator<Num> {
 
     /**
-     * @see #stochasticRelativeStrengthIndex(Indicator, int, BiFunction)
+     * @see #stochasticRelativeStrengthIndex(Indicator, int, MovingAverageSupplier)
      */
     public static StochasticRelativeStrengthIndex stochrsi(Indicator<Num> indicator, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return stochasticRelativeStrengthIndex(indicator, length, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return stochasticRelativeStrengthIndex(indicator, length, movingAverageSupplier);
     }
 
     /**
-     * Convenience static method for {@link #StochasticRelativeStrengthIndex(Indicator, int, BiFunction)}.
+     * Convenience static method for {@link #StochasticRelativeStrengthIndex(Indicator, int, MovingAverageSupplier)}.
      */
     public static StochasticRelativeStrengthIndex stochasticRelativeStrengthIndex(Indicator<Num> indicator, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return new StochasticRelativeStrengthIndex(indicator, length, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return new StochasticRelativeStrengthIndex(indicator, length, movingAverageSupplier);
     }
 
     private final RelativeStrengthIndex rsi;
@@ -40,15 +39,15 @@ public class StochasticRelativeStrengthIndex extends Indicator<Num> {
     /**
      * Instantiates a new {@link StochasticRelativeStrengthIndex}.
      *
-     * @param indicator                  the {@link Indicator}
-     * @param length                     the number of values to look back at
-     * @param averagingIndicatorSupplier the {@link BiFunction} to supply the averaging {@link Indicator}
+     * @param indicator             the {@link Indicator}
+     * @param length                the number of values to look back at
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
     public StochasticRelativeStrengthIndex(Indicator<Num> indicator, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
+            MovingAverageSupplier movingAverageSupplier) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        rsi = new RelativeStrengthIndex(indicator, length, averagingIndicatorSupplier);
+        rsi = new RelativeStrengthIndex(indicator, length, movingAverageSupplier);
         minRsi = new LocalMinimum(rsi, length);
         maxRsi = new LocalMaximum(rsi, length);
     }

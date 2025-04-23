@@ -4,13 +4,12 @@ import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.RecursiveIndicator;
 import trade.invision.indicators.indicators.bar.Close;
 import trade.invision.indicators.indicators.barprice.Hl2;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.indicators.indicators.previous.PreviousValue;
 import trade.invision.indicators.indicators.tr.AverageTrueRange;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
-
-import java.util.function.BiFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -23,11 +22,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class Supertrend extends RecursiveIndicator<Num> {
 
     /**
-     * Convenience static method for {@link #Supertrend(BarSeries, int, Num, BiFunction)}.
+     * Convenience static method for {@link #Supertrend(BarSeries, int, Num, MovingAverageSupplier)}.
      */
     public static Supertrend supertrend(BarSeries barSeries, int length, Num multiplier,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return new Supertrend(barSeries, length, multiplier, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return new Supertrend(barSeries, length, multiplier, movingAverageSupplier);
     }
 
     private final Close close;
@@ -37,17 +36,16 @@ public class Supertrend extends RecursiveIndicator<Num> {
     /**
      * Instantiates a new {@link Supertrend}.
      *
-     * @param barSeries                  the {@link BarSeries}
-     * @param length                     the number of values to look back at (typically 10)
-     * @param multiplier                 the multiplier (typically 3)
-     * @param averagingIndicatorSupplier the {@link BiFunction} to supply the averaging {@link Indicator}
+     * @param barSeries             the {@link BarSeries}
+     * @param length                the number of values to look back at (typically 10)
+     * @param multiplier            the multiplier (typically 3)
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
-    public Supertrend(BarSeries barSeries, int length, Num multiplier,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
+    public Supertrend(BarSeries barSeries, int length, Num multiplier, MovingAverageSupplier movingAverageSupplier) {
         super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         close = new Close(barSeries);
-        final AverageTrueRange atr = new AverageTrueRange(barSeries, length, averagingIndicatorSupplier);
+        final AverageTrueRange atr = new AverageTrueRange(barSeries, length, movingAverageSupplier);
         final Hl2 hl2 = new Hl2(barSeries);
         final PreviousValue<Num> previousClose = new PreviousValue<>(close);
         lowerBand = new SupertrendLowerBand(multiplier, atr, hl2, previousClose);

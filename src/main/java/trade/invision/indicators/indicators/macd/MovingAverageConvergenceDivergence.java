@@ -1,9 +1,8 @@
 package trade.invision.indicators.indicators.macd;
 
 import trade.invision.indicators.indicators.Indicator;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.num.Num;
-
-import java.util.function.BiFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Math.max;
@@ -17,20 +16,20 @@ import static java.lang.Math.max;
 public class MovingAverageConvergenceDivergence extends Indicator<Num> {
 
     /**
-     * @see #movingVolumeWeightedAveragePrice(Indicator, int, int, BiFunction)
+     * @see #movingVolumeWeightedAveragePrice(Indicator, int, int, MovingAverageSupplier)
      */
     public static MovingAverageConvergenceDivergence macd(Indicator<Num> indicator, int shortLength, int longLength,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return movingVolumeWeightedAveragePrice(indicator, shortLength, longLength, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return movingVolumeWeightedAveragePrice(indicator, shortLength, longLength, movingAverageSupplier);
     }
 
     /**
-     * Convenience static method for {@link #MovingAverageConvergenceDivergence(Indicator, int, int, BiFunction)}.
+     * Convenience static method for
+     * {@link #MovingAverageConvergenceDivergence(Indicator, int, int, MovingAverageSupplier)}.
      */
     public static MovingAverageConvergenceDivergence movingVolumeWeightedAveragePrice(Indicator<Num> indicator,
-            int shortLength, int longLength,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return new MovingAverageConvergenceDivergence(indicator, shortLength, longLength, averagingIndicatorSupplier);
+            int shortLength, int longLength, MovingAverageSupplier movingAverageSupplier) {
+        return new MovingAverageConvergenceDivergence(indicator, shortLength, longLength, movingAverageSupplier);
     }
 
     private final Indicator<Num> shortMa;
@@ -39,18 +38,18 @@ public class MovingAverageConvergenceDivergence extends Indicator<Num> {
     /**
      * Instantiates a new {@link MovingAverageConvergenceDivergence}.
      *
-     * @param indicator                  the {@link Indicator}
-     * @param shortLength                the short averaging length (typically 12)
-     * @param longLength                 the long averaging length (typically 26)
-     * @param averagingIndicatorSupplier the {@link BiFunction} to supply the averaging {@link Indicator}
+     * @param indicator             the {@link Indicator}
+     * @param shortLength           the short averaging length (typically 12)
+     * @param longLength            the long averaging length (typically 26)
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
     public MovingAverageConvergenceDivergence(Indicator<Num> indicator, int shortLength, int longLength,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
+            MovingAverageSupplier movingAverageSupplier) {
         super(indicator.getSeries(), max(shortLength, longLength));
         checkArgument(shortLength > 0, "'shortLength' must be greater than zero!");
         checkArgument(longLength > 0, "'longLength' must be greater than zero!");
-        shortMa = averagingIndicatorSupplier.apply(indicator, shortLength);
-        longMa = averagingIndicatorSupplier.apply(indicator, longLength);
+        shortMa = movingAverageSupplier.supply(indicator, shortLength);
+        longMa = movingAverageSupplier.supply(indicator, longLength);
     }
 
     @Override

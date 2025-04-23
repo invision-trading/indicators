@@ -1,11 +1,10 @@
 package trade.invision.indicators.indicators.tr;
 
 import trade.invision.indicators.indicators.Indicator;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
-
-import java.util.function.BiFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -18,39 +17,37 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class AverageTrueRange extends Indicator<Num> {
 
     /**
-     * @see #averageTrueRange(BarSeries, int, BiFunction)
+     * @see #averageTrueRange(BarSeries, int, MovingAverageSupplier)
      */
-    public static AverageTrueRange atr(BarSeries barSeries, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return averageTrueRange(barSeries, length, averagingIndicatorSupplier);
+    public static AverageTrueRange atr(BarSeries barSeries, int length, MovingAverageSupplier movingAverageSupplier) {
+        return averageTrueRange(barSeries, length, movingAverageSupplier);
     }
 
     /**
-     * Convenience static method for {@link #AverageTrueRange(BarSeries, int, BiFunction)}.
+     * Convenience static method for {@link #AverageTrueRange(BarSeries, int, MovingAverageSupplier)}.
      */
     public static AverageTrueRange averageTrueRange(BarSeries barSeries, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return new AverageTrueRange(barSeries, length, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return new AverageTrueRange(barSeries, length, movingAverageSupplier);
     }
 
-    private final Indicator<Num> averagingIndicator;
+    private final Indicator<Num> movingAverage;
 
     /**
      * Instantiates a new {@link AverageTrueRange}.
      *
-     * @param barSeries                  the {@link BarSeries}
-     * @param length                     the number of values to look back at
-     * @param averagingIndicatorSupplier the {@link BiFunction} to supply the averaging {@link Indicator}
+     * @param barSeries             the {@link BarSeries}
+     * @param length                the number of values to look back at
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
-    public AverageTrueRange(BarSeries barSeries, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
+    public AverageTrueRange(BarSeries barSeries, int length, MovingAverageSupplier movingAverageSupplier) {
         super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        averagingIndicator = averagingIndicatorSupplier.apply(new TrueRange(barSeries), length);
+        movingAverage = movingAverageSupplier.supply(new TrueRange(barSeries), length);
     }
 
     @Override
     protected Num calculate(long index) {
-        return averagingIndicator.getValue(index);
+        return movingAverage.getValue(index);
     }
 }

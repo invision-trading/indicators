@@ -1,10 +1,9 @@
 package trade.invision.indicators.indicators.acdc;
 
 import trade.invision.indicators.indicators.Indicator;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.indicators.indicators.macd.MovingAverageConvergenceDivergence;
 import trade.invision.num.Num;
-
-import java.util.function.BiFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Math.max;
@@ -19,21 +18,19 @@ import static java.lang.Math.max;
 public class AccelerationDeceleration extends Indicator<Num> {
 
     /**
-     * @see #accelerationDeceleration(Indicator, int, int, BiFunction)
+     * @see #accelerationDeceleration(Indicator, int, int, MovingAverageSupplier)
      */
     public static AccelerationDeceleration acdc(Indicator<Num> indicator,
-            int firstLength, int secondLength,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return accelerationDeceleration(indicator, firstLength, secondLength, averagingIndicatorSupplier);
+            int firstLength, int secondLength, MovingAverageSupplier movingAverageSupplier) {
+        return accelerationDeceleration(indicator, firstLength, secondLength, movingAverageSupplier);
     }
 
     /**
-     * Convenience static method for {@link #AccelerationDeceleration(Indicator, int, int, BiFunction)}.
+     * Convenience static method for {@link #AccelerationDeceleration(Indicator, int, int, MovingAverageSupplier)}.
      */
     public static AccelerationDeceleration accelerationDeceleration(Indicator<Num> indicator,
-            int firstLength, int secondLength,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return new AccelerationDeceleration(indicator, firstLength, secondLength, averagingIndicatorSupplier);
+            int firstLength, int secondLength, MovingAverageSupplier movingAverageSupplier) {
+        return new AccelerationDeceleration(indicator, firstLength, secondLength, movingAverageSupplier);
     }
 
     private final MovingAverageConvergenceDivergence macd;
@@ -42,18 +39,18 @@ public class AccelerationDeceleration extends Indicator<Num> {
     /**
      * Instantiates a new {@link AccelerationDeceleration}.
      *
-     * @param indicator                  the {@link Indicator}
-     * @param firstLength                the first averaging length (typically 5)
-     * @param secondLength               the second averaging length (typically 34)
-     * @param averagingIndicatorSupplier the {@link BiFunction} to supply the averaging {@link Indicator}
+     * @param indicator             the {@link Indicator}
+     * @param firstLength           the first averaging length (typically 5)
+     * @param secondLength          the second averaging length (typically 34)
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
     public AccelerationDeceleration(Indicator<Num> indicator, int firstLength, int secondLength,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
+            MovingAverageSupplier movingAverageSupplier) {
         super(indicator.getSeries(), max(firstLength, secondLength));
         checkArgument(firstLength > 0, "'firstLength' must be greater than zero!");
         checkArgument(secondLength > 0, "'secondLength' must be greater than zero!");
-        macd = new MovingAverageConvergenceDivergence(indicator, firstLength, secondLength, averagingIndicatorSupplier);
-        averagingIndicator = averagingIndicatorSupplier.apply(macd, firstLength);
+        macd = new MovingAverageConvergenceDivergence(indicator, firstLength, secondLength, movingAverageSupplier);
+        averagingIndicator = movingAverageSupplier.supply(macd, firstLength);
     }
 
     @Override

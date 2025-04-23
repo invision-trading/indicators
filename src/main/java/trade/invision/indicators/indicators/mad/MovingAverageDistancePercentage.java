@@ -1,9 +1,8 @@
 package trade.invision.indicators.indicators.mad;
 
 import trade.invision.indicators.indicators.Indicator;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.num.Num;
-
-import java.util.function.BiFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -18,19 +17,19 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class MovingAverageDistancePercentage extends Indicator<Num> {
 
     /**
-     * @see #movingAverageDistancePercentage(Indicator, int, BiFunction)
+     * @see #movingAverageDistancePercentage(Indicator, int, MovingAverageSupplier)
      */
     public static MovingAverageDistancePercentage madp(Indicator<Num> indicator, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return movingAverageDistancePercentage(indicator, length, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return movingAverageDistancePercentage(indicator, length, movingAverageSupplier);
     }
 
     /**
-     * Convenience static method for {@link #MovingAverageDistancePercentage(Indicator, int, BiFunction)}.
+     * Convenience static method for {@link #MovingAverageDistancePercentage(Indicator, int, MovingAverageSupplier)}.
      */
     public static MovingAverageDistancePercentage movingAverageDistancePercentage(Indicator<Num> indicator, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return new MovingAverageDistancePercentage(indicator, length, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return new MovingAverageDistancePercentage(indicator, length, movingAverageSupplier);
     }
 
     private final Indicator<Num> indicator;
@@ -39,16 +38,16 @@ public class MovingAverageDistancePercentage extends Indicator<Num> {
     /**
      * Instantiates a new {@link MovingAverageDistancePercentage}.
      *
-     * @param indicator                  the {@link Indicator}
-     * @param length                     the number of values to look back at
-     * @param averagingIndicatorSupplier the {@link BiFunction} to supply the averaging {@link Indicator}
+     * @param indicator             the {@link Indicator}
+     * @param length                the number of values to look back at
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
     public MovingAverageDistancePercentage(Indicator<Num> indicator, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
+            MovingAverageSupplier movingAverageSupplier) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator;
-        ma = averagingIndicatorSupplier.apply(indicator, length);
+        ma = movingAverageSupplier.supply(indicator, length);
     }
 
     @Override

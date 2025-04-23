@@ -2,12 +2,11 @@ package trade.invision.indicators.indicators.pvo;
 
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.bar.Volume;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.indicators.indicators.ppo.PercentagePriceOscillator;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
-
-import java.util.function.BiFunction;
 
 /**
  * {@link PercentageVolumeOscillator} is a {@link Num} {@link Indicator} to provide the Percentage Volume Oscillator
@@ -20,32 +19,31 @@ import java.util.function.BiFunction;
 public class PercentageVolumeOscillator extends PercentagePriceOscillator {
 
     /**
-     * @see #percentageVolumeOscillator(BarSeries, int, int, BiFunction)
+     * @see #percentageVolumeOscillator(BarSeries, int, int, MovingAverageSupplier)
      */
     public static PercentageVolumeOscillator pvo(BarSeries barSeries, int shortLength, int longLength,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return percentageVolumeOscillator(barSeries, shortLength, longLength, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return percentageVolumeOscillator(barSeries, shortLength, longLength, movingAverageSupplier);
     }
 
     /**
-     * Convenience static method for {@link #PercentageVolumeOscillator(BarSeries, int, int, BiFunction)}.
+     * Convenience static method for {@link #PercentageVolumeOscillator(BarSeries, int, int, MovingAverageSupplier)}.
      */
     public static PercentageVolumeOscillator percentageVolumeOscillator(BarSeries barSeries,
-            int shortLength, int longLength,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return new PercentageVolumeOscillator(barSeries, shortLength, longLength, averagingIndicatorSupplier);
+            int shortLength, int longLength, MovingAverageSupplier movingAverageSupplier) {
+        return new PercentageVolumeOscillator(barSeries, shortLength, longLength, movingAverageSupplier);
     }
 
     /**
      * Instantiates a new {@link PercentageVolumeOscillator}.
      *
-     * @param barSeries                  the {@link BarSeries}
-     * @param shortLength                the short averaging length (typically 12)
-     * @param longLength                 the long averaging length (typically 26)
-     * @param averagingIndicatorSupplier the {@link BiFunction} to supply the averaging {@link Indicator}
+     * @param barSeries             the {@link BarSeries}
+     * @param shortLength           the short averaging length (typically 12)
+     * @param longLength            the long averaging length (typically 26)
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
     public PercentageVolumeOscillator(BarSeries barSeries, int shortLength, int longLength,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        super(new Volume(barSeries), shortLength, longLength, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        super(new Volume(barSeries), shortLength, longLength, movingAverageSupplier);
     }
 }

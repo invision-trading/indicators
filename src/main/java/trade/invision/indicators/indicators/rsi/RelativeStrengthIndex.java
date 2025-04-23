@@ -3,9 +3,8 @@ package trade.invision.indicators.indicators.rsi;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.gainloss.Gain;
 import trade.invision.indicators.indicators.gainloss.Loss;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.num.Num;
-
-import java.util.function.BiFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -18,19 +17,19 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class RelativeStrengthIndex extends Indicator<Num> {
 
     /**
-     * @see #relativeStrengthIndex(Indicator, int, BiFunction)
+     * @see #relativeStrengthIndex(Indicator, int, MovingAverageSupplier)
      */
     public static RelativeStrengthIndex rsi(Indicator<Num> indicator, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return relativeStrengthIndex(indicator, length, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return relativeStrengthIndex(indicator, length, movingAverageSupplier);
     }
 
     /**
-     * Convenience static method for {@link #RelativeStrengthIndex(Indicator, int, BiFunction)}.
+     * Convenience static method for {@link #RelativeStrengthIndex(Indicator, int, MovingAverageSupplier)}.
      */
     public static RelativeStrengthIndex relativeStrengthIndex(Indicator<Num> indicator, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return new RelativeStrengthIndex(indicator, length, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return new RelativeStrengthIndex(indicator, length, movingAverageSupplier);
     }
 
     private final Indicator<Num> averageGain;
@@ -39,16 +38,15 @@ public class RelativeStrengthIndex extends Indicator<Num> {
     /**
      * Instantiates a new {@link RelativeStrengthIndex}.
      *
-     * @param indicator                  the {@link Indicator}
-     * @param length                     the number of values to look back at
-     * @param averagingIndicatorSupplier the {@link BiFunction} to supply the averaging {@link Indicator}
+     * @param indicator             the {@link Indicator}
+     * @param length                the number of values to look back at
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
-    public RelativeStrengthIndex(Indicator<Num> indicator, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
+    public RelativeStrengthIndex(Indicator<Num> indicator, int length, MovingAverageSupplier movingAverageSupplier) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        averageGain = averagingIndicatorSupplier.apply(new Gain(indicator), length);
-        averageLoss = averagingIndicatorSupplier.apply(new Loss(indicator), length);
+        averageGain = movingAverageSupplier.supply(new Gain(indicator), length);
+        averageLoss = movingAverageSupplier.supply(new Loss(indicator), length);
     }
 
     @Override

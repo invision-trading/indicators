@@ -1,11 +1,10 @@
 package trade.invision.indicators.indicators.vwap;
 
 import trade.invision.indicators.indicators.Indicator;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
-
-import java.util.function.BiFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -18,19 +17,19 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class MovingVolumeWeightedAveragePrice extends Indicator<Num> {
 
     /**
-     * @see #movingVolumeWeightedAveragePrice(BarSeries, int, BiFunction)
+     * @see #movingVolumeWeightedAveragePrice(BarSeries, int, MovingAverageSupplier)
      */
     public static MovingVolumeWeightedAveragePrice mvwap(BarSeries barSeries, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return movingVolumeWeightedAveragePrice(barSeries, length, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return movingVolumeWeightedAveragePrice(barSeries, length, movingAverageSupplier);
     }
 
     /**
-     * Convenience static method for {@link #MovingVolumeWeightedAveragePrice(BarSeries, int, BiFunction)}.
+     * Convenience static method for {@link #MovingVolumeWeightedAveragePrice(BarSeries, int, MovingAverageSupplier)}.
      */
     public static MovingVolumeWeightedAveragePrice movingVolumeWeightedAveragePrice(BarSeries barSeries, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return new MovingVolumeWeightedAveragePrice(barSeries, length, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return new MovingVolumeWeightedAveragePrice(barSeries, length, movingAverageSupplier);
     }
 
     private final Indicator<Num> averagingIndicator;
@@ -38,16 +37,15 @@ public class MovingVolumeWeightedAveragePrice extends Indicator<Num> {
     /**
      * Instantiates a new {@link MovingVolumeWeightedAveragePrice}.
      *
-     * @param barSeries                  the {@link BarSeries}
-     * @param length                     the number of values to look back at
-     * @param averagingIndicatorSupplier the {@link BiFunction} to supply the averaging {@link Indicator}
+     * @param barSeries             the {@link BarSeries}
+     * @param length                the number of values to look back at
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
     public MovingVolumeWeightedAveragePrice(BarSeries barSeries, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
+            MovingAverageSupplier movingAverageSupplier) {
         super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        averagingIndicator = averagingIndicatorSupplier
-                .apply(new VolumeWeightedAveragePrice(barSeries, length), length);
+        averagingIndicator = movingAverageSupplier.supply(new VolumeWeightedAveragePrice(barSeries, length), length);
     }
 
     @Override

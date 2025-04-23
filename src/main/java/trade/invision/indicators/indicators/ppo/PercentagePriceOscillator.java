@@ -1,9 +1,8 @@
 package trade.invision.indicators.indicators.ppo;
 
 import trade.invision.indicators.indicators.Indicator;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.num.Num;
-
-import java.util.function.BiFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Math.max;
@@ -18,21 +17,19 @@ import static java.lang.Math.max;
 public class PercentagePriceOscillator extends Indicator<Num> {
 
     /**
-     * @see #percentagePriceOscillator(Indicator, int, int, BiFunction)
+     * @see #percentagePriceOscillator(Indicator, int, int, MovingAverageSupplier)
      */
     public static PercentagePriceOscillator ppo(Indicator<Num> indicator,
-            int shortLength, int longLength,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return percentagePriceOscillator(indicator, shortLength, longLength, averagingIndicatorSupplier);
+            int shortLength, int longLength, MovingAverageSupplier movingAverageSupplier) {
+        return percentagePriceOscillator(indicator, shortLength, longLength, movingAverageSupplier);
     }
 
     /**
-     * Convenience static method for {@link #PercentagePriceOscillator(Indicator, int, int, BiFunction)}.
+     * Convenience static method for {@link #PercentagePriceOscillator(Indicator, int, int, MovingAverageSupplier)}.
      */
     public static PercentagePriceOscillator percentagePriceOscillator(Indicator<Num> indicator,
-            int shortLength, int longLength,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return new PercentagePriceOscillator(indicator, shortLength, longLength, averagingIndicatorSupplier);
+            int shortLength, int longLength, MovingAverageSupplier movingAverageSupplier) {
+        return new PercentagePriceOscillator(indicator, shortLength, longLength, movingAverageSupplier);
     }
 
     private final Indicator<Num> shortAverage;
@@ -41,18 +38,18 @@ public class PercentagePriceOscillator extends Indicator<Num> {
     /**
      * Instantiates a new {@link PercentagePriceOscillator}.
      *
-     * @param indicator                  the {@link Indicator}
-     * @param shortLength                the short averaging length (typically 12)
-     * @param longLength                 the long averaging length (typically 26)
-     * @param averagingIndicatorSupplier the {@link BiFunction} to supply the averaging {@link Indicator}
+     * @param indicator             the {@link Indicator}
+     * @param shortLength           the short averaging length (typically 12)
+     * @param longLength            the long averaging length (typically 26)
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
     public PercentagePriceOscillator(Indicator<Num> indicator, int shortLength, int longLength,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
+            MovingAverageSupplier movingAverageSupplier) {
         super(indicator.getSeries(), max(shortLength, longLength));
         checkArgument(shortLength > 0, "'shortLength' must be greater than zero!");
         checkArgument(longLength > 0, "'longLength' must be greater than zero!");
-        shortAverage = averagingIndicatorSupplier.apply(indicator, shortLength);
-        longAverage = averagingIndicatorSupplier.apply(indicator, longLength);
+        shortAverage = movingAverageSupplier.supply(indicator, shortLength);
+        longAverage = movingAverageSupplier.supply(indicator, longLength);
     }
 
     @Override

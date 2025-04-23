@@ -2,12 +2,11 @@ package trade.invision.indicators.indicators.rvol;
 
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.bar.Volume;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.indicators.indicators.statistical.StandardDeviation;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
-
-import java.util.function.BiFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -21,19 +20,20 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class RelativeVolumeStandardDeviation extends Indicator<Num> {
 
     /**
-     * @see #relativeVolume(BarSeries, int, BiFunction, boolean)
+     * @see #relativeVolume(BarSeries, int, MovingAverageSupplier, boolean)
      */
     public static RelativeVolumeStandardDeviation rvolstddev(BarSeries barSeries, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier, boolean unbiased) {
-        return relativeVolume(barSeries, length, averagingIndicatorSupplier, unbiased);
+            MovingAverageSupplier movingAverageSupplier, boolean unbiased) {
+        return relativeVolume(barSeries, length, movingAverageSupplier, unbiased);
     }
 
     /**
-     * Convenience static method for {@link #RelativeVolumeStandardDeviation(BarSeries, int, BiFunction, boolean)}.
+     * Convenience static method for
+     * {@link #RelativeVolumeStandardDeviation(BarSeries, int, MovingAverageSupplier, boolean)}.
      */
     public static RelativeVolumeStandardDeviation relativeVolume(BarSeries barSeries, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier, boolean unbiased) {
-        return new RelativeVolumeStandardDeviation(barSeries, length, averagingIndicatorSupplier, unbiased);
+            MovingAverageSupplier movingAverageSupplier, boolean unbiased) {
+        return new RelativeVolumeStandardDeviation(barSeries, length, movingAverageSupplier, unbiased);
     }
 
     private final Volume volume;
@@ -43,19 +43,18 @@ public class RelativeVolumeStandardDeviation extends Indicator<Num> {
     /**
      * Instantiates a new {@link RelativeVolumeStandardDeviation}.
      *
-     * @param barSeries                  the {@link BarSeries}
-     * @param length                     the number of values to look back at
-     * @param averagingIndicatorSupplier the {@link BiFunction} to supply the averaging {@link Indicator}
-     * @param unbiased                   <code>true</code> to use <code>n - 1</code> (unbiased) for the divisor in the
-     *                                   standard deviation calculation, <code>false</code> to use <code>n</code>
-     *                                   (biased)
+     * @param barSeries             the {@link BarSeries}
+     * @param length                the number of values to look back at
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
+     * @param unbiased              <code>true</code> to use <code>n - 1</code> (unbiased) for the divisor in the
+     *                              standard deviation calculation, <code>false</code> to use <code>n</code> (biased)
      */
-    public RelativeVolumeStandardDeviation(BarSeries barSeries, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier, boolean unbiased) {
+    public RelativeVolumeStandardDeviation(BarSeries barSeries, int length, MovingAverageSupplier movingAverageSupplier,
+            boolean unbiased) {
         super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         volume = new Volume(barSeries);
-        averageVolume = averagingIndicatorSupplier.apply(volume, length);
+        averageVolume = movingAverageSupplier.supply(volume, length);
         volumeStandardDeviation = new StandardDeviation(volume, length, unbiased);
     }
 

@@ -2,11 +2,10 @@ package trade.invision.indicators.indicators.rvol;
 
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.bar.Volume;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
-
-import java.util.function.BiFunction;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -20,19 +19,18 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class RelativeVolume extends Indicator<Num> {
 
     /**
-     * @see #relativeVolume(BarSeries, int, BiFunction)
+     * @see #relativeVolume(BarSeries, int, MovingAverageSupplier)
      */
-    public static RelativeVolume rvol(BarSeries barSeries, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return relativeVolume(barSeries, length, averagingIndicatorSupplier);
+    public static RelativeVolume rvol(BarSeries barSeries, int length, MovingAverageSupplier movingAverageSupplier) {
+        return relativeVolume(barSeries, length, movingAverageSupplier);
     }
 
     /**
-     * Convenience static method for {@link #RelativeVolume(BarSeries, int, BiFunction)}.
+     * Convenience static method for {@link #RelativeVolume(BarSeries, int, MovingAverageSupplier)}.
      */
     public static RelativeVolume relativeVolume(BarSeries barSeries, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        return new RelativeVolume(barSeries, length, averagingIndicatorSupplier);
+            MovingAverageSupplier movingAverageSupplier) {
+        return new RelativeVolume(barSeries, length, movingAverageSupplier);
     }
 
     private final Volume volume;
@@ -41,16 +39,15 @@ public class RelativeVolume extends Indicator<Num> {
     /**
      * Instantiates a new {@link RelativeVolume}.
      *
-     * @param barSeries                  the {@link BarSeries}
-     * @param length                     the number of values to look back at
-     * @param averagingIndicatorSupplier the {@link BiFunction} to supply the averaging {@link Indicator}
+     * @param barSeries             the {@link BarSeries}
+     * @param length                the number of values to look back at
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
-    public RelativeVolume(BarSeries barSeries, int length,
-            BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
+    public RelativeVolume(BarSeries barSeries, int length, MovingAverageSupplier movingAverageSupplier) {
         super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         volume = new Volume(barSeries);
-        averageVolume = averagingIndicatorSupplier.apply(volume, length);
+        averageVolume = movingAverageSupplier.supply(volume, length);
     }
 
     @Override

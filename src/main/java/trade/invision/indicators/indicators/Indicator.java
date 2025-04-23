@@ -158,19 +158,6 @@ public abstract class Indicator<T> {
     }
 
     /**
-     * Convenience method to call {@link #cache(boolean)} with <code>false</code>.
-     *
-     * @return this {@link Indicator}, for method chaining
-     *
-     * @see #cache(boolean)
-     */
-    @SuppressWarnings("unchecked")
-    public <A extends Indicator<T>> A noCache() {
-        cache(false);
-        return (A) this;
-    }
-
-    /**
      * @return <code>true</code> if this {@link Indicator} has caching enabled, <code>false</code> otherwise
      *
      * @see #cache(boolean)

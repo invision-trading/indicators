@@ -14,21 +14,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class CorrelationCoefficient extends Indicator<Num> {
 
     /**
-     * @see #correlationCoefficient(Indicator, Indicator, int)
-     */
-    public static CorrelationCoefficient cc(Indicator<Num> first, Indicator<Num> second, int length) {
-        return correlationCoefficient(first, second, length);
-    }
-
-    /**
-     * Convenience static method for {@link #CorrelationCoefficient(Indicator, Indicator, int)}.
-     */
-    public static CorrelationCoefficient correlationCoefficient(Indicator<Num> first, Indicator<Num> second,
-            int length) {
-        return new CorrelationCoefficient(first, second, length);
-    }
-
-    /**
      * @see #correlationCoefficient(Indicator, Indicator, int, boolean)
      */
     public static CorrelationCoefficient cc(Indicator<Num> first, Indicator<Num> second, int length, boolean unbiased) {
@@ -46,14 +31,6 @@ public class CorrelationCoefficient extends Indicator<Num> {
     private final Variance variance1;
     private final Variance variance2;
     private final Covariance covariance;
-
-    /**
-     * Calls {@link #CorrelationCoefficient(Indicator, Indicator, int, boolean)} with <code>unbiased</code> set to
-     * <code>true</code>.
-     */
-    public CorrelationCoefficient(Indicator<Num> first, Indicator<Num> second, int length) {
-        this(first, second, length, true);
-    }
 
     /**
      * Instantiates a new {@link CorrelationCoefficient}.

@@ -15,20 +15,6 @@ import static java.lang.Math.max;
 public class StandardError extends Indicator<Num> {
 
     /**
-     * @see #standardError(Indicator, int)
-     */
-    public static StandardError stderr(Indicator<Num> indicator, int length) {
-        return standardError(indicator, length);
-    }
-
-    /**
-     * Convenience static method for {@link #StandardError(Indicator, int)}.
-     */
-    public static StandardError standardError(Indicator<Num> indicator, int length) {
-        return new StandardError(indicator, length);
-    }
-
-    /**
      * @see #standardError(Indicator, int, boolean)
      */
     public static StandardError stderr(Indicator<Num> indicator, int length, boolean unbiased) {
@@ -44,13 +30,6 @@ public class StandardError extends Indicator<Num> {
 
     private final int length;
     private final StandardDeviation standardDeviation;
-
-    /**
-     * Calls {@link #StandardError(Indicator, int, boolean)} with <code>unbiased</code> set to <code>true</code>.
-     */
-    public StandardError(Indicator<Num> indicator, int length) {
-        this(indicator, length, true);
-    }
 
     /**
      * Instantiates a new {@link StandardError}.

@@ -16,20 +16,6 @@ import static java.lang.Math.max;
 public class Variance extends Indicator<Num> {
 
     /**
-     * @see #variance(Indicator, int)
-     */
-    public static Variance var(Indicator<Num> indicator, int length) {
-        return variance(indicator, length);
-    }
-
-    /**
-     * Convenience static method for {@link #Variance(Indicator, int)}.
-     */
-    public static Variance variance(Indicator<Num> indicator, int length) {
-        return new Variance(indicator, length);
-    }
-
-    /**
      * @see #variance(Indicator, int, boolean)
      */
     public static Variance var(Indicator<Num> indicator, int length, boolean unbiased) {
@@ -47,13 +33,6 @@ public class Variance extends Indicator<Num> {
     private final int length;
     private final boolean unbiased;
     private final SimpleMovingAverage sma;
-
-    /**
-     * Calls {@link #Variance(Indicator, int, boolean)} with <code>unbiased</code> set to <code>true</code>.
-     */
-    public Variance(Indicator<Num> indicator, int length) {
-        this(indicator, length, true);
-    }
 
     /**
      * Instantiates a new {@link Variance}.

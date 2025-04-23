@@ -14,20 +14,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class StandardDeviation extends Indicator<Num> {
 
     /**
-     * @see #standardDeviation(Indicator, int)
-     */
-    public static StandardDeviation stddev(Indicator<Num> indicator, int length) {
-        return standardDeviation(indicator, length);
-    }
-
-    /**
-     * Convenience static method for {@link #StandardDeviation(Indicator, int)}.
-     */
-    public static StandardDeviation standardDeviation(Indicator<Num> indicator, int length) {
-        return new StandardDeviation(indicator, length);
-    }
-
-    /**
      * @see #standardDeviation(Indicator, int, boolean)
      */
     public static StandardDeviation stddev(Indicator<Num> indicator, int length, boolean unbiased) {
@@ -42,13 +28,6 @@ public class StandardDeviation extends Indicator<Num> {
     }
 
     private final Variance variance;
-
-    /**
-     * Calls {@link #StandardDeviation(Indicator, int, boolean)} with <code>unbiased</code> set to <code>true</code>.
-     */
-    public StandardDeviation(Indicator<Num> indicator, int length) {
-        this(indicator, length, true);
-    }
 
     /**
      * Instantiates a new {@link StandardDeviation}.

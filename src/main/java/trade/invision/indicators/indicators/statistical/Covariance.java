@@ -16,20 +16,6 @@ import static java.lang.Math.max;
 public class Covariance extends Indicator<Num> {
 
     /**
-     * @see #covariance(Indicator, Indicator, int)
-     */
-    public static Covariance covar(Indicator<Num> first, Indicator<Num> second, int length) {
-        return covariance(first, second, length);
-    }
-
-    /**
-     * Convenience static method for {@link #Covariance(Indicator, Indicator, int)}.
-     */
-    public static Covariance covariance(Indicator<Num> first, Indicator<Num> second, int length) {
-        return new Covariance(first, second, length);
-    }
-
-    /**
      * @see #covariance(Indicator, Indicator, int, boolean)
      */
     public static Covariance covar(Indicator<Num> first, Indicator<Num> second, int length, boolean unbiased) {
@@ -49,14 +35,6 @@ public class Covariance extends Indicator<Num> {
     private final boolean unbiased;
     private final SimpleMovingAverage sma1;
     private final SimpleMovingAverage sma2;
-
-    /**
-     * Calls {@link #Covariance(Indicator, Indicator, int, boolean)} with <code>unbiased</code> set to
-     * <code>true</code>.
-     */
-    public Covariance(Indicator<Num> first, Indicator<Num> second, int length) {
-        this(first, second, length, true);
-    }
 
     /**
      * Instantiates a new {@link Covariance}.

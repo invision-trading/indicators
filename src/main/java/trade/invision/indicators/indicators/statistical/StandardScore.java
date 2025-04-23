@@ -15,20 +15,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class StandardScore extends Indicator<Num> {
 
     /**
-     * @see #standardScore(Indicator, int)
-     */
-    public static StandardScore zScore(Indicator<Num> indicator, int length) {
-        return standardScore(indicator, length);
-    }
-
-    /**
-     * Convenience static method for {@link #StandardScore(Indicator, int)}.
-     */
-    public static StandardScore standardScore(Indicator<Num> indicator, int length) {
-        return new StandardScore(indicator, length);
-    }
-
-    /**
      * @see #standardScore(Indicator, int, boolean)
      */
     public static StandardScore zScore(Indicator<Num> indicator, int length, boolean unbiased) {
@@ -45,13 +31,6 @@ public class StandardScore extends Indicator<Num> {
     private final Indicator<Num> indicator;
     private final SimpleMovingAverage sma;
     private final StandardDeviation standardDeviation;
-
-    /**
-     * Calls {@link #StandardScore(Indicator, int, boolean)} with <code>unbiased</code> set to <code>true</code>.
-     */
-    public StandardScore(Indicator<Num> indicator, int length) {
-        this(indicator, length, true);
-    }
 
     /**
      * Instantiates a new {@link StandardScore}.

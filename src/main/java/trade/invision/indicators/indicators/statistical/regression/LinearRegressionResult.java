@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Value;
 import trade.invision.num.Num;
 
+/**
+ * {@link LinearRegressionResult} contains the results for {@link LinearRegression}.
+ */
 @Value @AllArgsConstructor @Builder(toBuilder = true)
 public class LinearRegressionResult {
 

@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Value;
 import trade.invision.num.Num;
 
+/**
+ * {@link DirectionalMoneyFlowResult} contains the results for {@link DirectionalMoneyFlow}.
+ */
 @Value @AllArgsConstructor @Builder(toBuilder = true)
 public class DirectionalMoneyFlowResult {
 

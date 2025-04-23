@@ -42,7 +42,7 @@ public class WilliamsPercentRange extends Indicator<Num> {
      * @param length    the number of values to look back at (typically 14)
      */
     public WilliamsPercentRange(Indicator<Num> indicator, int length) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator;
         highestHigh = new LocalMaximum(indicator, length);

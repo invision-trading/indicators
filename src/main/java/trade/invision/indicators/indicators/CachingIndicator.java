@@ -15,11 +15,6 @@ public abstract class CachingIndicator<T> extends Indicator<T> {
      */
     public CachingIndicator(Series<?> series, int minimumStableIndex) {
         super(series, minimumStableIndex);
-        cache(true);
-    }
-
-    @Override
-    public void cache(boolean cache) {
-        super.cache(true);
+        caching();
     }
 }

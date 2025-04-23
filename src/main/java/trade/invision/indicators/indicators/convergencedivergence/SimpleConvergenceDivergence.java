@@ -46,7 +46,7 @@ public class SimpleConvergenceDivergence extends Indicator<Boolean> {
      */
     public SimpleConvergenceDivergence(Indicator<Num> first, Indicator<Num> second, ConvergenceDivergenceType type,
             int length, Num percentageThreshold) {
-        super(first.getSeries(), length);
+        super(first.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         checkArgument(percentageThreshold.isGreaterThan(numOfZero()) && percentageThreshold.isLessThan(numOfOne()),
                 "'percentageThreshold' must be between zero and one (inclusive)!");

@@ -1,8 +1,6 @@
 package trade.invision.indicators.indicators;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import org.jetbrains.annotations.Nullable;
 import trade.invision.indicators.series.Series;
 import trade.invision.num.Num;
@@ -19,7 +17,6 @@ import java.math.BigDecimal;
  *
  * @see <a href="https://www.investopedia.com/terms/i/indicator.asp">Investopedia</a>
  */
-@ToString @EqualsAndHashCode
 public abstract class Indicator<T> {
 
     /**
@@ -76,7 +73,7 @@ public abstract class Indicator<T> {
      *
      * @return the result (never <code>null</code>)
      *
-     * @see #cache(boolean)
+     * @see #caching()
      */
     public T getValue(long index) {
         if (index > series.getEndIndex()) {
@@ -124,43 +121,28 @@ public abstract class Indicator<T> {
     }
 
     /**
-     * Sets whether this {@link Indicator} will cache its calculated values in order to optimize
-     * {@link #getValue(long)}. The cache size is equal to {@link #getSeries()} {@link Series#getMaximumLength()}. The
-     * cache for this {@link Indicator} should be enabled when consumers of this {@link Indicator} use the calculated
-     * values of previous indices, as opposed to only using the calculated value of the last index (e.g.
-     * {@link Series#getEndIndex()}).
-     *
-     * @param cache <code>true</code> to enable caching, <code>false</code> otherwise
-     *
-     * @see #getValue(long)
-     */
-    public void cache(boolean cache) {
-        if (cache) {
-            if (cacheSeries == null) {
-                cacheSeries = new CacheSeries();
-            }
-        } else {
-            cacheSeries = null;
-        }
-    }
-
-    /**
-     * Convenience method to call {@link #cache(boolean)} with <code>true</code>.
+     * Permanently enables caching of this {@link Indicator}'s calculated values in order to optimize
+     * {@link #getValue(long)} for non-ending indices. The cache should be enabled when consumers of this
+     * {@link Indicator} use the calculated values of non-ending indices, as opposed to only using the calculated value
+     * of the end index (e.g. {@link Series#getEndIndex()}). The cache size is equal to {@link #getSeries()}
+     * {@link Series#getMaximumLength()}.
      *
      * @return this {@link Indicator}, for method chaining
      *
-     * @see #cache(boolean)
+     * @see #getValue(long)
      */
     @SuppressWarnings("unchecked")
     public <A extends Indicator<T>> A caching() {
-        cache(true);
+        if (cacheSeries == null) {
+            cacheSeries = new CacheSeries();
+        }
         return (A) this;
     }
 
     /**
      * @return <code>true</code> if this {@link Indicator} has caching enabled, <code>false</code> otherwise
      *
-     * @see #cache(boolean)
+     * @see #caching()
      */
     public boolean isCaching() {
         return cacheSeries != null;

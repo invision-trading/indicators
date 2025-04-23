@@ -46,7 +46,7 @@ public class CommodityChannelIndex extends Indicator<Num> {
      */
     public CommodityChannelIndex(Indicator<Num> indicator, int length,
             BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator;
         averagingIndicator = averagingIndicatorSupplier.apply(indicator, length);

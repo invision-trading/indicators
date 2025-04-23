@@ -52,7 +52,7 @@ public class RelativeVolumeStandardDeviation extends Indicator<Num> {
      */
     public RelativeVolumeStandardDeviation(BarSeries barSeries, int length,
             BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier, boolean unbiased) {
-        super(barSeries, length);
+        super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         volume = new Volume(barSeries);
         averageVolume = averagingIndicatorSupplier.apply(volume, length);

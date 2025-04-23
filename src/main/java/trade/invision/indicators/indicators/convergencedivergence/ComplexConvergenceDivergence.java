@@ -57,7 +57,7 @@ public class ComplexConvergenceDivergence extends Indicator<Boolean> {
      */
     public ComplexConvergenceDivergence(Indicator<Num> first, Indicator<Num> second, ConvergenceDivergenceType type,
             int length, Num correlationThreshold, Num slopeThreshold, boolean unbiased) {
-        super(first.getSeries(), length);
+        super(first.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         checkArgument(correlationThreshold.isGreaterThan(numOfZero()) && correlationThreshold.isLessThan(numOfOne()),
                 "'correlationThreshold' must be between zero and one (inclusive)!");

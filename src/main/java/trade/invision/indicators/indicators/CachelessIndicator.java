@@ -16,11 +16,11 @@ public abstract class CachelessIndicator<T> extends Indicator<T> {
      */
     public CachelessIndicator(Series<?> series, int minimumStableIndex) {
         super(series, minimumStableIndex);
-        cache(false);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void cache(boolean cache) {
-        super.cache(false);
+    public <A extends Indicator<T>> A caching() {
+        return (A) this;
     }
 }

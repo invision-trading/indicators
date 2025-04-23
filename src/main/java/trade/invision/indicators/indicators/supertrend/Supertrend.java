@@ -44,7 +44,7 @@ public class Supertrend extends RecursiveIndicator<Num> {
      */
     public Supertrend(BarSeries barSeries, int length, Num multiplier,
             BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        super(barSeries, length);
+        super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         close = new Close(barSeries);
         final AverageTrueRange atr = new AverageTrueRange(barSeries, length, averagingIndicatorSupplier);

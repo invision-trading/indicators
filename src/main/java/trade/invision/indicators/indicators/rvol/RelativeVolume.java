@@ -47,7 +47,7 @@ public class RelativeVolume extends Indicator<Num> {
      */
     public RelativeVolume(BarSeries barSeries, int length,
             BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        super(barSeries, length);
+        super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         volume = new Volume(barSeries);
         averageVolume = averagingIndicatorSupplier.apply(volume, length);

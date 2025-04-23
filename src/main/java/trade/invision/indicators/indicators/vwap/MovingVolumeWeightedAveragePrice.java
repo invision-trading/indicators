@@ -44,7 +44,7 @@ public class MovingVolumeWeightedAveragePrice extends Indicator<Num> {
      */
     public MovingVolumeWeightedAveragePrice(BarSeries barSeries, int length,
             BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier) {
-        super(barSeries, length);
+        super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         averagingIndicator = averagingIndicatorSupplier
                 .apply(new VolumeWeightedAveragePrice(barSeries, length), length);

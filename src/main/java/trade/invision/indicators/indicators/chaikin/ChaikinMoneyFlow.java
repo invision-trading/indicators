@@ -42,7 +42,7 @@ public class ChaikinMoneyFlow extends Indicator<Num> {
      * @param length    the number of values to look back at
      */
     public ChaikinMoneyFlow(BarSeries barSeries, int length) {
-        super(barSeries, length);
+        super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         final Volume volume = new Volume(barSeries);
         final CloseLocationValue clv = new CloseLocationValue(barSeries);

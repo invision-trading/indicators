@@ -61,7 +61,7 @@ public class BollingerBands extends Indicator<BollingerBandsResult> {
     public BollingerBands(Indicator<Num> indicator, Set<BollingerBandsResultType> resultTypes, int length,
             Num multiplier, BiFunction<Indicator<Num>, Integer, Indicator<Num>> averagingIndicatorSupplier,
             boolean unbiased) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         checkArgument(resultTypes != null && !resultTypes.isEmpty(), "'resultTypes' must not be null or empty!");
         this.indicator = indicator;

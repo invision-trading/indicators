@@ -1,8 +1,6 @@
 package trade.invision.indicators.series;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import org.jetbrains.annotations.Nullable;
 import trade.invision.num.DoubleNum;
 import trade.invision.num.Num;
@@ -27,7 +25,6 @@ import static trade.invision.num.DoubleNum.doubleNumFactory;
  *
  * @param <T> the immutable type
  */
-@ToString @EqualsAndHashCode
 public class Series<T> {
 
     /**

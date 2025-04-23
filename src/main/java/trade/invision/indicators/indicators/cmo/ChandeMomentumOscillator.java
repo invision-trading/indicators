@@ -40,7 +40,7 @@ public class ChandeMomentumOscillator extends Indicator<Num> {
      * @param length    the number of values to look back at
      */
     public ChandeMomentumOscillator(Indicator<Num> indicator, int length) {
-        super(indicator.getSeries(), length);
+        super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         cumulativeGain = new CumulativeSum(new Gain(indicator), length);
         cumulativeLoss = new CumulativeSum(new Loss(indicator), length);

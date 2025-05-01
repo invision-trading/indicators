@@ -51,7 +51,7 @@ public abstract class Indicator<T> {
      *
      * @param index the index
      *
-     * @return the result (should never be <code>null</code>)
+     * @return the result (never <code>null</code>)
      */
     protected abstract T calculate(long index);
 

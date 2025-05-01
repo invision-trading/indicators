@@ -1,7 +1,7 @@
 package trade.invision.indicators.series.bar;
 
 import org.jetbrains.annotations.Nullable;
-import trade.invision.indicators.indicators.Indicator;
+import trade.invision.indicators.indicator.Indicator;
 import trade.invision.indicators.series.Series;
 import trade.invision.num.Num;
 import trade.invision.num.NumFactory;

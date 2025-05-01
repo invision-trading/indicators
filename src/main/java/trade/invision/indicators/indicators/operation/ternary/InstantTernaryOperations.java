@@ -14,11 +14,11 @@ public final class InstantTernaryOperations {
 
     /**
      * Creates a {@link Boolean} {@link Indicator} that performs a ternary comparison to check if <code>instant</code>
-     * is exclusively between the <code>minimum</code> and <code>maximum</code> inputs.
+     * is inclusively between the <code>minimum</code> and <code>maximum</code> inputs.
      *
      * @param instant the input
-     * @param minimum the minimum input (exclusive)
-     * @param maximum the maximum input (exclusive)
+     * @param minimum the minimum input (inclusive)
+     * @param maximum the maximum input (inclusive)
      *
      * @return the {@link Boolean} {@link Indicator}
      *
@@ -26,7 +26,7 @@ public final class InstantTernaryOperations {
      */
     public static Indicator<Boolean> isBetween(Indicator<Instant> instant,
             Indicator<Instant> minimum, Indicator<Instant> maximum) {
-        return ternaryOperation((i, min, max) -> i.isAfter(min) && i.isBefore(max), instant, minimum, maximum);
+        return ternaryOperation((i, min, max) -> !i.isBefore(min) && !i.isAfter(max), instant, minimum, maximum);
     }
 
     /**

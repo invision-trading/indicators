@@ -28,19 +28,20 @@ public final class NumTernaryOperations {
     }
 
     /**
-     * Creates a {@link Boolean} {@link Indicator} that performs the {@link Num#isBetween(Num, Num)} ternary comparison
-     * using the given inputs.
+     * Creates a {@link Boolean} {@link Indicator} that performs a ternary comparison to check if <code>num</code> is
+     * inclusively between the <code>minimum</code> and <code>maximum</code> inputs.
      *
      * @param num     the input
-     * @param minimum the minimum input
-     * @param maximum the maximum input
+     * @param minimum the minimum input (inclusive)
+     * @param maximum the maximum input (inclusive)
      *
      * @return the {@link Boolean} {@link Indicator}
      *
      * @see TernaryOperation
      */
     public static Indicator<Boolean> isBetween(Indicator<Num> num, Indicator<Num> minimum, Indicator<Num> maximum) {
-        return ternaryOperation(Num::isBetween, num, minimum, maximum);
+        return ternaryOperation((i, min, max) -> i.isGreaterThanOrEqual(min, num.getSeries().getEpsilon()) &&
+                i.isLessThanOrEqual(max, num.getSeries().getEpsilon()), num, minimum, maximum);
     }
 
     /**

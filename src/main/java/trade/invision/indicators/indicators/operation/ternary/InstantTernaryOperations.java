@@ -4,6 +4,8 @@ import trade.invision.indicators.indicators.Indicator;
 
 import java.time.Instant;
 
+import static trade.invision.indicators.indicators.operation.ternary.TernaryOperation.ternaryOperation;
+
 /**
  * {@link InstantTernaryOperations} provides convenience static methods for creating {@link Instant}
  * {@link TernaryOperation} {@link Indicator}s.
@@ -24,7 +26,7 @@ public final class InstantTernaryOperations {
      */
     public static Indicator<Boolean> isBetween(Indicator<Instant> instant,
             Indicator<Instant> minimum, Indicator<Instant> maximum) {
-        return new TernaryOperation<>((i, min, max) -> i.isAfter(min) && i.isBefore(max), instant, minimum, maximum);
+        return ternaryOperation((i, min, max) -> i.isAfter(min) && i.isBefore(max), instant, minimum, maximum);
     }
 
     /**
@@ -40,6 +42,6 @@ public final class InstantTernaryOperations {
      */
     public static Indicator<Instant> ifElse(Indicator<Boolean> conditional,
             Indicator<Instant> trueCondition, Indicator<Instant> falseCondition) {
-        return new TernaryOperation<>((c, t, f) -> c ? t : f, conditional, trueCondition, falseCondition);
+        return ternaryOperation((c, t, f) -> c ? t : f, conditional, trueCondition, falseCondition);
     }
 }

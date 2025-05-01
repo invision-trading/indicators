@@ -3,6 +3,8 @@ package trade.invision.indicators.indicators.operation.ternary;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
+import static trade.invision.indicators.indicators.operation.ternary.TernaryOperation.ternaryOperation;
+
 /**
  * {@link NumTernaryOperations} provides convenience static methods for creating {@link Num} {@link TernaryOperation}
  * {@link Indicator}s.
@@ -22,7 +24,7 @@ public final class NumTernaryOperations {
      * @see TernaryOperation
      */
     public static Indicator<Num> clamp(Indicator<Num> num, Indicator<Num> minimum, Indicator<Num> maximum) {
-        return new TernaryOperation<>(Num::clamp, num, minimum, maximum);
+        return ternaryOperation(Num::clamp, num, minimum, maximum);
     }
 
     /**
@@ -38,7 +40,7 @@ public final class NumTernaryOperations {
      * @see TernaryOperation
      */
     public static Indicator<Boolean> isBetween(Indicator<Num> num, Indicator<Num> minimum, Indicator<Num> maximum) {
-        return new TernaryOperation<>(Num::isBetween, num, minimum, maximum);
+        return ternaryOperation(Num::isBetween, num, minimum, maximum);
     }
 
     /**
@@ -54,6 +56,6 @@ public final class NumTernaryOperations {
      */
     public static Indicator<Num> ifElse(Indicator<Boolean> conditional,
             Indicator<Num> trueCondition, Indicator<Num> falseCondition) {
-        return new TernaryOperation<>((c, t, f) -> c ? t : f, conditional, trueCondition, falseCondition);
+        return ternaryOperation((c, t, f) -> c ? t : f, conditional, trueCondition, falseCondition);
     }
 }

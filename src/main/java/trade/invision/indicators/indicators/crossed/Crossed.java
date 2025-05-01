@@ -1,9 +1,14 @@
 package trade.invision.indicators.indicators.crossed;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
 import static java.lang.Math.max;
+import static trade.invision.indicators.indicators.crossed.CrossedDown.crossedDown;
+import static trade.invision.indicators.indicators.crossed.CrossedUp.crossedUp;
 
 /**
  * {@link Crossed} is a {@link Boolean} {@link Indicator} to provide a positive or negative crossing signal. A crossing
@@ -12,25 +17,31 @@ import static java.lang.Math.max;
 public class Crossed extends Indicator<Boolean> {
 
     /**
-     * Convenience static method for {@link #Crossed(Indicator, Indicator)}.
+     * Gets a {@link Crossed}.
+     *
+     * @param first  the first {@link Indicator}
+     * @param second the second {@link Indicator}
      */
     public static Crossed crossed(Indicator<Num> first, Indicator<Num> second) {
-        return new Crossed(first, second);
+        return CACHE.get(new CacheKey(first, second), key -> new Crossed(first, second));
+    }
+
+    private static final Cache<CacheKey, Crossed> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> first;
+        Indicator<Num> second;
     }
 
     private final CrossedUp crossedUp;
     private final CrossedDown crossedDown;
 
-    /**
-     * Instantiates a new {@link Crossed}.
-     *
-     * @param first  the first {@link Indicator}
-     * @param second the second {@link Indicator}
-     */
-    public Crossed(Indicator<Num> first, Indicator<Num> second) {
+    protected Crossed(Indicator<Num> first, Indicator<Num> second) {
         super(first.getSeries(), max(first.getMinimumStableIndex(), second.getMinimumStableIndex()));
-        crossedUp = new CrossedUp(first, second);
-        crossedDown = new CrossedDown(first, second);
+        crossedUp = crossedUp(first, second);
+        crossedDown = crossedDown(first, second);
     }
 
     @Override

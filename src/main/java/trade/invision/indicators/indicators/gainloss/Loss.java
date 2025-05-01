@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.gainloss;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.previous.PreviousDifference;
 import trade.invision.num.Num;
@@ -11,35 +14,32 @@ import trade.invision.num.Num;
 public class Loss extends PreviousDifference {
 
     /**
-     * Convenience static method for {@link #Loss(Indicator)}.
+     * Calls {@link #loss(Indicator, int)} with <code>n</code> set to <code>1</code>.
      */
     public static Loss loss(Indicator<Num> indicator) {
-        return new Loss(indicator);
+        return loss(indicator, 1);
     }
 
     /**
-     * Convenience static method for {@link #Loss(Indicator, int)}.
-     */
-    public static Loss loss(Indicator<Num> indicator, int n) {
-        return new Loss(indicator, n);
-    }
-
-    /**
-     * Instantiates a new {@link Loss} with <code>n</code> set to <code>1</code>.
-     *
-     * @param indicator the {@link Num} {@link Indicator}
-     */
-    public Loss(Indicator<Num> indicator) {
-        super(indicator);
-    }
-
-    /**
-     * Instantiates a new {@link Loss}.
+     * Gets a {@link Loss}.
      *
      * @param indicator the {@link Num} {@link Indicator}
      * @param n         the previous <i>n</i>-th value to look back at
      */
-    public Loss(Indicator<Num> indicator, int n) {
+    public static Loss loss(Indicator<Num> indicator, int n) {
+        return CACHE.get(new CacheKey(indicator, n), key -> new Loss(indicator, n));
+    }
+
+    private static final Cache<CacheKey, Loss> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int n;
+    }
+
+    protected Loss(Indicator<Num> indicator, int n) {
         super(indicator, n);
     }
 

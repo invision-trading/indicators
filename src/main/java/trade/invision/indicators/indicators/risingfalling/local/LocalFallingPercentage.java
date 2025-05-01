@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.risingfalling.local;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -12,19 +15,25 @@ import trade.invision.num.Num;
 public class LocalFallingPercentage extends AbstractLocalRisingFallingPercentage {
 
     /**
-     * Convenience static method for {@link #LocalFallingPercentage(Indicator, int)}.
-     */
-    public static LocalFallingPercentage localFallingPercentage(Indicator<Num> indicator, int length) {
-        return new LocalFallingPercentage(indicator, length);
-    }
-
-    /**
-     * Instantiates a new {@link LocalFallingPercentage}.
+     * Gets a {@link LocalFallingPercentage}.
      *
      * @param indicator the {@link Indicator}
      * @param length    the number of values to look back at
      */
-    public LocalFallingPercentage(Indicator<Num> indicator, int length) {
+    public static LocalFallingPercentage localFallingPercentage(Indicator<Num> indicator, int length) {
+        return CACHE.get(new CacheKey(indicator, length), key -> new LocalFallingPercentage(indicator, length));
+    }
+
+    private static final Cache<CacheKey, LocalFallingPercentage> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
+    }
+
+    protected LocalFallingPercentage(Indicator<Num> indicator, int length) {
         super(indicator, length, false);
     }
 }

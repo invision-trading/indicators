@@ -2,11 +2,12 @@ package trade.invision.indicators.indicators.draw;
 
 import org.jetbrains.annotations.Nullable;
 import trade.invision.indicators.indicators.Indicator;
-import trade.invision.indicators.indicators.extrema.global.GlobalMaximum;
-import trade.invision.indicators.indicators.extrema.global.GlobalMinimum;
-import trade.invision.indicators.indicators.extrema.local.LocalMaximum;
-import trade.invision.indicators.indicators.extrema.local.LocalMinimum;
 import trade.invision.num.Num;
+
+import static trade.invision.indicators.indicators.extrema.global.GlobalMaximum.globalMaximum;
+import static trade.invision.indicators.indicators.extrema.global.GlobalMinimum.globalMinimum;
+import static trade.invision.indicators.indicators.extrema.local.LocalMaximum.localMaximum;
+import static trade.invision.indicators.indicators.extrema.local.LocalMinimum.localMinimum;
 
 /**
  * {@link AbstractDrawupDrawdown} is an abstract {@link Num} {@link Indicator} for local/global drawup/drawdown
@@ -34,9 +35,9 @@ public abstract class AbstractDrawupDrawdown extends Indicator<Num> {
         this.drawup = drawup;
         this.percentage = percentage;
         if (length == null) {
-            extremaIndicator = drawup ? new GlobalMinimum(indicator) : new GlobalMaximum(indicator);
+            extremaIndicator = drawup ? globalMinimum(indicator) : globalMaximum(indicator);
         } else {
-            extremaIndicator = drawup ? new LocalMinimum(indicator, length) : new LocalMaximum(indicator, length);
+            extremaIndicator = drawup ? localMinimum(indicator, length) : localMaximum(indicator, length);
         }
     }
 

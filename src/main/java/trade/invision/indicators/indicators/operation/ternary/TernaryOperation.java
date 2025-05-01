@@ -17,20 +17,25 @@ import static java.lang.Math.max;
  */
 public class TernaryOperation<A, B, C, R> extends Indicator<R> {
 
-    private final TriFunction<A, B, C, R> operator;
-    private final Indicator<A> firstOperand;
-    private final Indicator<B> secondOperand;
-    private final Indicator<C> thirdOperand;
-
     /**
-     * Instantiates a new {@link TernaryOperation}.
+     * Gets a {@link TernaryOperation}.
      *
      * @param operator      the {@link TriFunction}
      * @param firstOperand  the first {@link Indicator} operand
      * @param secondOperand the second {@link Indicator} operand
      * @param thirdOperand  the third {@link Indicator} operand
      */
-    public TernaryOperation(TriFunction<A, B, C, R> operator,
+    public static <A, B, C, R> TernaryOperation<A, B, C, R> ternaryOperation(TriFunction<A, B, C, R> operator,
+            Indicator<A> firstOperand, Indicator<B> secondOperand, Indicator<C> thirdOperand) {
+        return new TernaryOperation<>(operator, firstOperand, secondOperand, thirdOperand);
+    }
+
+    private final TriFunction<A, B, C, R> operator;
+    private final Indicator<A> firstOperand;
+    private final Indicator<B> secondOperand;
+    private final Indicator<C> thirdOperand;
+
+    protected TernaryOperation(TriFunction<A, B, C, R> operator,
             Indicator<A> firstOperand, Indicator<B> secondOperand, Indicator<C> thirdOperand) {
         super(firstOperand.getSeries(), max(firstOperand.getMinimumStableIndex(),
                 max(secondOperand.getMinimumStableIndex(), thirdOperand.getMinimumStableIndex())));

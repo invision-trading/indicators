@@ -14,7 +14,9 @@ import trade.invision.num.Num;
 public class Close extends CachelessIndicator<Num> {
 
     /**
-     * Convenience static method for {@link #Close(BarSeries)}.
+     * Gets a {@link Close}.
+     *
+     * @param barSeries the {@link BarSeries}
      */
     public static Close close(BarSeries barSeries) {
         return new Close(barSeries);
@@ -22,12 +24,7 @@ public class Close extends CachelessIndicator<Num> {
 
     private final BarSeries barSeries;
 
-    /**
-     * Instantiates a new {@link Close}.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public Close(BarSeries barSeries) {
+    protected Close(BarSeries barSeries) {
         super(barSeries, 0);
         this.barSeries = barSeries;
     }

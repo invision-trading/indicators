@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.nvi;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
@@ -20,18 +23,23 @@ public class PositiveVolumeIndex extends AbstractPositiveNegativeVolumeIndex {
     }
 
     /**
-     * Convenience static method for {@link #PositiveVolumeIndex(BarSeries)}.
-     */
-    public static PositiveVolumeIndex positiveVolumeIndex(BarSeries barSeries) {
-        return new PositiveVolumeIndex(barSeries);
-    }
-
-    /**
-     * Instantiates a new {@link PositiveVolumeIndex}.
+     * Gets a {@link PositiveVolumeIndex}.
      *
      * @param barSeries the {@link BarSeries}
      */
-    public PositiveVolumeIndex(BarSeries barSeries) {
+    public static PositiveVolumeIndex positiveVolumeIndex(BarSeries barSeries) {
+        return CACHE.get(new CacheKey(barSeries), key -> new PositiveVolumeIndex(barSeries));
+    }
+
+    private static final Cache<CacheKey, PositiveVolumeIndex> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+    }
+
+    protected PositiveVolumeIndex(BarSeries barSeries) {
         super(barSeries, true);
     }
 }

@@ -1,48 +1,50 @@
 package trade.invision.indicators.indicators.closeprice;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.bar.Close;
-import trade.invision.indicators.indicators.previous.PreviousPrecentChange;
+import trade.invision.indicators.indicators.previous.PreviousPercentChange;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
 
+import static trade.invision.indicators.indicators.bar.Close.close;
+
 /**
- * {@link ClosePricePercentChange} is a {@link Num} {@link Indicator} to use {@link PreviousPrecentChange} with
+ * {@link ClosePricePercentChange} is a {@link Num} {@link Indicator} to use {@link PreviousPercentChange} with
  * {@link Close}. This is also referred to as Rate of Change (ROC) or Momentum. The percentage is represented as a
  * fractional. For example, a provided value of <code>0.15</code> would represent <code>15%</code>.
  */
-public class ClosePricePercentChange extends PreviousPrecentChange {
+public class ClosePricePercentChange extends PreviousPercentChange {
 
     /**
-     * Convenience static method for {@link #ClosePricePercentChange(BarSeries)}.
+     * Calls {@link #closePricePercentChange(BarSeries, int)} with <code>n</code> set to <code>1</code>.
      */
     public static ClosePricePercentChange closePricePercentChange(BarSeries barSeries) {
-        return new ClosePricePercentChange(barSeries);
+        return closePricePercentChange(barSeries, 1);
     }
 
     /**
-     * Convenience static method for {@link #ClosePricePercentChange(BarSeries, int)}.
-     */
-    public static ClosePricePercentChange closePricePercentChange(BarSeries barSeries, int n) {
-        return new ClosePricePercentChange(barSeries, n);
-    }
-
-    /**
-     * Instantiates a new {@link ClosePricePercentChange} with <code>n</code> set to <code>1</code>.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public ClosePricePercentChange(BarSeries barSeries) {
-        this(barSeries, 1);
-    }
-
-    /**
-     * Instantiates a new {@link ClosePricePercentChange}.
+     * Gets a {@link ClosePricePercentChange}.
      *
      * @param barSeries the {@link BarSeries}
      * @param n         the previous <i>n</i>-th value to look back at
      */
-    public ClosePricePercentChange(BarSeries barSeries, int n) {
-        super(new Close(barSeries), n);
+    public static ClosePricePercentChange closePricePercentChange(BarSeries barSeries, int n) {
+        return CACHE.get(new CacheKey(barSeries, n), key -> new ClosePricePercentChange(barSeries, n));
+    }
+
+    private static final Cache<CacheKey, ClosePricePercentChange> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+        int n;
+    }
+
+    protected ClosePricePercentChange(BarSeries barSeries, int n) {
+        super(close(barSeries), n);
     }
 }

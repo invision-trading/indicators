@@ -13,19 +13,16 @@ import trade.invision.indicators.indicators.Indicator;
 public class UnstableReplacement<T> extends Replacement<T> {
 
     /**
-     * Convenience static method for {@link #UnstableReplacement(Indicator, Indicator)}.
+     * Gets a {@link UnstableReplacement}.
+     *
+     * @param unstable    the unstable {@link Indicator}
+     * @param replacement the replacement {@link Indicator}
      */
     public static <T> UnstableReplacement<T> unstableReplacement(Indicator<T> unstable, Indicator<T> replacement) {
         return new UnstableReplacement<>(unstable, replacement);
     }
 
-    /**
-     * Instantiates a new {@link UnstableReplacement}.
-     *
-     * @param unstable    the unstable {@link Indicator}
-     * @param replacement the replacement {@link Indicator}
-     */
-    public UnstableReplacement(Indicator<T> unstable, Indicator<T> replacement) {
+    protected UnstableReplacement(Indicator<T> unstable, Indicator<T> replacement) {
         super(unstable, replacement, unstable.getMinimumStableIndex());
     }
 }

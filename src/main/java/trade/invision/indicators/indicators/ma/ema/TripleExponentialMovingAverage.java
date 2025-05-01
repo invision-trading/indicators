@@ -1,9 +1,13 @@
 package trade.invision.indicators.indicators.ma.ema;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.ma.ema.ExponentialMovingAverage.exponentialMovingAverage;
 
 /**
  * {@link TripleExponentialMovingAverage} is a {@link Num} {@link Indicator} to provide a Triple Exponential Moving
@@ -21,10 +25,11 @@ public class TripleExponentialMovingAverage extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #TripleExponentialMovingAverage(Indicator, int)}.
+     * Calls {@link #tripleExponentialMovingAverage(Indicator, int, Num)} with <code>smoothing</code> set to
+     * <code>2</code>.
      */
     public static TripleExponentialMovingAverage tripleExponentialMovingAverage(Indicator<Num> indicator, int length) {
-        return new TripleExponentialMovingAverage(indicator, length);
+        return tripleExponentialMovingAverage(indicator, length, indicator.getSeries().getNumFactory().two());
     }
 
     /**
@@ -35,38 +40,39 @@ public class TripleExponentialMovingAverage extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #TripleExponentialMovingAverage(Indicator, int, Num)}.
+     * Gets a {@link TripleExponentialMovingAverage}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param length    the number of values to look back at
+     * @param smoothing the smoothing factor (typically 2)
      */
     public static TripleExponentialMovingAverage tripleExponentialMovingAverage(Indicator<Num> indicator, int length,
             Num smoothing) {
-        return new TripleExponentialMovingAverage(indicator, length, smoothing);
+        return CACHE.get(new CacheKey(indicator, length, smoothing),
+                key -> new TripleExponentialMovingAverage(indicator, length, smoothing));
+    }
+
+    private static final Cache<CacheKey, TripleExponentialMovingAverage> CACHE =
+            Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
+        Num smoothing;
     }
 
     private final ExponentialMovingAverage ema;
     private final ExponentialMovingAverage emaOfEma;
     private final ExponentialMovingAverage emaOfEmaOfEma;
 
-    /**
-     * Calls {@link #TripleExponentialMovingAverage(Indicator, int, Num)} with <code>smoothing</code> set to
-     * <code>2</code>.
-     */
-    public TripleExponentialMovingAverage(Indicator<Num> indicator, int length) {
-        this(indicator, length, indicator.getSeries().getNumFactory().two());
-    }
-
-    /**
-     * Instantiates a new {@link TripleExponentialMovingAverage}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param length    the number of values to look back at
-     * @param smoothing the smoothing factor (typically 2)
-     */
-    public TripleExponentialMovingAverage(Indicator<Num> indicator, int length, Num smoothing) {
+    protected TripleExponentialMovingAverage(Indicator<Num> indicator, int length, Num smoothing) {
         super(indicator.getSeries(), length * 3);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        ema = new ExponentialMovingAverage(indicator, length, smoothing);
-        emaOfEma = new ExponentialMovingAverage(ema, length, smoothing);
-        emaOfEmaOfEma = new ExponentialMovingAverage(emaOfEma, length, smoothing);
+        ema = exponentialMovingAverage(indicator, length, smoothing);
+        emaOfEma = exponentialMovingAverage(ema, length, smoothing);
+        emaOfEmaOfEma = exponentialMovingAverage(emaOfEma, length, smoothing);
     }
 
     @Override

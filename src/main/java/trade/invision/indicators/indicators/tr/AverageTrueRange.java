@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.tr;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.indicators.series.bar.Bar;
@@ -7,6 +10,7 @@ import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.tr.TrueRange.trueRange;
 
 /**
  * {@link AverageTrueRange} is a {@link Num} {@link Indicator} to provide an Average True Range (ATR) over a
@@ -24,26 +28,34 @@ public class AverageTrueRange extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #AverageTrueRange(BarSeries, int, MovingAverageSupplier)}.
-     */
-    public static AverageTrueRange averageTrueRange(BarSeries barSeries, int length,
-            MovingAverageSupplier movingAverageSupplier) {
-        return new AverageTrueRange(barSeries, length, movingAverageSupplier);
-    }
-
-    private final Indicator<Num> movingAverage;
-
-    /**
-     * Instantiates a new {@link AverageTrueRange}.
+     * Gets a {@link AverageTrueRange}.
      *
      * @param barSeries             the {@link BarSeries}
      * @param length                the number of values to look back at
      * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
-    public AverageTrueRange(BarSeries barSeries, int length, MovingAverageSupplier movingAverageSupplier) {
+    public static AverageTrueRange averageTrueRange(BarSeries barSeries, int length,
+            MovingAverageSupplier movingAverageSupplier) {
+        return CACHE.get(new CacheKey(barSeries, length, movingAverageSupplier),
+                key -> new AverageTrueRange(barSeries, length, movingAverageSupplier));
+    }
+
+    private static final Cache<CacheKey, AverageTrueRange> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+        int length;
+        MovingAverageSupplier movingAverageSupplier;
+    }
+
+    private final Indicator<Num> movingAverage;
+
+    protected AverageTrueRange(BarSeries barSeries, int length, MovingAverageSupplier movingAverageSupplier) {
         super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        movingAverage = movingAverageSupplier.supply(new TrueRange(barSeries), length);
+        movingAverage = movingAverageSupplier.supply(trueRange(barSeries), length);
     }
 
     @Override

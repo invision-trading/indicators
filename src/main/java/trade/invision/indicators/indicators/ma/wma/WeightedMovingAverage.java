@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.ma.wma;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -23,22 +26,28 @@ public class WeightedMovingAverage extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #WeightedMovingAverage(Indicator, int)}.
+     * Gets a {@link WeightedMovingAverage}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param length    the number of values to look back at
      */
     public static WeightedMovingAverage weightedMovingAverage(Indicator<Num> indicator, int length) {
-        return new WeightedMovingAverage(indicator, length);
+        return CACHE.get(new CacheKey(indicator, length), key -> new WeightedMovingAverage(indicator, length));
+    }
+
+    private static final Cache<CacheKey, WeightedMovingAverage> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
     }
 
     private final Indicator<Num> indicator;
     private final int length;
 
-    /**
-     * Instantiates a new {@link WeightedMovingAverage}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param length    the number of values to look back at
-     */
-    public WeightedMovingAverage(Indicator<Num> indicator, int length) {
+    protected WeightedMovingAverage(Indicator<Num> indicator, int length) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator.caching();

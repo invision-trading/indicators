@@ -1,11 +1,15 @@
 package trade.invision.indicators.indicators.statistical;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.cumulative.CumulativeSum;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Math.min;
+import static trade.invision.indicators.indicators.cumulative.CumulativeSum.cumulativeSum;
 import static trade.invision.indicators.indicators.operation.unary.NumUnaryOperations.square;
 
 /**
@@ -24,26 +28,32 @@ public class RootMeanSquare extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #RootMeanSquare(Indicator, int)}.
+     * Gets a {@link RootMeanSquare}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param length    the number of values to look back at
      */
     public static RootMeanSquare rootMeanSquare(Indicator<Num> indicator, int length) {
-        return new RootMeanSquare(indicator, length);
+        return CACHE.get(new CacheKey(indicator, length), key -> new RootMeanSquare(indicator, length));
+    }
+
+    private static final Cache<CacheKey, RootMeanSquare> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
     }
 
     private final int length;
     private final CumulativeSum squaredSum;
 
-    /**
-     * Instantiates a new {@link RootMeanSquare}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param length    the number of values to look back at
-     */
-    public RootMeanSquare(Indicator<Num> indicator, int length) {
+    protected RootMeanSquare(Indicator<Num> indicator, int length) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.length = length;
-        squaredSum = new CumulativeSum(square(indicator), length);
+        squaredSum = cumulativeSum(square(indicator), length);
     }
 
     @Override

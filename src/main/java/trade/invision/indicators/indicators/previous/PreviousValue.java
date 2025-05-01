@@ -14,14 +14,17 @@ import static java.lang.Math.max;
 public class PreviousValue<T> extends CachelessIndicator<T> {
 
     /**
-     * Convenience static method for {@link #PreviousValue(Indicator)}.
+     * Calls {@link #previousValue(Indicator, int)} with <code>n</code> set to <code>1</code>.
      */
     public static <T> PreviousValue<T> previousValue(Indicator<T> indicator) {
-        return new PreviousValue<>(indicator);
+        return new PreviousValue<>(indicator, 1);
     }
 
     /**
-     * Convenience static method for {@link #PreviousValue(Indicator, int)}.
+     * Gets a {@link PreviousValue}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param n         the previous <i>n</i>-th value to look back at
      */
     public static <T> PreviousValue<T> previousValue(Indicator<T> indicator, int n) {
         return new PreviousValue<>(indicator, n);
@@ -30,22 +33,7 @@ public class PreviousValue<T> extends CachelessIndicator<T> {
     private final Indicator<T> indicator;
     private final int n;
 
-    /**
-     * Instantiates a new {@link PreviousValue} with <code>n</code> set to <code>1</code>.
-     *
-     * @param indicator the {@link Indicator}
-     */
-    public PreviousValue(Indicator<T> indicator) {
-        this(indicator, 1);
-    }
-
-    /**
-     * Instantiates a new {@link PreviousValue}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param n         the previous <i>n</i>-th value to look back at
-     */
-    public PreviousValue(Indicator<T> indicator, int n) {
+    protected PreviousValue(Indicator<T> indicator, int n) {
         super(indicator.getSeries(), n);
         checkArgument(n > 0, "'n' must be greater than zero!");
         this.indicator = indicator.caching();

@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.crossed;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -12,22 +15,28 @@ import static java.lang.Math.max;
 public class CrossedUp extends Indicator<Boolean> {
 
     /**
-     * Convenience static method for {@link #CrossedUp(Indicator, Indicator)}.
+     * Gets a {@link CrossedUp}.
+     *
+     * @param first  the first {@link Indicator}
+     * @param second the second {@link Indicator}
      */
     public static CrossedUp crossedUp(Indicator<Num> first, Indicator<Num> second) {
-        return new CrossedUp(first, second);
+        return CACHE.get(new CacheKey(first, second), key -> new CrossedUp(first, second));
+    }
+
+    private static final Cache<CacheKey, CrossedUp> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> first;
+        Indicator<Num> second;
     }
 
     private final Indicator<Num> first;
     private final Indicator<Num> second;
 
-    /**
-     * Instantiates a new {@link CrossedUp}.
-     *
-     * @param first  the first {@link Indicator}
-     * @param second the second {@link Indicator}
-     */
-    public CrossedUp(Indicator<Num> first, Indicator<Num> second) {
+    protected CrossedUp(Indicator<Num> first, Indicator<Num> second) {
         super(first.getSeries(), max(first.getMinimumStableIndex(), second.getMinimumStableIndex()));
         this.first = first.caching();
         this.second = second.caching();

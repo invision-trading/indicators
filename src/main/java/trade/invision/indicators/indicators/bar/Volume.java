@@ -14,7 +14,9 @@ import trade.invision.num.Num;
 public class Volume extends CachelessIndicator<Num> {
 
     /**
-     * Convenience static method for {@link #Volume(BarSeries)}.
+     * Gets a {@link Volume}.
+     *
+     * @param barSeries the {@link BarSeries}
      */
     public static Volume volume(BarSeries barSeries) {
         return new Volume(barSeries);
@@ -22,12 +24,7 @@ public class Volume extends CachelessIndicator<Num> {
 
     private final BarSeries barSeries;
 
-    /**
-     * Instantiates a new {@link Volume}.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public Volume(BarSeries barSeries) {
+    protected Volume(BarSeries barSeries) {
         super(barSeries, 0);
         this.barSeries = barSeries;
     }

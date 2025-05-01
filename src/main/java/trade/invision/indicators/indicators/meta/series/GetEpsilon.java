@@ -12,18 +12,15 @@ import trade.invision.num.Num;
 public class GetEpsilon extends ConstantValue<Num> {
 
     /**
-     * Convenience static method for {@link #GetEpsilon(Series)}.
+     * Gets a {@link GetEpsilon}.
+     *
+     * @param series the {@link #getSeries()}
      */
     public static GetEpsilon getEpsilon(Series<?> series) {
         return new GetEpsilon(series);
     }
 
-    /**
-     * Instantiates a new {@link GetEpsilon}.
-     *
-     * @param series the {@link #getSeries()}
-     */
-    public GetEpsilon(Series<?> series) {
+    protected GetEpsilon(Series<?> series) {
         super(series, series.getEpsilon());
     }
 }

@@ -14,7 +14,9 @@ import trade.invision.num.Num;
 public class Low extends CachelessIndicator<Num> {
 
     /**
-     * Convenience static method for {@link #Low(BarSeries)}.
+     * Gets a {@link Low}.
+     *
+     * @param barSeries the {@link BarSeries}
      */
     public static Low low(BarSeries barSeries) {
         return new Low(barSeries);
@@ -22,12 +24,7 @@ public class Low extends CachelessIndicator<Num> {
 
     private final BarSeries barSeries;
 
-    /**
-     * Instantiates a new {@link Low}.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public Low(BarSeries barSeries) {
+    protected Low(BarSeries barSeries) {
         super(barSeries, 0);
         this.barSeries = barSeries;
     }

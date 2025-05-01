@@ -12,18 +12,15 @@ import trade.invision.num.Num;
 public class CurrentIndex extends CachelessIndicator<Num> {
 
     /**
-     * Convenience static method for {@link #CurrentIndex(Series)}.
+     * Gets a {@link CurrentIndex}.
+     *
+     * @param series the {@link #getSeries()}
      */
     public static CurrentIndex currentIndex(Series<?> series) {
         return new CurrentIndex(series);
     }
 
-    /**
-     * Instantiates a new {@link CurrentIndex}.
-     *
-     * @param series the {@link #getSeries()}
-     */
-    public CurrentIndex(Series<?> series) {
+    protected CurrentIndex(Series<?> series) {
         super(series, 0);
     }
 

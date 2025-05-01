@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.convergencedivergence;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.statistical.CorrelationCoefficient;
 import trade.invision.indicators.indicators.statistical.regression.LinearRegression;
@@ -8,6 +11,8 @@ import trade.invision.num.Num;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.statistical.CorrelationCoefficient.correlationCoefficient;
+import static trade.invision.indicators.indicators.statistical.regression.LinearRegression.linearRegression;
 import static trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType.SLOPE;
 
 /**
@@ -24,26 +29,7 @@ import static trade.invision.indicators.indicators.statistical.regression.Linear
 public class ComplexConvergenceDivergence extends Indicator<Boolean> {
 
     /**
-     * Convenience static method for
-     * {@link #ComplexConvergenceDivergence(Indicator, Indicator, ConvergenceDivergenceType, int, Num, Num, boolean)}.
-     */
-    public static ComplexConvergenceDivergence complexConvergenceDivergence(Indicator<Num> first, Indicator<Num> second,
-            ConvergenceDivergenceType type, int length, Num correlationThreshold, Num slopeThreshold,
-            boolean unbiased) {
-        return new ComplexConvergenceDivergence(first, second, type, length, correlationThreshold, slopeThreshold,
-                unbiased);
-    }
-
-    private final ConvergenceDivergenceType type;
-    private final Num correlationThreshold;
-    private final Num slopeThreshold;
-    private final Num slopeThresholdNegated;
-    private final CorrelationCoefficient correlationCoefficient;
-    private final LinearRegression firstSlope;
-    private final LinearRegression secondSlope;
-
-    /**
-     * Instantiates a new {@link ComplexConvergenceDivergence}.
+     * Gets a {@link ComplexConvergenceDivergence}.
      *
      * @param first                the first {@link Indicator}
      * @param second               the second {@link Indicator}
@@ -55,7 +41,38 @@ public class ComplexConvergenceDivergence extends Indicator<Boolean> {
      *                             correlation coefficient calculation, <code>false</code> to use <code>n</code>
      *                             (biased)
      */
-    public ComplexConvergenceDivergence(Indicator<Num> first, Indicator<Num> second, ConvergenceDivergenceType type,
+    public static ComplexConvergenceDivergence complexConvergenceDivergence(Indicator<Num> first, Indicator<Num> second,
+            ConvergenceDivergenceType type, int length, Num correlationThreshold, Num slopeThreshold,
+            boolean unbiased) {
+        return CACHE.get(new CacheKey(first, second, type, length, correlationThreshold, slopeThreshold, unbiased),
+                key -> new ComplexConvergenceDivergence(first, second,
+                        type, length, correlationThreshold, slopeThreshold, unbiased));
+    }
+
+    private static final Cache<CacheKey, ComplexConvergenceDivergence> CACHE =
+            Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> first;
+        Indicator<Num> second;
+        ConvergenceDivergenceType type;
+        int length;
+        Num correlationThreshold;
+        Num slopeThreshold;
+        boolean unbiased;
+    }
+
+    private final ConvergenceDivergenceType type;
+    private final Num correlationThreshold;
+    private final Num slopeThreshold;
+    private final Num slopeThresholdNegated;
+    private final CorrelationCoefficient correlationCoefficient;
+    private final LinearRegression firstSlope;
+    private final LinearRegression secondSlope;
+
+    protected ComplexConvergenceDivergence(Indicator<Num> first, Indicator<Num> second, ConvergenceDivergenceType type,
             int length, Num correlationThreshold, Num slopeThreshold, boolean unbiased) {
         super(first.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
@@ -68,13 +85,13 @@ public class ComplexConvergenceDivergence extends Indicator<Boolean> {
         this.slopeThreshold = slopeThreshold;
         slopeThresholdNegated = slopeThreshold.negate();
         if (!correlationThreshold.isZero(series.getEpsilon())) {
-            correlationCoefficient = new CorrelationCoefficient(first, second, length, unbiased);
+            correlationCoefficient = correlationCoefficient(first, second, length, unbiased);
         } else {
             correlationCoefficient = null;
         }
         if (!slopeThreshold.isZero(series.getEpsilon())) {
-            firstSlope = new LinearRegression(first, Set.of(SLOPE), length);
-            secondSlope = new LinearRegression(second, Set.of(SLOPE), length);
+            firstSlope = linearRegression(first, Set.of(SLOPE), length);
+            secondSlope = linearRegression(second, Set.of(SLOPE), length);
         } else {
             firstSlope = null;
             secondSlope = null;

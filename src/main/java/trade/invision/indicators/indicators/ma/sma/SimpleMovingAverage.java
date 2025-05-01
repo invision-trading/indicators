@@ -1,11 +1,15 @@
 package trade.invision.indicators.indicators.ma.sma;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.cumulative.CumulativeSum;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Math.min;
+import static trade.invision.indicators.indicators.cumulative.CumulativeSum.cumulativeSum;
 
 /**
  * {@link SimpleMovingAverage} is a {@link Num} {@link Indicator} to provide a Simple Moving Average (SMA) over a
@@ -23,26 +27,32 @@ public class SimpleMovingAverage extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #SimpleMovingAverage(Indicator, int)}.
+     * Gets a {@link SimpleMovingAverage}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param length    the number of values to look back at
      */
     public static SimpleMovingAverage simpleMovingAverage(Indicator<Num> indicator, int length) {
-        return new SimpleMovingAverage(indicator, length);
+        return CACHE.get(new CacheKey(indicator, length), key -> new SimpleMovingAverage(indicator, length));
+    }
+
+    private static final Cache<CacheKey, SimpleMovingAverage> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
     }
 
     private final int length;
     private final CumulativeSum sum;
 
-    /**
-     * Instantiates a new {@link SimpleMovingAverage}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param length    the number of values to look back at
-     */
-    public SimpleMovingAverage(Indicator<Num> indicator, int length) {
+    protected SimpleMovingAverage(Indicator<Num> indicator, int length) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.length = length;
-        sum = new CumulativeSum(indicator, length);
+        sum = cumulativeSum(indicator, length);
     }
 
     @Override

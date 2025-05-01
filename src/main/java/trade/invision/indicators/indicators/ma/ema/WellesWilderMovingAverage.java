@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.ma.ema;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -21,19 +24,25 @@ public class WellesWilderMovingAverage extends AbstractExponentialMovingAverage 
     }
 
     /**
-     * Convenience static method for {@link #WellesWilderMovingAverage(Indicator, int)}.
-     */
-    public static WellesWilderMovingAverage wellesWilderMovingAverage(Indicator<Num> indicator, int length) {
-        return new WellesWilderMovingAverage(indicator, length);
-    }
-
-    /**
-     * Instantiates a new {@link WellesWilderMovingAverage}.
+     * Gets a {@link WellesWilderMovingAverage}.
      *
      * @param indicator the {@link Indicator}
      * @param length    the number of values to look back at
      */
-    public WellesWilderMovingAverage(Indicator<Num> indicator, int length) {
+    public static WellesWilderMovingAverage wellesWilderMovingAverage(Indicator<Num> indicator, int length) {
+        return CACHE.get(new CacheKey(indicator, length), key -> new WellesWilderMovingAverage(indicator, length));
+    }
+
+    private static final Cache<CacheKey, WellesWilderMovingAverage> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
+    }
+
+    protected WellesWilderMovingAverage(Indicator<Num> indicator, int length) {
         super(indicator, length, indicator.getSeries().getNumFactory().of(length).reciprocal());
     }
 }

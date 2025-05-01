@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.ma.ema;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.RecursiveIndicator;
 import trade.invision.indicators.indicators.ma.sma.SimpleMovingAverage;
@@ -7,6 +10,7 @@ import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Math.rint;
+import static trade.invision.indicators.indicators.ma.sma.SimpleMovingAverage.simpleMovingAverage;
 
 /**
  * {@link ZeroLagExponentialMovingAverage} is a {@link Num} {@link Indicator} to provide a Zero-Lag Exponential Moving
@@ -24,11 +28,25 @@ public class ZeroLagExponentialMovingAverage extends RecursiveIndicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #ZeroLagExponentialMovingAverage(Indicator, int)}.
+     * Gets a {@link ZeroLagExponentialMovingAverage}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param length    the number of values to look back at
      */
     public static ZeroLagExponentialMovingAverage zeroLagExponentialMovingAverage(Indicator<Num> indicator,
             int length) {
-        return new ZeroLagExponentialMovingAverage(indicator, length);
+        return CACHE.get(new CacheKey(indicator, length),
+                key -> new ZeroLagExponentialMovingAverage(indicator, length));
+    }
+
+    private static final Cache<CacheKey, ZeroLagExponentialMovingAverage> CACHE =
+            Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
     }
 
     private final Indicator<Num> indicator;
@@ -37,20 +55,14 @@ public class ZeroLagExponentialMovingAverage extends RecursiveIndicator<Num> {
     private final int lag;
     private final SimpleMovingAverage initialSma;
 
-    /**
-     * Instantiates a new {@link ZeroLagExponentialMovingAverage}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param length    the number of values to look back at
-     */
-    public ZeroLagExponentialMovingAverage(Indicator<Num> indicator, int length) {
+    protected ZeroLagExponentialMovingAverage(Indicator<Num> indicator, int length) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator.caching();
         this.length = length;
         k = numOfTwo().divide(length + 1);
         lag = (int) rint((length - 1.0) / 2.0);
-        initialSma = new SimpleMovingAverage(indicator, length);
+        initialSma = simpleMovingAverage(indicator, length);
     }
 
     @Override

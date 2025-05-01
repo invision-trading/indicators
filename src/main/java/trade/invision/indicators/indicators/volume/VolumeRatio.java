@@ -1,10 +1,15 @@
 package trade.invision.indicators.indicators.volume;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.bar.Volume;
 import trade.invision.indicators.indicators.previous.PreviousRatio;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
+
+import static trade.invision.indicators.indicators.bar.Volume.volume;
 
 /**
  * {@link VolumeRatio} is a {@link Num} {@link Indicator} to use {@link PreviousRatio} with {@link Volume}.
@@ -12,35 +17,32 @@ import trade.invision.num.Num;
 public class VolumeRatio extends PreviousRatio {
 
     /**
-     * Convenience static method for {@link #VolumeRatio(BarSeries)}.
+     * Calls {@link #volumePriceRatio(BarSeries, int)} with <code>n</code> set to <code>1</code>.
      */
-    public static VolumeRatio volumeRatio(BarSeries barSeries) {
-        return new VolumeRatio(barSeries);
+    public static VolumeRatio volumePriceRatio(BarSeries barSeries) {
+        return volumePriceRatio(barSeries, 1);
     }
 
     /**
-     * Convenience static method for {@link #VolumeRatio(BarSeries, int)}.
-     */
-    public static VolumeRatio volumeRatio(BarSeries barSeries, int n) {
-        return new VolumeRatio(barSeries, n);
-    }
-
-    /**
-     * Instantiates a new {@link VolumeRatio} with <code>n</code> set to <code>1</code>.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public VolumeRatio(BarSeries barSeries) {
-        this(barSeries, 1);
-    }
-
-    /**
-     * Instantiates a new {@link VolumeRatio}.
+     * Gets a {@link VolumeRatio}.
      *
      * @param barSeries the {@link BarSeries}
      * @param n         the previous <i>n</i>-th value to look back at
      */
-    public VolumeRatio(BarSeries barSeries, int n) {
-        super(new Volume(barSeries), n);
+    public static VolumeRatio volumePriceRatio(BarSeries barSeries, int n) {
+        return CACHE.get(new CacheKey(barSeries, n), key -> new VolumeRatio(barSeries, n));
+    }
+
+    private static final Cache<CacheKey, VolumeRatio> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+        int n;
+    }
+
+    protected VolumeRatio(BarSeries barSeries, int n) {
+        super(volume(barSeries), n);
     }
 }

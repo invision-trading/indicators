@@ -1,18 +1,24 @@
 package trade.invision.indicators.indicators.bb;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.bb.BollingerBandsResult.BollingerBandsResultBuilder;
 import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.indicators.indicators.statistical.StandardDeviation;
 import trade.invision.num.Num;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static trade.invision.indicators.indicators.bb.BollingerBandsResultType.BANDWIDTH;
 import static trade.invision.indicators.indicators.bb.BollingerBandsResultType.LOWER_BAND;
+import static trade.invision.indicators.indicators.bb.BollingerBandsResultType.MIDDLE_BAND;
 import static trade.invision.indicators.indicators.bb.BollingerBandsResultType.PERCENT_B;
 import static trade.invision.indicators.indicators.bb.BollingerBandsResultType.UPPER_BAND;
+import static trade.invision.indicators.indicators.statistical.StandardDeviation.standardDeviation;
 
 /**
  * {@link BollingerBands} is a {@link Num} {@link Indicator} to provide the Bollinger Bands (BB) over a
@@ -32,12 +38,38 @@ public class BollingerBands extends Indicator<BollingerBandsResult> {
     }
 
     /**
-     * Convenience static method for {@link #BollingerBands(Indicator, Set, int, Num, MovingAverageSupplier, boolean)}.
+     * Gets a {@link BollingerBands}.
+     *
+     * @param indicator             the {@link Indicator}
+     * @param resultTypes           the {@link BollingerBandsResultType} {@link Set}.
+     *                              {@link BollingerBandsResultType#MIDDLE_BAND} is always included.
+     * @param length                the number of values to look back at
+     * @param multiplier            the multiplier (typically 2)
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
+     * @param unbiased              <code>true</code> to use <code>n - 1</code> (unbiased) for the divisor in the
+     *                              standard deviation calculation, <code>false</code> to use <code>n</code> (biased)
      */
     public static BollingerBands bollingerBands(Indicator<Num> indicator,
             Set<BollingerBandsResultType> resultTypes, int length, Num multiplier,
             MovingAverageSupplier movingAverageSupplier, boolean unbiased) {
-        return new BollingerBands(indicator, resultTypes, length, multiplier, movingAverageSupplier, unbiased);
+        final Set<BollingerBandsResultType> finalResultTypes = new HashSet<>(resultTypes);
+        finalResultTypes.add(MIDDLE_BAND);
+        return CACHE.get(new CacheKey(indicator, finalResultTypes, length, multiplier, movingAverageSupplier, unbiased),
+                key -> new BollingerBands(indicator, finalResultTypes, length, multiplier,
+                        movingAverageSupplier, unbiased));
+    }
+
+    private static final Cache<CacheKey, BollingerBands> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        Set<BollingerBandsResultType> resultTypes;
+        int length;
+        Num multiplier;
+        MovingAverageSupplier movingAverageSupplier;
+        boolean unbiased;
     }
 
     private final Indicator<Num> indicator;
@@ -46,18 +78,7 @@ public class BollingerBands extends Indicator<BollingerBandsResult> {
     private final StandardDeviation standardDeviation;
     private final Indicator<Num> averagingIndicator;
 
-    /**
-     * Instantiates a new {@link BollingerBands}.
-     *
-     * @param indicator             the {@link Indicator}
-     * @param resultTypes           the {@link BollingerBandsResultType} {@link Set}
-     * @param length                the number of values to look back at
-     * @param multiplier            the multiplier (typically 2)
-     * @param movingAverageSupplier the {@link MovingAverageSupplier}
-     * @param unbiased              <code>true</code> to use <code>n - 1</code> (unbiased) for the divisor in the
-     *                              standard deviation calculation, <code>false</code> to use <code>n</code> (biased)
-     */
-    public BollingerBands(Indicator<Num> indicator, Set<BollingerBandsResultType> resultTypes, int length,
+    protected BollingerBands(Indicator<Num> indicator, Set<BollingerBandsResultType> resultTypes, int length,
             Num multiplier, MovingAverageSupplier movingAverageSupplier, boolean unbiased) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
@@ -65,7 +86,7 @@ public class BollingerBands extends Indicator<BollingerBandsResult> {
         this.indicator = indicator;
         this.resultTypes = resultTypes;
         this.multiplier = multiplier;
-        standardDeviation = new StandardDeviation(indicator, length, unbiased);
+        standardDeviation = standardDeviation(indicator, length, unbiased);
         averagingIndicator = movingAverageSupplier.supply(indicator, length);
     }
 

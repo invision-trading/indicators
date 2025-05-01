@@ -17,18 +17,23 @@ import static java.lang.Math.max;
  */
 public class BinaryOperation<A, B, R> extends Indicator<R> {
 
-    private final BiFunction<A, B, R> operator;
-    private final Indicator<A> firstOperand;
-    private final Indicator<B> secondOperand;
-
     /**
-     * Instantiates a new {@link BinaryOperation}.
+     * Gets a {@link BinaryOperation}.
      *
      * @param operator      the {@link BiFunction}
      * @param firstOperand  the first {@link Indicator} operand
      * @param secondOperand the second {@link Indicator} operand
      */
-    public BinaryOperation(BiFunction<A, B, R> operator, Indicator<A> firstOperand, Indicator<B> secondOperand) {
+    public static <A, B, R> BinaryOperation<A, B, R> binaryOperation(BiFunction<A, B, R> operator,
+            Indicator<A> firstOperand, Indicator<B> secondOperand) {
+        return new BinaryOperation<>(operator, firstOperand, secondOperand);
+    }
+
+    private final BiFunction<A, B, R> operator;
+    private final Indicator<A> firstOperand;
+    private final Indicator<B> secondOperand;
+
+    protected BinaryOperation(BiFunction<A, B, R> operator, Indicator<A> firstOperand, Indicator<B> secondOperand) {
         super(firstOperand.getSeries(),
                 max(firstOperand.getMinimumStableIndex(), secondOperand.getMinimumStableIndex()));
         this.operator = operator;

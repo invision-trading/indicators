@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.iii;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
@@ -21,20 +24,25 @@ public class IntradayIntensityIndex extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #IntradayIntensityIndex(BarSeries)}.
+     * Gets a {@link IntradayIntensityIndex}.
+     *
+     * @param barSeries the {@link BarSeries}
      */
     public static IntradayIntensityIndex intradayIntensityIndex(BarSeries barSeries) {
-        return new IntradayIntensityIndex(barSeries);
+        return CACHE.get(new CacheKey(barSeries), key -> new IntradayIntensityIndex(barSeries));
+    }
+
+    private static final Cache<CacheKey, IntradayIntensityIndex> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
     }
 
     private final BarSeries barSeries;
 
-    /**
-     * Instantiates a new {@link IntradayIntensityIndex}.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public IntradayIntensityIndex(BarSeries barSeries) {
+    protected IntradayIntensityIndex(BarSeries barSeries) {
         super(barSeries, 0);
         this.barSeries = barSeries;
     }

@@ -12,21 +12,18 @@ import trade.invision.indicators.series.Series;
 public class ConstantValue<T> extends CachelessIndicator<T> {
 
     /**
-     * Convenience static method for {@link #ConstantValue(Series, Object)}.
-     */
-    public static <T> ConstantValue<T> constantValue(Series<?> series, T constant) {
-        return new ConstantValue<>(series, constant);
-    }
-
-    private final T constantValue;
-
-    /**
-     * Instantiates a new {@link ConstantValue}.
+     * Gets a {@link ConstantValue}.
      *
      * @param series        the {@link #getSeries()}
      * @param constantValue the constant value
      */
-    public ConstantValue(Series<?> series, T constantValue) {
+    public static <T> ConstantValue<T> constantValue(Series<?> series, T constantValue) {
+        return new ConstantValue<>(series, constantValue);
+    }
+
+    private final T constantValue;
+
+    protected ConstantValue(Series<?> series, T constantValue) {
         super(series, 0);
         this.constantValue = constantValue;
     }

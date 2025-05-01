@@ -24,6 +24,9 @@ dependencies {
     // Google Guava
     implementation("com.google.guava", "guava", "33.2.1-jre")
 
+    // Caffeine
+    implementation("com.github.ben-manes.caffeine", "caffeine", "3.2.0")
+
     // Num
     api("trade.invision", "num", numVersion)
 }

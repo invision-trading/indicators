@@ -1,9 +1,13 @@
 package trade.invision.indicators.indicators.statistical;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.statistical.Variance.variance;
 
 /**
  * {@link StandardDeviation} is a {@link Num} {@link Indicator} to provide the statistical standard deviation (stddev)
@@ -21,25 +25,34 @@ public class StandardDeviation extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #StandardDeviation(Indicator, int, boolean)}.
+     * Gets a {@link StandardDeviation}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param length    the number of values to look back at
+     * @param unbiased  <code>true</code> to use <code>n - 1</code> (unbiased) for the divisor in the standard
+     *                  deviation calculation, <code>false</code> to use <code>n</code> (biased)
      */
     public static StandardDeviation standardDeviation(Indicator<Num> indicator, int length, boolean unbiased) {
-        return new StandardDeviation(indicator, length, unbiased);
+        return CACHE.get(new CacheKey(indicator, length, unbiased),
+                key -> new StandardDeviation(indicator, length, unbiased));
+    }
+
+    private static final Cache<CacheKey, StandardDeviation> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
+        boolean unbiased;
     }
 
     private final Variance variance;
 
-    /**
-     * Instantiates a new {@link StandardDeviation}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param unbiased  <code>true</code> to use <code>n - 1</code> (unbiased) for the divisor in the standard
-     *                  deviation calculation, <code>false</code> to use <code>n</code> (biased)
-     */
-    public StandardDeviation(Indicator<Num> indicator, int length, boolean unbiased) {
+    protected StandardDeviation(Indicator<Num> indicator, int length, boolean unbiased) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        variance = new Variance(indicator, length, unbiased);
+        variance = variance(indicator, length, unbiased);
     }
 
     @Override

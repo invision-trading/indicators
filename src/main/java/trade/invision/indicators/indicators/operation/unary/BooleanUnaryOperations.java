@@ -2,6 +2,8 @@ package trade.invision.indicators.indicators.operation.unary;
 
 import trade.invision.indicators.indicators.Indicator;
 
+import static trade.invision.indicators.indicators.operation.unary.UnaryOperation.unaryOperation;
+
 /**
  * {@link BooleanUnaryOperations} provides convenience static methods for creating {@link Boolean}
  * {@link UnaryOperation} {@link Indicator}s.
@@ -19,6 +21,6 @@ public final class BooleanUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Boolean> not(Indicator<Boolean> operand) {
-        return new UnaryOperation<>(o -> !o, operand);
+        return unaryOperation(o -> !o, operand);
     }
 }

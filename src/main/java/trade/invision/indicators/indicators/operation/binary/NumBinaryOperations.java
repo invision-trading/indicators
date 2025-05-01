@@ -3,6 +3,8 @@ package trade.invision.indicators.indicators.operation.binary;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
+import static trade.invision.indicators.indicators.operation.binary.BinaryOperation.binaryOperation;
+
 /**
  * {@link NumBinaryOperations} provides convenience static methods for creating {@link Num} {@link BinaryOperation}
  * {@link Indicator}s.
@@ -21,7 +23,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> add(Indicator<Num> augend, Indicator<Num> addend) {
-        return new BinaryOperation<>(Num::add, augend, addend);
+        return binaryOperation(Num::add, augend, addend);
     }
 
     /**
@@ -36,7 +38,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> subtract(Indicator<Num> minuend, Indicator<Num> subtrahend) {
-        return new BinaryOperation<>(Num::subtract, minuend, subtrahend);
+        return binaryOperation(Num::subtract, minuend, subtrahend);
     }
 
     /**
@@ -51,7 +53,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> multiply(Indicator<Num> multiplicand, Indicator<Num> multiplier) {
-        return new BinaryOperation<>(Num::multiply, multiplicand, multiplier);
+        return binaryOperation(Num::multiply, multiplicand, multiplier);
     }
 
     /**
@@ -66,7 +68,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> divide(Indicator<Num> dividend, Indicator<Num> divisor) {
-        return new BinaryOperation<>(Num::divide, dividend, divisor);
+        return binaryOperation(Num::divide, dividend, divisor);
     }
 
     /**
@@ -81,7 +83,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> remainder(Indicator<Num> dividend, Indicator<Num> divisor) {
-        return new BinaryOperation<>(Num::remainder, dividend, divisor);
+        return binaryOperation(Num::remainder, dividend, divisor);
     }
 
     /**
@@ -96,7 +98,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> power(Indicator<Num> base, Indicator<Num> exponent) {
-        return new BinaryOperation<>(Num::power, base, exponent);
+        return binaryOperation(Num::power, base, exponent);
     }
 
     /**
@@ -111,7 +113,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> nthRoot(Indicator<Num> radicand, Indicator<Num> degree) {
-        return new BinaryOperation<>(Num::nthRoot, radicand, degree);
+        return binaryOperation(Num::nthRoot, radicand, degree);
     }
 
     /**
@@ -126,7 +128,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> logarithm(Indicator<Num> antiLogarithm, Indicator<Num> base) {
-        return new BinaryOperation<>(Num::logarithm, antiLogarithm, base);
+        return binaryOperation(Num::logarithm, antiLogarithm, base);
     }
 
     /**
@@ -141,7 +143,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> inverseTangent2(Indicator<Num> y, Indicator<Num> x) {
-        return new BinaryOperation<>(Num::inverseTangent2, y, x);
+        return binaryOperation(Num::inverseTangent2, y, x);
     }
 
     /**
@@ -156,7 +158,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> hypotenuse(Indicator<Num> x, Indicator<Num> y) {
-        return new BinaryOperation<>(Num::hypotenuse, x, y);
+        return binaryOperation(Num::hypotenuse, x, y);
     }
 
     /**
@@ -171,7 +173,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> average(Indicator<Num> left, Indicator<Num> right) {
-        return new BinaryOperation<>(Num::average, left, right);
+        return binaryOperation(Num::average, left, right);
     }
 
     /**
@@ -186,7 +188,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> minimum(Indicator<Num> left, Indicator<Num> right) {
-        return new BinaryOperation<>(Num::minimum, left, right);
+        return binaryOperation(Num::minimum, left, right);
     }
 
     /**
@@ -201,7 +203,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> maximum(Indicator<Num> left, Indicator<Num> right) {
-        return new BinaryOperation<>(Num::maximum, left, right);
+        return binaryOperation(Num::maximum, left, right);
     }
 
     /**
@@ -216,7 +218,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Num> ifNaN(Indicator<Num> num, Indicator<Num> replacement) {
-        return new BinaryOperation<>(Num::ifNaN, num, replacement);
+        return binaryOperation(Num::ifNaN, num, replacement);
     }
 
     /**
@@ -231,7 +233,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isEqual(Indicator<Num> left, Indicator<Num> right) {
-        return new BinaryOperation<>((l, r) -> l.isEqual(r, left.getSeries().getEpsilon()), left, right);
+        return binaryOperation((l, r) -> l.isEqual(r, left.getSeries().getEpsilon()), left, right);
     }
 
     /**
@@ -246,7 +248,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isLessThan(Indicator<Num> left, Indicator<Num> right) {
-        return new BinaryOperation<>(Num::isLessThan, left, right);
+        return binaryOperation(Num::isLessThan, left, right);
     }
 
     /**
@@ -261,7 +263,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isLessThanOrEqual(Indicator<Num> left, Indicator<Num> right) {
-        return new BinaryOperation<>((l, r) -> l.isLessThanOrEqual(r, left.getSeries().getEpsilon()), left, right);
+        return binaryOperation((l, r) -> l.isLessThanOrEqual(r, left.getSeries().getEpsilon()), left, right);
     }
 
     /**
@@ -276,7 +278,7 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isGreaterThan(Indicator<Num> left, Indicator<Num> right) {
-        return new BinaryOperation<>(Num::isGreaterThan, left, right);
+        return binaryOperation(Num::isGreaterThan, left, right);
     }
 
     /**
@@ -291,6 +293,6 @@ public final class NumBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isGreaterThanOrEqual(Indicator<Num> left, Indicator<Num> right) {
-        return new BinaryOperation<>((l, r) -> l.isGreaterThanOrEqual(r, left.getSeries().getEpsilon()), left, right);
+        return binaryOperation((l, r) -> l.isGreaterThanOrEqual(r, left.getSeries().getEpsilon()), left, right);
     }
 }

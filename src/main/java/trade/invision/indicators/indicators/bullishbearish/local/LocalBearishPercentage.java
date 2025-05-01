@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.bullishbearish.local;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
@@ -15,19 +18,25 @@ import trade.invision.num.Num;
 public class LocalBearishPercentage extends AbstractLocalBullishBearishPercentage {
 
     /**
-     * Convenience static method for {@link #LocalBearishPercentage(BarSeries, int)}.
-     */
-    public static LocalBearishPercentage localBearishPercentage(BarSeries barSeries, int length) {
-        return new LocalBearishPercentage(barSeries, length);
-    }
-
-    /**
-     * Instantiates a new {@link LocalBearishPercentage}.
+     * Gets a {@link LocalBearishPercentage}.
      *
      * @param barSeries the {@link BarSeries}
      * @param length    the number of values to look back at
      */
-    public LocalBearishPercentage(BarSeries barSeries, int length) {
+    public static LocalBearishPercentage localBearishPercentage(BarSeries barSeries, int length) {
+        return CACHE.get(new CacheKey(barSeries, length), key -> new LocalBearishPercentage(barSeries, length));
+    }
+
+    private static final Cache<CacheKey, LocalBearishPercentage> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+        int length;
+    }
+
+    protected LocalBearishPercentage(BarSeries barSeries, int length) {
         super(barSeries, length, false);
     }
 }

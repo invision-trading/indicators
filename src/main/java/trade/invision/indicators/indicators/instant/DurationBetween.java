@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.instant;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -17,25 +20,32 @@ import static java.time.ZoneOffset.UTC;
 public class DurationBetween extends Indicator<Num> {
 
     /**
-     * Convenience static method for {@link #DurationBetween(Indicator, Indicator, ChronoUnit)}.
+     * Gets a {@link DurationBetween}.
+     *
+     * @param first  the first {@link Indicator}
+     * @param second the second {@link Indicator}
+     * @param unit   the {@link ChronoUnit}
      */
     public static DurationBetween durationBetween(Indicator<Instant> first, Indicator<Instant> second,
             ChronoUnit unit) {
-        return new DurationBetween(first, second, unit);
+        return CACHE.get(new CacheKey(first, second, unit), key -> new DurationBetween(first, second, unit));
+    }
+
+    private static final Cache<CacheKey, DurationBetween> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Instant> first;
+        Indicator<Instant> second;
+        ChronoUnit unit;
     }
 
     private final Indicator<Instant> first;
     private final Indicator<Instant> second;
     private final ChronoUnit unit;
 
-    /**
-     * Instantiates a new {@link DurationBetween}.
-     *
-     * @param first  the first {@link Indicator}
-     * @param second the second {@link Indicator}
-     * @param unit   the {@link ChronoUnit}
-     */
-    public DurationBetween(Indicator<Instant> first, Indicator<Instant> second, ChronoUnit unit) {
+    protected DurationBetween(Indicator<Instant> first, Indicator<Instant> second, ChronoUnit unit) {
         super(first.getSeries(), 0);
         this.first = first;
         this.second = second;

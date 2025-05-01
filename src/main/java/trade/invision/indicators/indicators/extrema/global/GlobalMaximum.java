@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.extrema.global;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -12,18 +15,23 @@ import trade.invision.num.Num;
 public class GlobalMaximum extends AbstractGlobalExtrema {
 
     /**
-     * Convenience static method for {@link #GlobalMaximum(Indicator)}.
-     */
-    public static GlobalMaximum globalMaximum(Indicator<Num> indicator) {
-        return new GlobalMaximum(indicator);
-    }
-
-    /**
-     * Instantiates a new {@link GlobalMaximum}.
+     * Gets a {@link GlobalMaximum}.
      *
      * @param indicator the {@link Indicator}
      */
-    public GlobalMaximum(Indicator<Num> indicator) {
+    public static GlobalMaximum globalMaximum(Indicator<Num> indicator) {
+        return CACHE.get(new CacheKey(indicator), key -> new GlobalMaximum(indicator));
+    }
+
+    private static final Cache<CacheKey, GlobalMaximum> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+    }
+
+    protected GlobalMaximum(Indicator<Num> indicator) {
         super(indicator, true);
     }
 }

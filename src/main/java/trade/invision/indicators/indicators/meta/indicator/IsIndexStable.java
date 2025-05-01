@@ -10,7 +10,9 @@ import trade.invision.indicators.indicators.Indicator;
 public class IsIndexStable extends CachelessIndicator<Boolean> {
 
     /**
-     * Convenience static method for {@link #IsIndexStable(Indicator)}.
+     * Gets a {@link IsIndexStable}.
+     *
+     * @param indicator the {@link Indicator}
      */
     public static IsIndexStable isIndexStable(Indicator<?> indicator) {
         return new IsIndexStable(indicator);
@@ -18,12 +20,7 @@ public class IsIndexStable extends CachelessIndicator<Boolean> {
 
     private final int stableIndex;
 
-    /**
-     * Instantiates a new {@link IsIndexStable}.
-     *
-     * @param indicator the {@link Indicator}
-     */
-    public IsIndexStable(Indicator<?> indicator) {
+    protected IsIndexStable(Indicator<?> indicator) {
         super(indicator.getSeries(), 0);
         stableIndex = indicator.getMinimumStableIndex();
     }

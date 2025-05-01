@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.clv;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
@@ -21,20 +24,25 @@ public class CloseLocationValue extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #CloseLocationValue(BarSeries)}.
+     * Gets a {@link CloseLocationValue}.
+     *
+     * @param barSeries the {@link BarSeries}
      */
     public static CloseLocationValue closeLocationValue(BarSeries barSeries) {
-        return new CloseLocationValue(barSeries);
+        return CACHE.get(new CacheKey(barSeries), key -> new CloseLocationValue(barSeries));
+    }
+
+    private static final Cache<CacheKey, CloseLocationValue> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
     }
 
     private final BarSeries barSeries;
 
-    /**
-     * Instantiates a new {@link CloseLocationValue}.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public CloseLocationValue(BarSeries barSeries) {
+    protected CloseLocationValue(BarSeries barSeries) {
         super(barSeries, 0);
         this.barSeries = barSeries;
     }

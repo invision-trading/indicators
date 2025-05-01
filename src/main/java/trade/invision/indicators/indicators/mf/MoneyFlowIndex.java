@@ -1,15 +1,20 @@
 package trade.invision.indicators.indicators.mf;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.cumulative.CumulativeSum;
 import trade.invision.indicators.indicators.mf.directional.DirectionalMoneyFlow;
 import trade.invision.indicators.indicators.mf.directional.DirectionalMoneyFlowResult;
-import trade.invision.indicators.indicators.operation.unary.UnaryOperation;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.cumulative.CumulativeSum.cumulativeSum;
+import static trade.invision.indicators.indicators.mf.directional.DirectionalMoneyFlow.directionalMoneyFlow;
+import static trade.invision.indicators.indicators.operation.unary.UnaryOperation.unaryOperation;
 
 /**
  * {@link MoneyFlowIndex} is a {@link Num} {@link Indicator} to provide the Money Flow Index (MFI) over a
@@ -27,28 +32,34 @@ public class MoneyFlowIndex extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #MoneyFlowIndex(BarSeries, int)}.
+     * Gets a {@link MoneyFlowIndex}.
+     *
+     * @param barSeries the {@link BarSeries}
+     * @param length    the number of values to look back at
      */
     public static MoneyFlowIndex moneyFlowIndex(BarSeries barSeries, int length) {
-        return new MoneyFlowIndex(barSeries, length);
+        return CACHE.get(new CacheKey(barSeries, length), key -> new MoneyFlowIndex(barSeries, length));
+    }
+
+    private static final Cache<CacheKey, MoneyFlowIndex> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+        int length;
     }
 
     private final CumulativeSum positiveMoneyFlow;
     private final CumulativeSum negativeMoneyFlow;
 
-    /**
-     * Instantiates a new {@link MoneyFlowIndex}.
-     *
-     * @param barSeries the {@link BarSeries}
-     * @param length    the number of values to look back at
-     */
-    public MoneyFlowIndex(BarSeries barSeries, int length) {
+    protected MoneyFlowIndex(BarSeries barSeries, int length) {
         super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        final DirectionalMoneyFlow directionalMoneyFlow = new DirectionalMoneyFlow(barSeries);
-        positiveMoneyFlow = new CumulativeSum(new UnaryOperation<>(DirectionalMoneyFlowResult::getPositive,
+        final DirectionalMoneyFlow directionalMoneyFlow = directionalMoneyFlow(barSeries);
+        positiveMoneyFlow = cumulativeSum(unaryOperation(DirectionalMoneyFlowResult::getPositive,
                 directionalMoneyFlow), length);
-        negativeMoneyFlow = new CumulativeSum(new UnaryOperation<>(DirectionalMoneyFlowResult::getNegative,
+        negativeMoneyFlow = cumulativeSum(unaryOperation(DirectionalMoneyFlowResult::getNegative,
                 directionalMoneyFlow), length);
     }
 

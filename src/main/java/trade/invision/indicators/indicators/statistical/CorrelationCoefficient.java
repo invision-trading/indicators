@@ -1,9 +1,14 @@
 package trade.invision.indicators.indicators.statistical;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.statistical.Covariance.covariance;
+import static trade.invision.indicators.indicators.statistical.Variance.variance;
 
 /**
  * {@link CorrelationCoefficient} is a {@link Num} {@link Indicator} to provide the statistical correlation coefficient
@@ -21,19 +26,7 @@ public class CorrelationCoefficient extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #CorrelationCoefficient(Indicator, Indicator, int, boolean)}.
-     */
-    public static CorrelationCoefficient correlationCoefficient(Indicator<Num> first, Indicator<Num> second, int length,
-            boolean unbiased) {
-        return new CorrelationCoefficient(first, second, length, unbiased);
-    }
-
-    private final Variance variance1;
-    private final Variance variance2;
-    private final Covariance covariance;
-
-    /**
-     * Instantiates a new {@link CorrelationCoefficient}.
+     * Gets a {@link CorrelationCoefficient}.
      *
      * @param first    the first {@link Indicator}
      * @param second   the second {@link Indicator}
@@ -41,12 +34,33 @@ public class CorrelationCoefficient extends Indicator<Num> {
      * @param unbiased <code>true</code> to use <code>n - 1</code> (unbiased) for the divisor in the variance and
      *                 covariance calculations, <code>false</code> to use <code>n</code> (biased)
      */
-    public CorrelationCoefficient(Indicator<Num> first, Indicator<Num> second, int length, boolean unbiased) {
+    public static CorrelationCoefficient correlationCoefficient(Indicator<Num> first, Indicator<Num> second,
+            int length, boolean unbiased) {
+        return CACHE.get(new CacheKey(first, second, length, unbiased),
+                key -> new CorrelationCoefficient(first, second, length, unbiased));
+    }
+
+    private static final Cache<CacheKey, CorrelationCoefficient> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> first;
+        Indicator<Num> second;
+        int length;
+        boolean unbiased;
+    }
+
+    private final Variance variance1;
+    private final Variance variance2;
+    private final Covariance covariance;
+
+    protected CorrelationCoefficient(Indicator<Num> first, Indicator<Num> second, int length, boolean unbiased) {
         super(first.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        variance1 = new Variance(first, length, unbiased);
-        variance2 = new Variance(second, length, unbiased);
-        covariance = new Covariance(first, second, length, unbiased);
+        variance1 = variance(first, length, unbiased);
+        variance2 = variance(second, length, unbiased);
+        covariance = covariance(first, second, length, unbiased);
     }
 
     @Override

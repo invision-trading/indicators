@@ -10,6 +10,7 @@ import java.time.ZoneOffset;
 import java.time.chrono.ChronoLocalDate;
 
 import static java.time.ZoneOffset.UTC;
+import static trade.invision.indicators.indicators.operation.binary.BinaryOperation.binaryOperation;
 
 /**
  * {@link InstantBinaryOperations} provides convenience static methods for creating {@link Instant}
@@ -29,7 +30,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Instant> earliest(Indicator<Instant> left, Indicator<Instant> right) {
-        return new BinaryOperation<>((l, r) -> l.isBefore(r) ? l : r, left, right);
+        return binaryOperation((l, r) -> l.isBefore(r) ? l : r, left, right);
     }
 
     /**
@@ -44,7 +45,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Instant> latest(Indicator<Instant> left, Indicator<Instant> right) {
-        return new BinaryOperation<>((l, r) -> l.isAfter(r) ? l : r, left, right);
+        return binaryOperation((l, r) -> l.isAfter(r) ? l : r, left, right);
     }
 
     /**
@@ -67,7 +68,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Instant> withTime(Indicator<Instant> left, Indicator<Instant> right, ZoneId zoneId) {
-        return new BinaryOperation<>((l, r) ->
+        return binaryOperation((l, r) ->
                 l.atZone(zoneId).with(r.atZone(zoneId).toLocalTime()).toInstant(), left, right);
     }
 
@@ -91,7 +92,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Instant> withDate(Indicator<Instant> left, Indicator<Instant> right, ZoneId zoneId) {
-        return new BinaryOperation<>((l, r) ->
+        return binaryOperation((l, r) ->
                 l.atZone(zoneId).with(r.atZone(zoneId).toLocalDate()).toInstant(), left, right);
     }
 
@@ -107,7 +108,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isEqual(Indicator<Instant> left, Indicator<Instant> right) {
-        return new BinaryOperation<>(Instant::equals, left, right);
+        return binaryOperation(Instant::equals, left, right);
     }
 
     /**
@@ -122,7 +123,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isBefore(Indicator<Instant> left, Indicator<Instant> right) {
-        return new BinaryOperation<>(Instant::isBefore, left, right);
+        return binaryOperation(Instant::isBefore, left, right);
     }
 
     /**
@@ -137,7 +138,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isBeforeOrEqual(Indicator<Instant> left, Indicator<Instant> right) {
-        return new BinaryOperation<>((l, r) -> !l.isAfter(r), left, right);
+        return binaryOperation((l, r) -> !l.isAfter(r), left, right);
     }
 
     /**
@@ -152,7 +153,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isAfter(Indicator<Instant> left, Indicator<Instant> right) {
-        return new BinaryOperation<>(Instant::isAfter, left, right);
+        return binaryOperation(Instant::isAfter, left, right);
     }
 
     /**
@@ -167,7 +168,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isAfterOrEqual(Indicator<Instant> left, Indicator<Instant> right) {
-        return new BinaryOperation<>((l, r) -> !l.isBefore(r), left, right);
+        return binaryOperation((l, r) -> !l.isBefore(r), left, right);
     }
 
     /**
@@ -190,7 +191,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isTimeEqual(Indicator<Instant> left, Indicator<Instant> right, ZoneId zoneId) {
-        return new BinaryOperation<>((l, r) ->
+        return binaryOperation((l, r) ->
                 l.atZone(zoneId).toLocalTime().equals(r.atZone(zoneId).toLocalTime()), left, right);
     }
 
@@ -215,7 +216,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isTimeBefore(Indicator<Instant> left, Indicator<Instant> right, ZoneId zoneId) {
-        return new BinaryOperation<>((l, r) ->
+        return binaryOperation((l, r) ->
                 l.atZone(zoneId).toLocalTime().isBefore(r.atZone(zoneId).toLocalTime()), left, right);
     }
 
@@ -241,7 +242,7 @@ public final class InstantBinaryOperations {
      */
     public static Indicator<Boolean> isTimeBeforeOrEqual(Indicator<Instant> left, Indicator<Instant> right,
             ZoneId zoneId) {
-        return new BinaryOperation<>((l, r) ->
+        return binaryOperation((l, r) ->
                 !l.atZone(zoneId).toLocalTime().isAfter(r.atZone(zoneId).toLocalTime()), left, right);
     }
 
@@ -265,7 +266,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isTimeAfter(Indicator<Instant> left, Indicator<Instant> right, ZoneId zoneId) {
-        return new BinaryOperation<>((l, r) ->
+        return binaryOperation((l, r) ->
                 l.atZone(zoneId).toLocalTime().isAfter(r.atZone(zoneId).toLocalTime()), left, right);
     }
 
@@ -291,7 +292,7 @@ public final class InstantBinaryOperations {
      */
     public static Indicator<Boolean> isTimeAfterOrEqual(Indicator<Instant> left, Indicator<Instant> right,
             ZoneId zoneId) {
-        return new BinaryOperation<>((l, r) ->
+        return binaryOperation((l, r) ->
                 !l.atZone(zoneId).toLocalTime().isBefore(r.atZone(zoneId).toLocalTime()), left, right);
     }
 
@@ -315,7 +316,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isDateEqual(Indicator<Instant> left, Indicator<Instant> right, ZoneId zoneId) {
-        return new BinaryOperation<>((l, r) ->
+        return binaryOperation((l, r) ->
                 l.atZone(zoneId).toLocalDate().equals(r.atZone(zoneId).toLocalDate()), left, right);
     }
 
@@ -340,7 +341,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isDateBefore(Indicator<Instant> left, Indicator<Instant> right, ZoneId zoneId) {
-        return new BinaryOperation<>((l, r) ->
+        return binaryOperation((l, r) ->
                 l.atZone(zoneId).toLocalDate().isBefore(r.atZone(zoneId).toLocalDate()), left, right);
     }
 
@@ -366,7 +367,7 @@ public final class InstantBinaryOperations {
      */
     public static Indicator<Boolean> isDateBeforeOrEqual(Indicator<Instant> left, Indicator<Instant> right,
             ZoneId zoneId) {
-        return new BinaryOperation<>((l, r) ->
+        return binaryOperation((l, r) ->
                 !l.atZone(zoneId).toLocalDate().isAfter(r.atZone(zoneId).toLocalDate()), left, right);
     }
 
@@ -390,7 +391,7 @@ public final class InstantBinaryOperations {
      * @see BinaryOperation
      */
     public static Indicator<Boolean> isDateAfter(Indicator<Instant> left, Indicator<Instant> right, ZoneId zoneId) {
-        return new BinaryOperation<>((l, r) ->
+        return binaryOperation((l, r) ->
                 l.atZone(zoneId).toLocalDate().isAfter(r.atZone(zoneId).toLocalDate()), left, right);
     }
 
@@ -416,7 +417,7 @@ public final class InstantBinaryOperations {
      */
     public static Indicator<Boolean> isDateAfterOrEqual(Indicator<Instant> left, Indicator<Instant> right,
             ZoneId zoneId) {
-        return new BinaryOperation<>((l, r) ->
+        return binaryOperation((l, r) ->
                 !l.atZone(zoneId).toLocalDate().isBefore(r.atZone(zoneId).toLocalDate()), left, right);
     }
 }

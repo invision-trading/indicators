@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.crossed;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -10,19 +13,25 @@ import trade.invision.num.Num;
 public class CrossedDown extends CrossedUp {
 
     /**
-     * Convenience static method for {@link #CrossedDown(Indicator, Indicator)}.
-     */
-    public static CrossedDown crossedDown(Indicator<Num> first, Indicator<Num> second) {
-        return new CrossedDown(first, second);
-    }
-
-    /**
-     * Instantiates a new {@link CrossedDown}.
+     * Gets a {@link CrossedDown}.
      *
      * @param first  the first {@link Indicator}
      * @param second the second {@link Indicator}
      */
-    public CrossedDown(Indicator<Num> first, Indicator<Num> second) {
+    public static CrossedDown crossedDown(Indicator<Num> first, Indicator<Num> second) {
+        return CACHE.get(new CacheKey(first, second), key -> new CrossedDown(first, second));
+    }
+
+    private static final Cache<CacheKey, CrossedDown> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> first;
+        Indicator<Num> second;
+    }
+
+    protected CrossedDown(Indicator<Num> first, Indicator<Num> second) {
         super(second, first);
     }
 }

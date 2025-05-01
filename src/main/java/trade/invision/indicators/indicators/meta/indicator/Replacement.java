@@ -13,7 +13,11 @@ import trade.invision.indicators.indicators.Indicator;
 public class Replacement<T> extends CachelessIndicator<T> {
 
     /**
-     * Convenience static method for {@link #Replacement(Indicator, Indicator, int)}.
+     * Gets a {@link Replacement}.
+     *
+     * @param replacee         the replacee {@link Indicator}
+     * @param replacement      the replacement {@link Indicator}
+     * @param replacementIndex the replacement index
      */
     public static <T> Replacement<T> replacement(Indicator<T> replacee, Indicator<T> replacement,
             int replacementIndex) {
@@ -24,14 +28,7 @@ public class Replacement<T> extends CachelessIndicator<T> {
     private final Indicator<T> replacement;
     private final int replacementIndex;
 
-    /**
-     * Instantiates a new {@link Replacement}.
-     *
-     * @param replacee         the replacee {@link Indicator}
-     * @param replacement      the replacement {@link Indicator}
-     * @param replacementIndex the replacement index
-     */
-    public Replacement(Indicator<T> replacee, Indicator<T> replacement, int replacementIndex) {
+    protected Replacement(Indicator<T> replacee, Indicator<T> replacement, int replacementIndex) {
         super(replacee.getSeries(), replacement.getMinimumStableIndex());
         this.replacee = replacee;
         this.replacement = replacement;

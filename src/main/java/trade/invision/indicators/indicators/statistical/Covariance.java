@@ -1,11 +1,15 @@
 package trade.invision.indicators.indicators.statistical;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.ma.sma.SimpleMovingAverage;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Math.max;
+import static trade.invision.indicators.indicators.ma.sma.SimpleMovingAverage.simpleMovingAverage;
 
 /**
  * {@link Covariance} is a {@link Num} {@link Indicator} to provide the statistical covariance (covar) of two
@@ -23,10 +27,28 @@ public class Covariance extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #Covariance(Indicator, Indicator, int, boolean)}.
+     * Gets a {@link Covariance}.
+     *
+     * @param first    the first {@link Indicator}
+     * @param second   the second {@link Indicator}
+     * @param length   the number of values to look back at
+     * @param unbiased <code>true</code> to use <code>n - 1</code> (unbiased) for the divisor in the covariance
+     *                 calculation, <code>false</code> to use <code>n</code> (biased)
      */
     public static Covariance covariance(Indicator<Num> first, Indicator<Num> second, int length, boolean unbiased) {
-        return new Covariance(first, second, length, unbiased);
+        return CACHE.get(new CacheKey(first, second, length, unbiased),
+                key -> new Covariance(first, second, length, unbiased));
+    }
+
+    private static final Cache<CacheKey, Covariance> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> first;
+        Indicator<Num> second;
+        int length;
+        boolean unbiased;
     }
 
     private final Indicator<Num> first;
@@ -36,24 +58,15 @@ public class Covariance extends Indicator<Num> {
     private final SimpleMovingAverage sma1;
     private final SimpleMovingAverage sma2;
 
-    /**
-     * Instantiates a new {@link Covariance}.
-     *
-     * @param first    the first {@link Indicator}
-     * @param second   the second {@link Indicator}
-     * @param length   the number of values to look back at
-     * @param unbiased <code>true</code> to use <code>n - 1</code> (unbiased) for the divisor in the covariance
-     *                 calculation, <code>false</code> to use <code>n</code> (biased)
-     */
-    public Covariance(Indicator<Num> first, Indicator<Num> second, int length, boolean unbiased) {
+    protected Covariance(Indicator<Num> first, Indicator<Num> second, int length, boolean unbiased) {
         super(first.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.first = first.caching();
         this.second = second.caching();
         this.length = length;
         this.unbiased = unbiased;
-        sma1 = new SimpleMovingAverage(first, length);
-        sma2 = new SimpleMovingAverage(second, length);
+        sma1 = simpleMovingAverage(first, length);
+        sma2 = simpleMovingAverage(second, length);
     }
 
     @Override

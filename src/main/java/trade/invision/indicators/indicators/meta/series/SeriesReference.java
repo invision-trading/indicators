@@ -12,18 +12,15 @@ import trade.invision.indicators.series.Series;
 public class SeriesReference<T> extends CachelessIndicator<T> {
 
     /**
-     * Convenience static method for {@link #SeriesReference(Series)}.
+     * Gets a {@link SeriesReference}.
+     *
+     * @param series the {@link #getSeries()}
      */
     public static <T> SeriesReference<T> seriesReference(Series<T> series) {
         return new SeriesReference<>(series);
     }
 
-    /**
-     * Instantiates a new {@link SeriesReference}.
-     *
-     * @param series the {@link #getSeries()}
-     */
-    public SeriesReference(Series<T> series) {
+    protected SeriesReference(Series<T> series) {
         super(series, 0);
     }
 

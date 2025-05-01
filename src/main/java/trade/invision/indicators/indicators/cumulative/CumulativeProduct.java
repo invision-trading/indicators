@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.cumulative;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -23,22 +26,28 @@ public class CumulativeProduct extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #CumulativeProduct(Indicator, int)}.
+     * Gets a {@link CumulativeProduct}.
+     *
+     * @param indicator the {@link Num} {@link Indicator}
+     * @param length    the number of values to multiply over
      */
     public static CumulativeProduct cumulativeProduct(Indicator<Num> indicator, int length) {
-        return new CumulativeProduct(indicator, length);
+        return CACHE.get(new CacheKey(indicator, length), key -> new CumulativeProduct(indicator, length));
+    }
+
+    private static final Cache<CacheKey, CumulativeProduct> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
     }
 
     private final Indicator<Num> indicator;
     private final int length;
 
-    /**
-     * Instantiates a new {@link CumulativeProduct}.
-     *
-     * @param indicator the {@link Num} {@link Indicator}
-     * @param length    the number of values to multiply over
-     */
-    public CumulativeProduct(Indicator<Num> indicator, int length) {
+    protected CumulativeProduct(Indicator<Num> indicator, int length) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator.caching();

@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.draw.difference.global;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.draw.AbstractDrawupDrawdown;
 import trade.invision.num.Num;
@@ -14,18 +17,23 @@ import trade.invision.num.Num;
 public class GlobalDrawupDifference extends AbstractDrawupDrawdown {
 
     /**
-     * Convenience static method for {@link #GlobalDrawupDifference(Indicator)}.
-     */
-    public static GlobalDrawupDifference globalDrawupDifference(Indicator<Num> indicator) {
-        return new GlobalDrawupDifference(indicator);
-    }
-
-    /**
-     * Instantiates a new {@link GlobalDrawupDifference}.
+     * Gets a {@link GlobalDrawupDifference}.
      *
      * @param indicator the {@link Indicator}
      */
-    public GlobalDrawupDifference(Indicator<Num> indicator) {
+    public static GlobalDrawupDifference globalDrawupDifference(Indicator<Num> indicator) {
+        return CACHE.get(new CacheKey(indicator), key -> new GlobalDrawupDifference(indicator));
+    }
+
+    private static final Cache<CacheKey, GlobalDrawupDifference> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+    }
+
+    protected GlobalDrawupDifference(Indicator<Num> indicator) {
         super(indicator, null, true, false);
     }
 }

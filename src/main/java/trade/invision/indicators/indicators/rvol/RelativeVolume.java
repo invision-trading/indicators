@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.rvol;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.bar.Volume;
 import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
@@ -8,6 +11,7 @@ import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.bar.Volume.volume;
 
 /**
  * {@link RelativeVolume} is a {@link Num} {@link Indicator} to provide the Relative Volume (RVOL) over a
@@ -26,27 +30,35 @@ public class RelativeVolume extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #RelativeVolume(BarSeries, int, MovingAverageSupplier)}.
-     */
-    public static RelativeVolume relativeVolume(BarSeries barSeries, int length,
-            MovingAverageSupplier movingAverageSupplier) {
-        return new RelativeVolume(barSeries, length, movingAverageSupplier);
-    }
-
-    private final Volume volume;
-    private final Indicator<Num> averageVolume;
-
-    /**
-     * Instantiates a new {@link RelativeVolume}.
+     * Gets a {@link RelativeVolume}.
      *
      * @param barSeries             the {@link BarSeries}
      * @param length                the number of values to look back at
      * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
-    public RelativeVolume(BarSeries barSeries, int length, MovingAverageSupplier movingAverageSupplier) {
+    public static RelativeVolume relativeVolume(BarSeries barSeries, int length,
+            MovingAverageSupplier movingAverageSupplier) {
+        return CACHE.get(new CacheKey(barSeries, length, movingAverageSupplier),
+                key -> new RelativeVolume(barSeries, length, movingAverageSupplier));
+    }
+
+    private static final Cache<CacheKey, RelativeVolume> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+        int length;
+        MovingAverageSupplier movingAverageSupplier;
+    }
+
+    private final Volume volume;
+    private final Indicator<Num> averageVolume;
+
+    protected RelativeVolume(BarSeries barSeries, int length, MovingAverageSupplier movingAverageSupplier) {
         super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        volume = new Volume(barSeries);
+        volume = volume(barSeries);
         averageVolume = movingAverageSupplier.supply(volume, length);
     }
 

@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.instant;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 
 import java.time.Duration;
@@ -12,22 +15,28 @@ import java.time.Instant;
 public class OffsetBy extends Indicator<Instant> {
 
     /**
-     * Convenience static method for {@link #OffsetBy(Indicator, Duration)}.
+     * Gets a {@link OffsetBy}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param offset    the {@link Duration} offset
      */
     public static OffsetBy offsetBy(Indicator<Instant> indicator, Duration offset) {
-        return new OffsetBy(indicator, offset);
+        return CACHE.get(new CacheKey(indicator, offset), key -> new OffsetBy(indicator, offset));
+    }
+
+    private static final Cache<CacheKey, OffsetBy> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Instant> indicator;
+        Duration offset;
     }
 
     private final Indicator<Instant> indicator;
     private final Duration offset;
 
-    /**
-     * Instantiates a new {@link OffsetBy}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param offset    the {@link Duration} offset
-     */
-    public OffsetBy(Indicator<Instant> indicator, Duration offset) {
+    protected OffsetBy(Indicator<Instant> indicator, Duration offset) {
         super(indicator.getSeries(), 0);
         this.indicator = indicator;
         this.offset = offset;

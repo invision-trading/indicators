@@ -14,7 +14,9 @@ import trade.invision.num.Num;
 public class Open extends CachelessIndicator<Num> {
 
     /**
-     * Convenience static method for {@link #Open(BarSeries)}.
+     * Gets a {@link Open}.
+     *
+     * @param barSeries the {@link BarSeries}
      */
     public static Open open(BarSeries barSeries) {
         return new Open(barSeries);
@@ -22,12 +24,7 @@ public class Open extends CachelessIndicator<Num> {
 
     private final BarSeries barSeries;
 
-    /**
-     * Instantiates a new {@link Open}.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public Open(BarSeries barSeries) {
+    protected Open(BarSeries barSeries) {
         super(barSeries, 0);
         this.barSeries = barSeries;
     }

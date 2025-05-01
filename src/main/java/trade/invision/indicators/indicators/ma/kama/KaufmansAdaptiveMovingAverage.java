@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.ma.kama;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.RecursiveIndicator;
 import trade.invision.num.Num;
@@ -25,11 +28,14 @@ public class KaufmansAdaptiveMovingAverage extends RecursiveIndicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #KaufmansAdaptiveMovingAverage(Indicator, int)}.
+     * Calls {@link #kaufmansAdaptiveMovingAverage(Indicator, int, int, int)} with <code>fastLength</code> and
+     * <code>slowLength</code> set to typical values that are proportional with <code>efficiencyRatioLength</code>.
      */
     public static KaufmansAdaptiveMovingAverage kaufmansAdaptiveMovingAverage(Indicator<Num> indicator,
             int efficiencyRatioLength) {
-        return new KaufmansAdaptiveMovingAverage(indicator, efficiencyRatioLength);
+        return kaufmansAdaptiveMovingAverage(indicator, efficiencyRatioLength,
+                max(1, (int) rint(2.0 * (efficiencyRatioLength / 10.0))),
+                max(1, (int) rint(30.0 * (efficiencyRatioLength / 10.0))));
     }
 
     /**
@@ -41,11 +47,29 @@ public class KaufmansAdaptiveMovingAverage extends RecursiveIndicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #KaufmansAdaptiveMovingAverage(Indicator, int, int, int)}.
+     * Gets a {@link KaufmansAdaptiveMovingAverage}.
+     *
+     * @param indicator             the {@link Indicator}
+     * @param efficiencyRatioLength the length of the efficiency ratio (typically 10)
+     * @param fastLength            the length of the fast timeframe (typically 2)
+     * @param slowLength            the length of the slow timeframe (typically 30)
      */
     public static KaufmansAdaptiveMovingAverage kaufmansAdaptiveMovingAverage(Indicator<Num> indicator,
             int efficiencyRatioLength, int fastLength, int slowLength) {
-        return new KaufmansAdaptiveMovingAverage(indicator, efficiencyRatioLength, fastLength, slowLength);
+        return CACHE.get(new CacheKey(indicator, efficiencyRatioLength, fastLength, slowLength),
+                key -> new KaufmansAdaptiveMovingAverage(indicator, efficiencyRatioLength, fastLength, slowLength));
+    }
+
+    private static final Cache<CacheKey, KaufmansAdaptiveMovingAverage> CACHE =
+            Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int efficiencyRatioLength;
+        int fastLength;
+        int slowLength;
     }
 
     private final Indicator<Num> indicator;
@@ -53,28 +77,7 @@ public class KaufmansAdaptiveMovingAverage extends RecursiveIndicator<Num> {
     private final Num fastest;
     private final Num slowest;
 
-    /**
-     * Instantiates a new {@link KaufmansAdaptiveMovingAverage} with <code>fastLength</code> and <code>slowLength</code>
-     * set to typical values that are proportional with <code>efficiencyRatioLength</code>.
-     *
-     * @param indicator             the {@link Indicator}
-     * @param efficiencyRatioLength the length of the efficiency ratio
-     */
-    public KaufmansAdaptiveMovingAverage(Indicator<Num> indicator, int efficiencyRatioLength) {
-        this(indicator, efficiencyRatioLength,
-                max(1, (int) rint(2.0 * (efficiencyRatioLength / 10.0))),
-                max(1, (int) rint(30.0 * (efficiencyRatioLength / 10.0))));
-    }
-
-    /**
-     * Instantiates a new {@link KaufmansAdaptiveMovingAverage}.
-     *
-     * @param indicator             the {@link Indicator}
-     * @param efficiencyRatioLength the length of the efficiency ratio (typically 10)
-     * @param fastLength            the length of the fast timeframe (typically 2)
-     * @param slowLength            the length of the slow timeframe (typically 30)
-     */
-    public KaufmansAdaptiveMovingAverage(Indicator<Num> indicator, int efficiencyRatioLength,
+    protected KaufmansAdaptiveMovingAverage(Indicator<Num> indicator, int efficiencyRatioLength,
             int fastLength, int slowLength) {
         super(indicator.getSeries(), max(efficiencyRatioLength, max(fastLength, slowLength)));
         checkArgument(efficiencyRatioLength > 0, "'efficiencyRatioLength' must be greater than zero!");

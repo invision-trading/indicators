@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.bar;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
@@ -13,22 +16,28 @@ import java.time.Instant;
 public class ContainsInstant extends Indicator<Boolean> {
 
     /**
-     * Convenience static method for {@link #ContainsInstant(BarSeries, Indicator)}.
+     * Gets a {@link ContainsInstant}.
+     *
+     * @param barSeries the {@link BarSeries}
+     * @param check     the check {@link Indicator}
      */
     public static ContainsInstant containsInstant(BarSeries barSeries, Indicator<Instant> check) {
-        return new ContainsInstant(barSeries, check);
+        return CACHE.get(new CacheKey(barSeries, check), key -> new ContainsInstant(barSeries, check));
+    }
+
+    private static final Cache<CacheKey, ContainsInstant> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+        Indicator<Instant> check;
     }
 
     private final BarSeries barSeries;
     private final Indicator<Instant> check;
 
-    /**
-     * Instantiates a new {@link ContainsInstant}.
-     *
-     * @param barSeries the {@link BarSeries}
-     * @param check     the check {@link Indicator}
-     */
-    public ContainsInstant(BarSeries barSeries, Indicator<Instant> check) {
+    protected ContainsInstant(BarSeries barSeries, Indicator<Instant> check) {
         super(barSeries, 0);
         this.barSeries = barSeries;
         this.check = check;

@@ -1,12 +1,17 @@
 package trade.invision.indicators.indicators.obv;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.RecursiveIndicator;
 import trade.invision.indicators.indicators.bar.Close;
-import trade.invision.indicators.indicators.bar.Volume;
-import trade.invision.indicators.indicators.previous.PreviousValue;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
+
+import static trade.invision.indicators.indicators.bar.Close.close;
+import static trade.invision.indicators.indicators.bar.Volume.volume;
+import static trade.invision.indicators.indicators.previous.PreviousValue.previousValue;
 
 /**
  * {@link OnBalanceVolume} is a {@link Num} {@link Indicator} to provide the On-Balance Volume (OBV).
@@ -23,26 +28,31 @@ public class OnBalanceVolume extends RecursiveIndicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #OnBalanceVolume(BarSeries)}.
+     * Gets a {@link OnBalanceVolume}.
+     *
+     * @param barSeries the {@link BarSeries}
      */
     public static OnBalanceVolume onBalanceVolume(BarSeries barSeries) {
-        return new OnBalanceVolume(barSeries);
+        return CACHE.get(new CacheKey(barSeries), key -> new OnBalanceVolume(barSeries));
+    }
+
+    private static final Cache<CacheKey, OnBalanceVolume> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
     }
 
     private final Close close;
     private final Indicator<Num> previousClose;
     private final Indicator<Num> volume;
 
-    /**
-     * Instantiates a new {@link OnBalanceVolume}.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public OnBalanceVolume(BarSeries barSeries) {
+    protected OnBalanceVolume(BarSeries barSeries) {
         super(barSeries, 1);
-        volume = new Volume(barSeries);
-        close = new Close(barSeries);
-        previousClose = new PreviousValue<>(close);
+        volume = volume(barSeries);
+        close = close(barSeries);
+        previousClose = previousValue(close);
     }
 
     @Override

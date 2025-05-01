@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.cumulative;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -23,10 +26,22 @@ public class CumulativeSum extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #CumulativeSum(Indicator, int)}.
+     * Gets a {@link CumulativeSum}.
+     *
+     * @param indicator the {@link Num} {@link Indicator}
+     * @param length    the number of values to sum over
      */
     public static CumulativeSum cumulativeSum(Indicator<Num> indicator, int length) {
-        return new CumulativeSum(indicator, length);
+        return CACHE.get(new CacheKey(indicator, length), key -> new CumulativeSum(indicator, length));
+    }
+
+    private static final Cache<CacheKey, CumulativeSum> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
     }
 
     private final Indicator<Num> indicator;
@@ -35,13 +50,7 @@ public class CumulativeSum extends Indicator<Num> {
     private Num previousValue;
     private Num previousSum;
 
-    /**
-     * Instantiates a new {@link CumulativeSum}.
-     *
-     * @param indicator the {@link Num} {@link Indicator}
-     * @param length    the number of values to sum over
-     */
-    public CumulativeSum(Indicator<Num> indicator, int length) {
+    protected CumulativeSum(Indicator<Num> indicator, int length) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator.caching();

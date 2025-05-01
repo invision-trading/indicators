@@ -1,14 +1,18 @@
 package trade.invision.indicators.indicators.vwap;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
-import trade.invision.indicators.indicators.bar.Volume;
 import trade.invision.indicators.indicators.cumulative.CumulativeSum;
-import trade.invision.indicators.indicators.mf.MoneyFlow;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.bar.Volume.volume;
+import static trade.invision.indicators.indicators.cumulative.CumulativeSum.cumulativeSum;
+import static trade.invision.indicators.indicators.mf.MoneyFlow.moneyFlow;
 
 /**
  * {@link VolumeWeightedAveragePrice} is a {@link Num} {@link Indicator} to provide the Volume-Weighted Average Price
@@ -26,26 +30,32 @@ public class VolumeWeightedAveragePrice extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #VolumeWeightedAveragePrice(BarSeries, int)}.
+     * Gets a {@link VolumeWeightedAveragePrice}.
+     *
+     * @param barSeries the {@link BarSeries}
+     * @param length    the number of values to look back at
      */
     public static VolumeWeightedAveragePrice volumeWeightedAveragePrice(BarSeries barSeries, int length) {
-        return new VolumeWeightedAveragePrice(barSeries, length);
+        return CACHE.get(new CacheKey(barSeries, length), key -> new VolumeWeightedAveragePrice(barSeries, length));
+    }
+
+    private static final Cache<CacheKey, VolumeWeightedAveragePrice> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+        int length;
     }
 
     private final CumulativeSum cumulativeMoneyFlow;
     private final CumulativeSum cumulativeVolume;
 
-    /**
-     * Instantiates a new {@link VolumeWeightedAveragePrice}.
-     *
-     * @param barSeries the {@link BarSeries}
-     * @param length    the number of values to look back at
-     */
-    public VolumeWeightedAveragePrice(BarSeries barSeries, int length) {
+    protected VolumeWeightedAveragePrice(BarSeries barSeries, int length) {
         super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        cumulativeMoneyFlow = new CumulativeSum(new MoneyFlow(barSeries), length);
-        cumulativeVolume = new CumulativeSum(new Volume(barSeries), length);
+        cumulativeMoneyFlow = cumulativeSum(moneyFlow(barSeries), length);
+        cumulativeVolume = cumulativeSum(volume(barSeries), length);
     }
 
     @Override

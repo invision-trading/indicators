@@ -11,18 +11,15 @@ import trade.invision.num.Num;
 public class GetMinimumStableIndex extends ConstantValue<Num> {
 
     /**
-     * Convenience static method for {@link #GetMinimumStableIndex(Indicator)}.
+     * Gets a {@link GetMinimumStableIndex}.
+     *
+     * @param indicator the {@link Indicator}
      */
     public static GetMinimumStableIndex getMinimumStableIndex(Indicator<?> indicator) {
         return new GetMinimumStableIndex(indicator);
     }
 
-    /**
-     * Instantiates a new {@link GetMinimumStableIndex}.
-     *
-     * @param indicator the {@link Indicator}
-     */
-    public GetMinimumStableIndex(Indicator<?> indicator) {
+    protected GetMinimumStableIndex(Indicator<?> indicator) {
         super(indicator.getSeries(), indicator.getSeries().getNumFactory().of(indicator.getMinimumStableIndex()));
     }
 }

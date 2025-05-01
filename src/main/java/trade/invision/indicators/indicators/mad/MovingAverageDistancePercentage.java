@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.mad;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.num.Num;
@@ -25,24 +28,33 @@ public class MovingAverageDistancePercentage extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #MovingAverageDistancePercentage(Indicator, int, MovingAverageSupplier)}.
-     */
-    public static MovingAverageDistancePercentage movingAverageDistancePercentage(Indicator<Num> indicator, int length,
-            MovingAverageSupplier movingAverageSupplier) {
-        return new MovingAverageDistancePercentage(indicator, length, movingAverageSupplier);
-    }
-
-    private final Indicator<Num> indicator;
-    private final Indicator<Num> ma;
-
-    /**
-     * Instantiates a new {@link MovingAverageDistancePercentage}.
+     * Gets a {@link MovingAverageDistancePercentage}.
      *
      * @param indicator             the {@link Indicator}
      * @param length                the number of values to look back at
      * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
-    public MovingAverageDistancePercentage(Indicator<Num> indicator, int length,
+    public static MovingAverageDistancePercentage movingAverageDistancePercentage(Indicator<Num> indicator, int length,
+            MovingAverageSupplier movingAverageSupplier) {
+        return CACHE.get(new CacheKey(indicator, length, movingAverageSupplier),
+                key -> new MovingAverageDistancePercentage(indicator, length, movingAverageSupplier));
+    }
+
+    private static final Cache<CacheKey, MovingAverageDistancePercentage> CACHE =
+            Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
+        MovingAverageSupplier movingAverageSupplier;
+    }
+
+    private final Indicator<Num> indicator;
+    private final Indicator<Num> ma;
+
+    protected MovingAverageDistancePercentage(Indicator<Num> indicator, int length,
             MovingAverageSupplier movingAverageSupplier) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");

@@ -1,10 +1,14 @@
 package trade.invision.indicators.indicators.statistical;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.previous.PreviousRatio;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.previous.PreviousRatio.previousRatio;
 
 /**
  * {@link GrowthRate} is a {@link Num} {@link Indicator} to provide the statistical growth rate (GR) over a
@@ -24,26 +28,32 @@ public class GrowthRate extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #GrowthRate(Indicator, int)}.
+     * Gets a {@link GrowthRate}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param length    the number of values to look back at
      */
     public static GrowthRate growthRate(Indicator<Num> indicator, int length) {
-        return new GrowthRate(indicator, length);
+        return CACHE.get(new CacheKey(indicator, length), key -> new GrowthRate(indicator, length));
+    }
+
+    private static final Cache<CacheKey, GrowthRate> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
     }
 
     private final Num exponent;
     private final PreviousRatio previousRatio;
 
-    /**
-     * Instantiates a new {@link GrowthRate}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param length    the number of values to look back at
-     */
-    public GrowthRate(Indicator<Num> indicator, int length) {
+    protected GrowthRate(Indicator<Num> indicator, int length) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         exponent = numOf(length).reciprocal();
-        previousRatio = new PreviousRatio(indicator, length);
+        previousRatio = previousRatio(indicator, length);
     }
 
     @Override

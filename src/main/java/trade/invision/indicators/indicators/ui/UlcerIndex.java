@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.ui;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -22,22 +25,28 @@ public class UlcerIndex extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #UlcerIndex(Indicator, int)}.
+     * Gets a {@link UlcerIndex}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param length    the number of values to look back at
      */
     public static UlcerIndex ulcerIndex(Indicator<Num> indicator, int length) {
-        return new UlcerIndex(indicator, length);
+        return CACHE.get(new CacheKey(indicator, length), key -> new UlcerIndex(indicator, length));
+    }
+
+    private static final Cache<CacheKey, UlcerIndex> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
     }
 
     private final Indicator<Num> indicator;
     private final int length;
 
-    /**
-     * Instantiates a new {@link UlcerIndex}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param length    the number of values to look back at
-     */
-    public UlcerIndex(Indicator<Num> indicator, int length) {
+    protected UlcerIndex(Indicator<Num> indicator, int length) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator;

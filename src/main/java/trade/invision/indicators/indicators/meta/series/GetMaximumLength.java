@@ -12,18 +12,15 @@ import trade.invision.num.Num;
 public class GetMaximumLength extends ConstantValue<Num> {
 
     /**
-     * Convenience static method for {@link #GetMaximumLength(Series)}.
+     * Gets a {@link GetMaximumLength}.
+     *
+     * @param series the {@link #getSeries()}
      */
     public static GetMaximumLength getMaximumLength(Series<?> series) {
         return new GetMaximumLength(series);
     }
 
-    /**
-     * Instantiates a new {@link GetMaximumLength}.
-     *
-     * @param series the {@link #getSeries()}
-     */
-    public GetMaximumLength(Series<?> series) {
+    protected GetMaximumLength(Series<?> series) {
         super(series, series.getNumFactory().of(series.getMaximumLength()));
     }
 }

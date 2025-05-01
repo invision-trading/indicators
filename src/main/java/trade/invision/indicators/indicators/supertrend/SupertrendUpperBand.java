@@ -1,12 +1,21 @@
 package trade.invision.indicators.indicators.supertrend;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.RecursiveIndicator;
-import trade.invision.indicators.indicators.bar.Close;
 import trade.invision.indicators.indicators.barprice.Hl2;
+import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.indicators.indicators.previous.PreviousValue;
 import trade.invision.indicators.indicators.tr.AverageTrueRange;
+import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
+
+import static trade.invision.indicators.indicators.bar.Close.close;
+import static trade.invision.indicators.indicators.barprice.Hl2.hl2;
+import static trade.invision.indicators.indicators.previous.PreviousValue.previousValue;
+import static trade.invision.indicators.indicators.tr.AverageTrueRange.averageTrueRange;
 
 /**
  * {@link SupertrendUpperBand} is a {@link Num} {@link Indicator} to provide the upper band of a Supertrend over a
@@ -17,11 +26,28 @@ import trade.invision.num.Num;
 public class SupertrendUpperBand extends RecursiveIndicator<Num> {
 
     /**
-     * Convenience static method for {@link #SupertrendUpperBand(Num, AverageTrueRange, Hl2, PreviousValue)}.
+     * Gets a {@link SupertrendUpperBand}.
+     *
+     * @param barSeries             the {@link BarSeries}
+     * @param length                the number of values to look back at (typically 10)
+     * @param multiplier            the multiplier (typically 3)
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
-    public static SupertrendUpperBand supertrendUpperBand(Num multiplier, AverageTrueRange atr, Hl2 hl2,
-            PreviousValue<Num> previousClose) {
-        return new SupertrendUpperBand(multiplier, atr, hl2, previousClose);
+    public static SupertrendUpperBand supertrendUpperBand(BarSeries barSeries, int length, Num multiplier,
+            MovingAverageSupplier movingAverageSupplier) {
+        return CACHE.get(new CacheKey(barSeries, length, multiplier, movingAverageSupplier),
+                key -> new SupertrendUpperBand(barSeries, length, multiplier, movingAverageSupplier));
+    }
+
+    private static final Cache<CacheKey, SupertrendUpperBand> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+        int length;
+        Num multiplier;
+        MovingAverageSupplier movingAverageSupplier;
     }
 
     private final Num multiplier;
@@ -29,20 +55,13 @@ public class SupertrendUpperBand extends RecursiveIndicator<Num> {
     private final Hl2 hl2;
     private final PreviousValue<Num> previousClose;
 
-    /**
-     * Instantiates a new {@link SupertrendUpperBand}.
-     *
-     * @param multiplier    the multiplier
-     * @param atr           the {@link AverageTrueRange}
-     * @param hl2           the {@link Hl2}
-     * @param previousClose the {@link PreviousValue} of {@link Close}
-     */
-    public SupertrendUpperBand(Num multiplier, AverageTrueRange atr, Hl2 hl2, PreviousValue<Num> previousClose) {
-        super(atr.getSeries(), atr.getMinimumStableIndex());
+    protected SupertrendUpperBand(BarSeries barSeries, int length, Num multiplier,
+            MovingAverageSupplier movingAverageSupplier) {
+        super(barSeries, length - 1);
         this.multiplier = multiplier;
-        this.atr = atr;
-        this.hl2 = hl2;
-        this.previousClose = previousClose;
+        this.atr = averageTrueRange(barSeries, length, movingAverageSupplier);
+        this.hl2 = hl2(barSeries);
+        this.previousClose = previousValue(close(barSeries));
     }
 
     @Override

@@ -12,21 +12,23 @@ import java.util.Collection;
 public class ConstantArray<T> extends CachelessIndicator<T> {
 
     /**
-     * Convenience static method for {@link #ConstantArray(Series, boolean)}.
+     * Calls {@link #constantArray(Series, Collection, boolean)} with {@link Series#listView()} on <code>series</code>.
      */
     public static <T> ConstantArray<T> constantArray(Series<T> series, boolean loop) {
-        return new ConstantArray<>(series, loop);
+        return constantArray(series, series.listView(), loop);
     }
 
     /**
-     * Convenience static method for {@link #ConstantArray(Series, Collection, boolean)}.
+     * Calls {@link #constantArray(Series, Object[], boolean)} with {@link Collection#toArray()} on
+     * <code>constantArray</code>.
      */
+    @SuppressWarnings("unchecked")
     public static <T> ConstantArray<T> constantArray(Series<?> series, Collection<T> constantArray, boolean loop) {
-        return new ConstantArray<>(series, constantArray, loop);
+        return constantArray(series, (T[]) constantArray.toArray(), loop);
     }
 
     /**
-     * Convenience static method for {@link #ConstantArray(Series, Object[], boolean)}.
+     * Calls {@link #constantArray(Series, Object[], boolean)} with varargs <code>constantArray</code>.
      */
     @SafeVarargs
     public static <T> ConstantArray<T> constantArray(Series<?> series, boolean loop, T... constantArray) {
@@ -34,7 +36,13 @@ public class ConstantArray<T> extends CachelessIndicator<T> {
     }
 
     /**
-     * Convenience static method for {@link #ConstantArray(Series, Object[], boolean)}.
+     * Gets a {@link ConstantArray}.
+     *
+     * @param series        the {@link #getSeries()}
+     * @param constantArray the constant array
+     * @param loop          <code>true</code> to loop back to the beginning of <code>constantArray</code> when the end
+     *                      is reached, otherwise the last value of <code>constantArray</code> will be used when the end
+     *                      is reached
      */
     public static <T> ConstantArray<T> constantArray(Series<?> series, T[] constantArray, boolean loop) {
         return new ConstantArray<>(series, constantArray, loop);
@@ -43,32 +51,7 @@ public class ConstantArray<T> extends CachelessIndicator<T> {
     private final T[] constantArray;
     private final boolean loop;
 
-    /**
-     * Calls {@link #ConstantArray(Series, Collection, boolean)} with {@link Series#listView()} on <code>series</code>.
-     */
-    public ConstantArray(Series<T> series, boolean loop) {
-        this(series, series.listView(), loop);
-    }
-
-    /**
-     * Calls {@link #ConstantArray(Series, Object[], boolean)} with {@link Collection#toArray()} on
-     * <code>constantArray</code>.
-     */
-    @SuppressWarnings("unchecked")
-    public ConstantArray(Series<?> series, Collection<T> constantArray, boolean loop) {
-        this(series, (T[]) constantArray.toArray(), loop);
-    }
-
-    /**
-     * Instantiates a new {@link ConstantArray}.
-     *
-     * @param series        the {@link #getSeries()}
-     * @param constantArray the constant array
-     * @param loop          <code>true</code> to loop back to the beginning of <code>constantArray</code> when the
-     *                      end is reached, otherwise the last value of <code>constantArray</code> will be used when the
-     *                      end is reached
-     */
-    public ConstantArray(Series<?> series, T[] constantArray, boolean loop) {
+    protected ConstantArray(Series<?> series, T[] constantArray, boolean loop) {
         super(series, 0);
         this.constantArray = constantArray;
         this.loop = loop;

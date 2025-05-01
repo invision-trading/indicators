@@ -19,10 +19,10 @@ public class ExponentialMovingAverage extends AbstractExponentialMovingAverage {
     }
 
     /**
-     * Convenience static method for {@link #ExponentialMovingAverage(Indicator, int)}.
+     * Calls {@link #exponentialMovingAverage(Indicator, int, Num)} with <code>smoothing</code> set to <code>2</code>.
      */
     public static ExponentialMovingAverage exponentialMovingAverage(Indicator<Num> indicator, int length) {
-        return new ExponentialMovingAverage(indicator, length);
+        return exponentialMovingAverage(indicator, length, indicator.getSeries().getNumFactory().two());
     }
 
     /**
@@ -33,28 +33,18 @@ public class ExponentialMovingAverage extends AbstractExponentialMovingAverage {
     }
 
     /**
-     * Convenience static method for {@link #ExponentialMovingAverage(Indicator, int, Num)}.
+     * Gets a {@link ExponentialMovingAverage}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param length    the number of values to look back at
+     * @param smoothing the smoothing factor (typically 2)
      */
     public static ExponentialMovingAverage exponentialMovingAverage(Indicator<Num> indicator, int length,
             Num smoothing) {
         return new ExponentialMovingAverage(indicator, length, smoothing);
     }
 
-    /**
-     * Calls {@link #ExponentialMovingAverage(Indicator, int, Num)} with <code>smoothing</code> set to <code>2</code>.
-     */
-    public ExponentialMovingAverage(Indicator<Num> indicator, int length) {
-        this(indicator, length, indicator.getSeries().getNumFactory().two());
-    }
-
-    /**
-     * Instantiates a new {@link ExponentialMovingAverage}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param length    the number of values to look back at
-     * @param smoothing the smoothing factor (typically 2)
-     */
-    public ExponentialMovingAverage(Indicator<Num> indicator, int length, Num smoothing) {
+    protected ExponentialMovingAverage(Indicator<Num> indicator, int length, Num smoothing) {
         super(indicator, length, smoothing.divide(length + 1));
     }
 }

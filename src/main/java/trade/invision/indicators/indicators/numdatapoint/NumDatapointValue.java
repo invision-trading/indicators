@@ -12,7 +12,9 @@ import trade.invision.num.Num;
 public class NumDatapointValue extends CachelessIndicator<Num> {
 
     /**
-     * Convenience static method for {@link #NumDatapointValue(NumSeries)}.
+     * Gets a {@link NumDatapointValue}.
+     *
+     * @param numSeries the {@link NumSeries}
      */
     public static NumDatapointValue valueOf(NumSeries numSeries) {
         return new NumDatapointValue(numSeries);
@@ -20,12 +22,7 @@ public class NumDatapointValue extends CachelessIndicator<Num> {
 
     private final NumSeries numSeries;
 
-    /**
-     * Instantiates a new {@link NumDatapointValue}.
-     *
-     * @param numSeries the {@link NumSeries}
-     */
-    public NumDatapointValue(NumSeries numSeries) {
+    protected NumDatapointValue(NumSeries numSeries) {
         super(numSeries, 0);
         this.numSeries = numSeries;
     }

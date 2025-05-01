@@ -2,6 +2,8 @@ package trade.invision.indicators.indicators.operation.ternary;
 
 import trade.invision.indicators.indicators.Indicator;
 
+import static trade.invision.indicators.indicators.operation.ternary.TernaryOperation.ternaryOperation;
+
 /**
  * {@link BooleanTernaryOperations} provides convenience static methods for creating {@link Boolean}
  * {@link TernaryOperation} {@link Indicator}s.
@@ -21,6 +23,6 @@ public final class BooleanTernaryOperations {
      */
     public static Indicator<Boolean> ifElse(Indicator<Boolean> conditional,
             Indicator<Boolean> trueCondition, Indicator<Boolean> falseCondition) {
-        return new TernaryOperation<>((c, t, f) -> c ? t : f, conditional, trueCondition, falseCondition);
+        return ternaryOperation((c, t, f) -> c ? t : f, conditional, trueCondition, falseCondition);
     }
 }

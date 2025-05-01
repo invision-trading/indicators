@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.random;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.CachingIndicator;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.Series;
@@ -13,18 +16,23 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RandomBoolean extends CachingIndicator<Boolean> { // Cache so same 'index' yields same result
 
     /**
-     * Convenience static method for {@link #RandomBoolean(Series)}.
-     */
-    public static RandomBoolean randomBoolean(Series<?> series) {
-        return new RandomBoolean(series);
-    }
-
-    /**
-     * Instantiates a new {@link RandomBoolean}.
+     * Gets a {@link RandomBoolean}.
      *
      * @param series the {@link #getSeries()}
      */
-    public RandomBoolean(Series<?> series) {
+    public static RandomBoolean randomBoolean(Series<?> series) {
+        return CACHE.get(new CacheKey(series), key -> new RandomBoolean(series));
+    }
+
+    private static final Cache<CacheKey, RandomBoolean> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Series<?> series;
+    }
+
+    protected RandomBoolean(Series<?> series) {
         super(series, 0);
     }
 

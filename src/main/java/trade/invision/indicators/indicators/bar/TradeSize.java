@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.bar;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
@@ -14,20 +17,25 @@ import trade.invision.num.Num;
 public class TradeSize extends Indicator<Num> {
 
     /**
-     * Convenience static method for {@link #TradeSize(BarSeries)}.
+     * Gets a {@link TradeSize}.
+     *
+     * @param barSeries the {@link BarSeries}
      */
     public static TradeSize tradeSize(BarSeries barSeries) {
-        return new TradeSize(barSeries);
+        return CACHE.get(new CacheKey(barSeries), key -> new TradeSize(barSeries));
+    }
+
+    private static final Cache<CacheKey, TradeSize> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
     }
 
     private final BarSeries barSeries;
 
-    /**
-     * Instantiates a new {@link TradeSize}.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public TradeSize(BarSeries barSeries) {
+    protected TradeSize(BarSeries barSeries) {
         super(barSeries, 0);
         this.barSeries = barSeries;
     }

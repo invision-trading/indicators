@@ -6,6 +6,8 @@ import trade.invision.num.Num;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+import static trade.invision.indicators.indicators.operation.unary.UnaryOperation.unaryOperation;
+
 /**
  * {@link NumUnaryOperations} provides convenience static methods for creating {@link Num} {@link UnaryOperation}
  * {@link Indicator}s.
@@ -23,7 +25,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> square(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::square, operand);
+        return unaryOperation(Num::square, operand);
     }
 
     /**
@@ -37,7 +39,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> cube(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::cube, operand);
+        return unaryOperation(Num::cube, operand);
     }
 
     /**
@@ -51,7 +53,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> exponential(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::exponential, operand);
+        return unaryOperation(Num::exponential, operand);
     }
 
     /**
@@ -65,7 +67,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> squareRoot(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::squareRoot, operand);
+        return unaryOperation(Num::squareRoot, operand);
     }
 
     /**
@@ -79,7 +81,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> cubeRoot(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::cubeRoot, operand);
+        return unaryOperation(Num::cubeRoot, operand);
     }
 
     /**
@@ -93,7 +95,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> naturalLogarithm(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::naturalLogarithm, operand);
+        return unaryOperation(Num::naturalLogarithm, operand);
     }
 
     /**
@@ -107,7 +109,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> commonLogarithm(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::commonLogarithm, operand);
+        return unaryOperation(Num::commonLogarithm, operand);
     }
 
     /**
@@ -121,7 +123,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> binaryLogarithm(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::binaryLogarithm, operand);
+        return unaryOperation(Num::binaryLogarithm, operand);
     }
 
     /**
@@ -135,7 +137,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> absoluteValue(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::absoluteValue, operand);
+        return unaryOperation(Num::absoluteValue, operand);
     }
 
     /**
@@ -149,7 +151,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> negate(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::negate, operand);
+        return unaryOperation(Num::negate, operand);
     }
 
     /**
@@ -163,7 +165,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> reciprocal(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::reciprocal, operand);
+        return unaryOperation(Num::reciprocal, operand);
     }
 
     /**
@@ -177,7 +179,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> increment(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::increment, operand);
+        return unaryOperation(Num::increment, operand);
     }
 
     /**
@@ -191,7 +193,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> decrement(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::decrement, operand);
+        return unaryOperation(Num::decrement, operand);
     }
 
     /**
@@ -205,7 +207,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> floor(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::floor, operand);
+        return unaryOperation(Num::floor, operand);
     }
 
     /**
@@ -219,7 +221,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> ceil(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::ceil, operand);
+        return unaryOperation(Num::ceil, operand);
     }
 
     /**
@@ -233,7 +235,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> degrees(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::degrees, operand);
+        return unaryOperation(Num::degrees, operand);
     }
 
     /**
@@ -247,7 +249,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> radians(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::radians, operand);
+        return unaryOperation(Num::radians, operand);
     }
 
     /**
@@ -261,7 +263,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> pi(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::pi, operand);
+        return unaryOperation(Num::pi, operand);
     }
 
     /**
@@ -275,7 +277,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> e(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::e, operand);
+        return unaryOperation(Num::e, operand);
     }
 
     /**
@@ -289,7 +291,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> sine(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::sine, operand);
+        return unaryOperation(Num::sine, operand);
     }
 
     /**
@@ -303,7 +305,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> cosine(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::cosine, operand);
+        return unaryOperation(Num::cosine, operand);
     }
 
     /**
@@ -317,7 +319,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> tangent(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::tangent, operand);
+        return unaryOperation(Num::tangent, operand);
     }
 
     /**
@@ -331,7 +333,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> inverseSine(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::inverseSine, operand);
+        return unaryOperation(Num::inverseSine, operand);
     }
 
     /**
@@ -345,7 +347,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> inverseCosine(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::inverseCosine, operand);
+        return unaryOperation(Num::inverseCosine, operand);
     }
 
     /**
@@ -359,7 +361,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> inverseTangent(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::inverseTangent, operand);
+        return unaryOperation(Num::inverseTangent, operand);
     }
 
     /**
@@ -373,7 +375,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> hyperbolicSine(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::hyperbolicSine, operand);
+        return unaryOperation(Num::hyperbolicSine, operand);
     }
 
     /**
@@ -387,7 +389,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> hyperbolicCosine(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::hyperbolicCosine, operand);
+        return unaryOperation(Num::hyperbolicCosine, operand);
     }
 
     /**
@@ -401,7 +403,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> hyperbolicTangent(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::hyperbolicTangent, operand);
+        return unaryOperation(Num::hyperbolicTangent, operand);
     }
 
     /**
@@ -415,7 +417,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> inverseHyperbolicSine(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::inverseHyperbolicSine, operand);
+        return unaryOperation(Num::inverseHyperbolicSine, operand);
     }
 
     /**
@@ -429,7 +431,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> inverseHyperbolicCosine(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::inverseHyperbolicCosine, operand);
+        return unaryOperation(Num::inverseHyperbolicCosine, operand);
     }
 
     /**
@@ -443,7 +445,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> inverseHyperbolicTangent(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::inverseHyperbolicTangent, operand);
+        return unaryOperation(Num::inverseHyperbolicTangent, operand);
     }
 
     /**
@@ -457,7 +459,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> integerPart(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::integerPart, operand);
+        return unaryOperation(Num::integerPart, operand);
     }
 
     /**
@@ -471,7 +473,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> fractionalPart(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::fractionalPart, operand);
+        return unaryOperation(Num::fractionalPart, operand);
     }
 
     /**
@@ -485,7 +487,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> round(Indicator<Num> operand) {
-        return new UnaryOperation<>(Num::round, operand);
+        return unaryOperation(Num::round, operand);
     }
 
     /**
@@ -500,7 +502,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> round(Indicator<Num> operand, int scale) {
-        return new UnaryOperation<>(o -> o.round(scale), operand);
+        return unaryOperation(o -> o.round(scale), operand);
     }
 
     /**
@@ -515,7 +517,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> round(Indicator<Num> operand, RoundingMode roundingMode) {
-        return new UnaryOperation<>(o -> o.round(roundingMode), operand);
+        return unaryOperation(o -> o.round(roundingMode), operand);
     }
 
     /**
@@ -531,7 +533,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> round(Indicator<Num> operand, int scale, RoundingMode roundingMode) {
-        return new UnaryOperation<>(o -> o.round(scale, roundingMode), operand);
+        return unaryOperation(o -> o.round(scale, roundingMode), operand);
     }
 
     /**
@@ -546,7 +548,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> precision(Indicator<Num> operand, int significantFigures) {
-        return new UnaryOperation<>(o -> o.precision(significantFigures), operand);
+        return unaryOperation(o -> o.precision(significantFigures), operand);
     }
 
     /**
@@ -562,7 +564,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> precision(Indicator<Num> operand, int significantFigures, RoundingMode roundingMode) {
-        return new UnaryOperation<>(o -> o.precision(significantFigures, roundingMode), operand);
+        return unaryOperation(o -> o.precision(significantFigures, roundingMode), operand);
     }
 
     /**
@@ -577,7 +579,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> precision(Indicator<Num> operand, MathContext mathContext) {
-        return new UnaryOperation<>(o -> o.precision(mathContext), operand);
+        return unaryOperation(o -> o.precision(mathContext), operand);
     }
 
     /**
@@ -591,7 +593,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Num> signum(Indicator<Num> operand) {
-        return new UnaryOperation<>(o -> operand.getSeries().getNumFactory().of(o.signum()), operand);
+        return unaryOperation(o -> operand.getSeries().getNumFactory().of(o.signum()), operand);
     }
 
     /**
@@ -605,7 +607,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Boolean> isNegative(Indicator<Num> input) {
-        return new UnaryOperation<>(Num::isNegative, input);
+        return unaryOperation(Num::isNegative, input);
     }
 
     /**
@@ -619,7 +621,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Boolean> isNegativeOrZero(Indicator<Num> input) {
-        return new UnaryOperation<>(o -> o.isNegativeOrZero(input.getSeries().getEpsilon()), input);
+        return unaryOperation(o -> o.isNegativeOrZero(input.getSeries().getEpsilon()), input);
     }
 
     /**
@@ -633,7 +635,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Boolean> isPositive(Indicator<Num> input) {
-        return new UnaryOperation<>(Num::isPositive, input);
+        return unaryOperation(Num::isPositive, input);
     }
 
     /**
@@ -647,7 +649,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Boolean> isPositiveOrZero(Indicator<Num> input) {
-        return new UnaryOperation<>(o -> o.isPositiveOrZero(input.getSeries().getEpsilon()), input);
+        return unaryOperation(o -> o.isPositiveOrZero(input.getSeries().getEpsilon()), input);
     }
 
     /**
@@ -661,7 +663,7 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Boolean> isZero(Indicator<Num> input) {
-        return new UnaryOperation<>(o -> o.isZero(input.getSeries().getEpsilon()), input);
+        return unaryOperation(o -> o.isZero(input.getSeries().getEpsilon()), input);
     }
 
     /**
@@ -675,6 +677,6 @@ public final class NumUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Boolean> isNaN(Indicator<Num> input) {
-        return new UnaryOperation<>(Num::isNaN, input);
+        return unaryOperation(Num::isNaN, input);
     }
 }

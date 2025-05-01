@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.barprice;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
@@ -21,20 +24,25 @@ public class Hlc3 extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #Hlc3(BarSeries)}.
+     * Gets a {@link Hlc3}.
+     *
+     * @param barSeries the {@link BarSeries}
      */
     public static Hlc3 hlc3(BarSeries barSeries) {
-        return new Hlc3(barSeries);
+        return CACHE.get(new CacheKey(barSeries), key -> new Hlc3(barSeries));
+    }
+
+    private static final Cache<CacheKey, Hlc3> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
     }
 
     private final BarSeries barSeries;
 
-    /**
-     * Instantiates a new {@link Hlc3}.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public Hlc3(BarSeries barSeries) {
+    protected Hlc3(BarSeries barSeries) {
         super(barSeries, 0);
         this.barSeries = barSeries;
     }

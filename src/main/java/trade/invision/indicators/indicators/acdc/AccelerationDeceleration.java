@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.acdc;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.indicators.indicators.macd.MovingAverageConvergenceDivergence;
@@ -7,6 +10,7 @@ import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Math.max;
+import static trade.invision.indicators.indicators.macd.MovingAverageConvergenceDivergence.movingAverageConvergenceDivergence;
 
 /**
  * {@link AccelerationDeceleration} is a {@link Num} {@link Indicator} to provide the Acceleration/Deceleration (ACDC)
@@ -26,30 +30,39 @@ public class AccelerationDeceleration extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #AccelerationDeceleration(Indicator, int, int, MovingAverageSupplier)}.
-     */
-    public static AccelerationDeceleration accelerationDeceleration(Indicator<Num> indicator,
-            int firstLength, int secondLength, MovingAverageSupplier movingAverageSupplier) {
-        return new AccelerationDeceleration(indicator, firstLength, secondLength, movingAverageSupplier);
-    }
-
-    private final MovingAverageConvergenceDivergence macd;
-    private final Indicator<Num> averagingIndicator;
-
-    /**
-     * Instantiates a new {@link AccelerationDeceleration}.
+     * Gets a {@link AccelerationDeceleration}.
      *
      * @param indicator             the {@link Indicator}
      * @param firstLength           the first averaging length (typically 5)
      * @param secondLength          the second averaging length (typically 34)
      * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
-    public AccelerationDeceleration(Indicator<Num> indicator, int firstLength, int secondLength,
+    public static AccelerationDeceleration accelerationDeceleration(Indicator<Num> indicator,
+            int firstLength, int secondLength, MovingAverageSupplier movingAverageSupplier) {
+        return CACHE.get(new CacheKey(indicator, firstLength, secondLength, movingAverageSupplier),
+                key -> new AccelerationDeceleration(indicator, firstLength, secondLength, movingAverageSupplier));
+    }
+
+    private static final Cache<CacheKey, AccelerationDeceleration> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int firstLength;
+        int secondLength;
+        MovingAverageSupplier movingAverageSupplier;
+    }
+
+    private final MovingAverageConvergenceDivergence macd;
+    private final Indicator<Num> averagingIndicator;
+
+    protected AccelerationDeceleration(Indicator<Num> indicator, int firstLength, int secondLength,
             MovingAverageSupplier movingAverageSupplier) {
         super(indicator.getSeries(), max(firstLength, secondLength));
         checkArgument(firstLength > 0, "'firstLength' must be greater than zero!");
         checkArgument(secondLength > 0, "'secondLength' must be greater than zero!");
-        macd = new MovingAverageConvergenceDivergence(indicator, firstLength, secondLength, movingAverageSupplier);
+        macd = movingAverageConvergenceDivergence(indicator, firstLength, secondLength, movingAverageSupplier);
         averagingIndicator = movingAverageSupplier.supply(macd, firstLength);
     }
 

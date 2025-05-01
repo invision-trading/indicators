@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.instant;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -16,39 +19,39 @@ import static java.time.ZoneOffset.UTC;
 public class DateTimeField extends Indicator<Num> {
 
     /**
-     * Convenience static method for {@link #DateTimeField(Indicator, ChronoField)}.
+     * Calls {@link #dateTimeField(Indicator, ChronoField, ZoneId)} with <code>zoneId</code> set to
+     * {@link ZoneOffset#UTC}.
      */
     public static DateTimeField dateTimeField(Indicator<Instant> indicator, ChronoField field) {
-        return new DateTimeField(indicator, field);
+        return dateTimeField(indicator, field, UTC);
     }
 
     /**
-     * Convenience static method for {@link #DateTimeField(Indicator, ChronoField, ZoneId)}.
+     * Gets a {@link DateTimeField}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param field     the {@link ChronoField}
+     * @param zoneId    the {@link ZoneId} to perform the operation in
      */
     public static DateTimeField dateTimeField(Indicator<Instant> indicator, ChronoField field, ZoneId zoneId) {
-        return new DateTimeField(indicator, field, zoneId);
+        return CACHE.get(new CacheKey(indicator, field, zoneId), key -> new DateTimeField(indicator, field, zoneId));
+    }
+
+    private static final Cache<CacheKey, DateTimeField> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Instant> indicator;
+        ChronoField field;
+        ZoneId zoneId;
     }
 
     private final Indicator<Instant> indicator;
     private final ChronoField field;
     private final ZoneId zoneId;
 
-    /**
-     * Calls {@link #DateTimeField(Indicator, ChronoField, ZoneId)} with <code>zoneId</code> set to
-     * {@link ZoneOffset#UTC}.
-     */
-    public DateTimeField(Indicator<Instant> indicator, ChronoField field) {
-        this(indicator, field, UTC);
-    }
-
-    /**
-     * Instantiates a new {@link DateTimeField}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param field     the {@link ChronoField}
-     * @param zoneId    the {@link ZoneId} to perform the operation in
-     */
-    public DateTimeField(Indicator<Instant> indicator, ChronoField field, ZoneId zoneId) {
+    protected DateTimeField(Indicator<Instant> indicator, ChronoField field, ZoneId zoneId) {
         super(indicator.getSeries(), 0);
         this.indicator = indicator;
         this.field = field;

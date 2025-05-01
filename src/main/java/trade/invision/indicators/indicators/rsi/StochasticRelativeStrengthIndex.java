@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.rsi;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.extrema.local.LocalMaximum;
 import trade.invision.indicators.indicators.extrema.local.LocalMinimum;
@@ -7,6 +10,9 @@ import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.extrema.local.LocalMaximum.localMaximum;
+import static trade.invision.indicators.indicators.extrema.local.LocalMinimum.localMinimum;
+import static trade.invision.indicators.indicators.rsi.RelativeStrengthIndex.relativeStrengthIndex;
 
 /**
  * {@link StochasticRelativeStrengthIndex} is a {@link Num} {@link Indicator} to provide the Stochastic Relative
@@ -25,31 +31,40 @@ public class StochasticRelativeStrengthIndex extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #StochasticRelativeStrengthIndex(Indicator, int, MovingAverageSupplier)}.
+     * Gets a {@link StochasticRelativeStrengthIndex}.
+     *
+     * @param indicator             the {@link Indicator}
+     * @param length                the number of values to look back at
+     * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
     public static StochasticRelativeStrengthIndex stochasticRelativeStrengthIndex(Indicator<Num> indicator, int length,
             MovingAverageSupplier movingAverageSupplier) {
-        return new StochasticRelativeStrengthIndex(indicator, length, movingAverageSupplier);
+        return CACHE.get(new CacheKey(indicator, length, movingAverageSupplier),
+                key -> new StochasticRelativeStrengthIndex(indicator, length, movingAverageSupplier));
+    }
+
+    private static final Cache<CacheKey, StochasticRelativeStrengthIndex> CACHE =
+            Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
+        MovingAverageSupplier movingAverageSupplier;
     }
 
     private final RelativeStrengthIndex rsi;
     private final LocalMinimum minRsi;
     private final LocalMaximum maxRsi;
 
-    /**
-     * Instantiates a new {@link StochasticRelativeStrengthIndex}.
-     *
-     * @param indicator             the {@link Indicator}
-     * @param length                the number of values to look back at
-     * @param movingAverageSupplier the {@link MovingAverageSupplier}
-     */
-    public StochasticRelativeStrengthIndex(Indicator<Num> indicator, int length,
+    protected StochasticRelativeStrengthIndex(Indicator<Num> indicator, int length,
             MovingAverageSupplier movingAverageSupplier) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        rsi = new RelativeStrengthIndex(indicator, length, movingAverageSupplier);
-        minRsi = new LocalMinimum(rsi, length);
-        maxRsi = new LocalMaximum(rsi, length);
+        rsi = relativeStrengthIndex(indicator, length, movingAverageSupplier);
+        minRsi = localMinimum(rsi, length);
+        maxRsi = localMaximum(rsi, length);
     }
 
     @Override

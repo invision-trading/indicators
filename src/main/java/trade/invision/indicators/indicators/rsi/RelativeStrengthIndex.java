@@ -1,12 +1,15 @@
 package trade.invision.indicators.indicators.rsi;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
-import trade.invision.indicators.indicators.gainloss.Gain;
-import trade.invision.indicators.indicators.gainloss.Loss;
 import trade.invision.indicators.indicators.ma.MovingAverageSupplier;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.gainloss.Gain.gain;
+import static trade.invision.indicators.indicators.gainloss.Loss.loss;
 
 /**
  * {@link RelativeStrengthIndex} is a {@link Num} {@link Indicator} to provide the Relative Strength Index (RSI) over a
@@ -25,28 +28,36 @@ public class RelativeStrengthIndex extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #RelativeStrengthIndex(Indicator, int, MovingAverageSupplier)}.
-     */
-    public static RelativeStrengthIndex relativeStrengthIndex(Indicator<Num> indicator, int length,
-            MovingAverageSupplier movingAverageSupplier) {
-        return new RelativeStrengthIndex(indicator, length, movingAverageSupplier);
-    }
-
-    private final Indicator<Num> averageGain;
-    private final Indicator<Num> averageLoss;
-
-    /**
-     * Instantiates a new {@link RelativeStrengthIndex}.
+     * Gets a {@link RelativeStrengthIndex}.
      *
      * @param indicator             the {@link Indicator}
      * @param length                the number of values to look back at
      * @param movingAverageSupplier the {@link MovingAverageSupplier}
      */
-    public RelativeStrengthIndex(Indicator<Num> indicator, int length, MovingAverageSupplier movingAverageSupplier) {
+    public static RelativeStrengthIndex relativeStrengthIndex(Indicator<Num> indicator, int length,
+            MovingAverageSupplier movingAverageSupplier) {
+        return CACHE.get(new CacheKey(indicator, length, movingAverageSupplier),
+                key -> new RelativeStrengthIndex(indicator, length, movingAverageSupplier));
+    }
+
+    private static final Cache<CacheKey, RelativeStrengthIndex> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
+        MovingAverageSupplier movingAverageSupplier;
+    }
+
+    private final Indicator<Num> averageGain;
+    private final Indicator<Num> averageLoss;
+
+    protected RelativeStrengthIndex(Indicator<Num> indicator, int length, MovingAverageSupplier movingAverageSupplier) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        averageGain = movingAverageSupplier.supply(new Gain(indicator), length);
-        averageLoss = movingAverageSupplier.supply(new Loss(indicator), length);
+        averageGain = movingAverageSupplier.supply(gain(indicator), length);
+        averageLoss = movingAverageSupplier.supply(loss(indicator), length);
     }
 
     @Override

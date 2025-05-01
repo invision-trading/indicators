@@ -13,7 +13,9 @@ import java.time.Instant;
 public class NumDatapointInstant extends CachelessIndicator<Instant> {
 
     /**
-     * Convenience static method for {@link #NumDatapointInstant(NumSeries)}.
+     * Gets a {@link NumDatapointInstant}.
+     *
+     * @param numSeries the {@link NumSeries}
      */
     public static NumDatapointInstant instantOf(NumSeries numSeries) {
         return new NumDatapointInstant(numSeries);
@@ -21,12 +23,7 @@ public class NumDatapointInstant extends CachelessIndicator<Instant> {
 
     private final NumSeries numSeries;
 
-    /**
-     * Instantiates a new {@link NumDatapointInstant}.
-     *
-     * @param numSeries the {@link NumSeries}
-     */
-    public NumDatapointInstant(NumSeries numSeries) {
+    protected NumDatapointInstant(NumSeries numSeries) {
         super(numSeries, 0);
         this.numSeries = numSeries;
     }

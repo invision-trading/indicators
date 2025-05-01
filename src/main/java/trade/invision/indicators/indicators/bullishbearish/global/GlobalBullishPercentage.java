@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.bullishbearish.global;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
@@ -15,18 +18,23 @@ import trade.invision.num.Num;
 public class GlobalBullishPercentage extends AbstractGlobalBullishBearishPercentage {
 
     /**
-     * Convenience static method for {@link #GlobalBullishPercentage(BarSeries)}.
-     */
-    public static GlobalBullishPercentage globalBullishPercentage(BarSeries barSeries) {
-        return new GlobalBullishPercentage(barSeries);
-    }
-
-    /**
-     * Instantiates a new {@link GlobalBullishPercentage}.
+     * Gets a {@link GlobalBullishPercentage}.
      *
      * @param barSeries the {@link BarSeries}
      */
-    public GlobalBullishPercentage(BarSeries barSeries) {
+    public static GlobalBullishPercentage globalBullishPercentage(BarSeries barSeries) {
+        return CACHE.get(new CacheKey(barSeries), key -> new GlobalBullishPercentage(barSeries));
+    }
+
+    private static final Cache<CacheKey, GlobalBullishPercentage> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+    }
+
+    protected GlobalBullishPercentage(BarSeries barSeries) {
         super(barSeries, true);
     }
 }

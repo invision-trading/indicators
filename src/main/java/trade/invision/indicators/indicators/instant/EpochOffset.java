@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.instant;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -21,10 +24,22 @@ import static java.time.ZoneOffset.UTC;
 public class EpochOffset extends Indicator<Num> {
 
     /**
-     * Convenience static method for {@link #EpochOffset(Indicator, ChronoUnit)}.
+     * Gets a {@link EpochOffset}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param unit      the {@link ChronoUnit}
      */
     public static EpochOffset epochOffset(Indicator<Instant> indicator, ChronoUnit unit) {
-        return new EpochOffset(indicator, unit);
+        return CACHE.get(new CacheKey(indicator, unit), key -> new EpochOffset(indicator, unit));
+    }
+
+    private static final Cache<CacheKey, EpochOffset> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Instant> indicator;
+        ChronoUnit unit;
     }
 
     private static final ZonedDateTime EPOCH_AT_UTC = EPOCH.atZone(UTC);
@@ -32,13 +47,7 @@ public class EpochOffset extends Indicator<Num> {
     private final Indicator<Instant> indicator;
     private final ChronoUnit unit;
 
-    /**
-     * Instantiates a new {@link EpochOffset}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param unit      the {@link ChronoUnit}
-     */
-    public EpochOffset(Indicator<Instant> indicator, ChronoUnit unit) {
+    protected EpochOffset(Indicator<Instant> indicator, ChronoUnit unit) {
         super(indicator.getSeries(), 0);
         this.indicator = indicator;
         this.unit = unit;

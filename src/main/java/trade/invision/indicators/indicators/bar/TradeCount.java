@@ -14,7 +14,9 @@ import trade.invision.num.Num;
 public class TradeCount extends CachelessIndicator<Num> {
 
     /**
-     * Convenience static method for {@link #TradeCount(BarSeries)}.
+     * Gets a {@link TradeCount}.
+     *
+     * @param barSeries the {@link BarSeries}
      */
     public static TradeCount tradeCount(BarSeries barSeries) {
         return new TradeCount(barSeries);
@@ -22,12 +24,7 @@ public class TradeCount extends CachelessIndicator<Num> {
 
     private final BarSeries barSeries;
 
-    /**
-     * Instantiates a new {@link TradeCount}.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public TradeCount(BarSeries barSeries) {
+    protected TradeCount(BarSeries barSeries) {
         super(barSeries, 0);
         this.barSeries = barSeries;
     }

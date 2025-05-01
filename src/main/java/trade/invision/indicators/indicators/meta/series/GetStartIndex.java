@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.meta.series;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.CachingIndicator;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.Series;
@@ -12,18 +15,23 @@ import trade.invision.num.Num;
 public class GetStartIndex extends CachingIndicator<Num> { // Cache so same 'index' yields same result
 
     /**
-     * Convenience static method for {@link #GetStartIndex(Series)}.
-     */
-    public static GetStartIndex getStartIndex(Series<?> series) {
-        return new GetStartIndex(series);
-    }
-
-    /**
-     * Instantiates a new {@link GetStartIndex}.
+     * Gets a {@link GetStartIndex}.
      *
      * @param series the {@link #getSeries()}
      */
-    public GetStartIndex(Series<?> series) {
+    public static GetStartIndex getStartIndex(Series<?> series) {
+        return CACHE.get(new CacheKey(series), key -> new GetStartIndex(series));
+    }
+
+    private static final Cache<CacheKey, GetStartIndex> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Series<?> series;
+    }
+
+    protected GetStartIndex(Series<?> series) {
         super(series, 0);
     }
 

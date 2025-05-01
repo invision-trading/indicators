@@ -2,13 +2,15 @@ package trade.invision.indicators.indicators.nvi;
 
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.RecursiveIndicator;
-import trade.invision.indicators.indicators.bar.Volume;
 import trade.invision.indicators.indicators.closeprice.ClosePricePercentChange;
-import trade.invision.indicators.indicators.previous.PreviousValue;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
 
 import java.util.function.BiPredicate;
+
+import static trade.invision.indicators.indicators.bar.Volume.volume;
+import static trade.invision.indicators.indicators.closeprice.ClosePricePercentChange.closePricePercentChange;
+import static trade.invision.indicators.indicators.previous.PreviousValue.previousValue;
 
 /**
  * {@link AbstractPositiveNegativeVolumeIndex} is an abstract {@link Num} {@link Indicator} for Positive/Negative Volume
@@ -29,9 +31,9 @@ abstract class AbstractPositiveNegativeVolumeIndex extends RecursiveIndicator<Nu
      */
     public AbstractPositiveNegativeVolumeIndex(BarSeries barSeries, boolean positive) {
         super(barSeries, 1);
-        volume = new Volume(barSeries);
-        previousVolume = new PreviousValue<>(volume);
-        closePricePercentChange = new ClosePricePercentChange(barSeries);
+        volume = volume(barSeries);
+        previousVolume = previousValue(volume);
+        closePricePercentChange = closePricePercentChange(barSeries);
         predicate = positive ? Num::isGreaterThan : Num::isLessThan;
     }
 

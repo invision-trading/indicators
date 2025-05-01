@@ -14,16 +14,20 @@ import java.util.function.Function;
  */
 public class UnaryOperation<I, R> extends Indicator<R> {
 
-    private final Function<I, R> operator;
-    private final Indicator<I> operand;
-
     /**
-     * Instantiates a new {@link UnaryOperation}.
+     * Gets a {@link UnaryOperation}.
      *
      * @param operator the {@link Function}
      * @param operand  the {@link Indicator} operand
      */
-    public UnaryOperation(Function<I, R> operator, Indicator<I> operand) {
+    public static <I, R> UnaryOperation<I, R> unaryOperation(Function<I, R> operator, Indicator<I> operand) {
+        return new UnaryOperation<>(operator, operand);
+    }
+
+    private final Function<I, R> operator;
+    private final Indicator<I> operand;
+
+    protected UnaryOperation(Function<I, R> operator, Indicator<I> operand) {
         super(operand.getSeries(), operand.getMinimumStableIndex());
         this.operator = operator;
         this.operand = operand;

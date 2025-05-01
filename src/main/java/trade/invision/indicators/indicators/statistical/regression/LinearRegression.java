@@ -1,18 +1,25 @@
 package trade.invision.indicators.indicators.statistical.regression;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.cumulative.CumulativeSum;
-import trade.invision.indicators.indicators.meta.indicator.CurrentIndex;
 import trade.invision.indicators.indicators.statistical.regression.LinearRegressionResult.LinearRegressionResultBuilder;
 import trade.invision.num.Num;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Math.max;
+import static trade.invision.indicators.indicators.cumulative.CumulativeSum.cumulativeSum;
+import static trade.invision.indicators.indicators.meta.indicator.CurrentIndex.currentIndex;
+import static trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType.INTERCEPT;
 import static trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType.NEXT_Y;
 import static trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType.R2;
 import static trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType.RSS;
+import static trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType.SLOPE;
 import static trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType.TSS;
 import static trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType.Y;
 
@@ -25,11 +32,30 @@ import static trade.invision.indicators.indicators.statistical.regression.Linear
 public class LinearRegression extends Indicator<LinearRegressionResult> {
 
     /**
-     * Convenience static method for {@link #LinearRegression(Indicator, Set, int)}.
+     * Gets a {@link LinearRegression}.
+     *
+     * @param indicator   the {@link Indicator}
+     * @param resultTypes the {@link LinearRegressionResultType} {@link Set}. {@link LinearRegressionResultType#SLOPE}
+     *                    and {@link LinearRegressionResultType#INTERCEPT} are always included.
+     * @param length      the number of values to look back at
      */
     public static LinearRegression linearRegression(Indicator<Num> indicator,
             Set<LinearRegressionResultType> resultTypes, int length) {
-        return new LinearRegression(indicator, resultTypes, length);
+        final Set<LinearRegressionResultType> finalResultTypes = new HashSet<>(resultTypes);
+        finalResultTypes.add(SLOPE);
+        finalResultTypes.add(INTERCEPT);
+        return CACHE.get(new CacheKey(indicator, finalResultTypes, length),
+                key -> new LinearRegression(indicator, finalResultTypes, length));
+    }
+
+    private static final Cache<CacheKey, LinearRegression> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        Set<LinearRegressionResultType> resultTypes;
+        int length;
     }
 
     private final Indicator<Num> indicator;
@@ -38,22 +64,15 @@ public class LinearRegression extends Indicator<LinearRegressionResult> {
     private final CumulativeSum sumX;
     private final CumulativeSum sumY;
 
-    /**
-     * Instantiates a new {@link LinearRegression}.
-     *
-     * @param indicator   the {@link Indicator}
-     * @param resultTypes the {@link LinearRegressionResultType} {@link Set}
-     * @param length      the number of values to look back at
-     */
-    public LinearRegression(Indicator<Num> indicator, Set<LinearRegressionResultType> resultTypes, int length) {
+    protected LinearRegression(Indicator<Num> indicator, Set<LinearRegressionResultType> resultTypes, int length) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         checkArgument(!resultTypes.isEmpty(), "'resultTypes' must not be empty!");
         this.indicator = indicator.caching();
         this.resultTypes = resultTypes;
         this.length = length;
-        sumX = new CumulativeSum(new CurrentIndex(series), length);
-        sumY = new CumulativeSum(indicator, length);
+        sumX = cumulativeSum(currentIndex(series), length);
+        sumY = cumulativeSum(indicator, length);
     }
 
     @Override

@@ -1,11 +1,16 @@
 package trade.invision.indicators.indicators.wpr;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.extrema.local.LocalMaximum;
 import trade.invision.indicators.indicators.extrema.local.LocalMinimum;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.extrema.local.LocalMaximum.localMaximum;
+import static trade.invision.indicators.indicators.extrema.local.LocalMinimum.localMinimum;
 
 /**
  * {@link WilliamsPercentRange} is a {@link Num} {@link Indicator} to provide the Williams Percent Range (WPR) over a
@@ -24,10 +29,22 @@ public class WilliamsPercentRange extends Indicator<Num> {
     }
 
     /**
-     * Convenience static method for {@link #WilliamsPercentRange(Indicator, int)}.
+     * Gets a {@link WilliamsPercentRange}.
+     *
+     * @param indicator the {@link Indicator}
+     * @param length    the number of values to look back at (typically 14)
      */
     public static WilliamsPercentRange williamsPercentRange(Indicator<Num> indicator, int length) {
-        return new WilliamsPercentRange(indicator, length);
+        return CACHE.get(new CacheKey(indicator, length), key -> new WilliamsPercentRange(indicator, length));
+    }
+
+    private static final Cache<CacheKey, WilliamsPercentRange> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+        int length;
     }
 
     private final Indicator<Num> indicator;
@@ -35,18 +52,12 @@ public class WilliamsPercentRange extends Indicator<Num> {
     private final LocalMinimum lowestLow;
     private final Num negativeHundred;
 
-    /**
-     * Instantiates a new {@link WilliamsPercentRange}.
-     *
-     * @param indicator the {@link Indicator}
-     * @param length    the number of values to look back at (typically 14)
-     */
-    public WilliamsPercentRange(Indicator<Num> indicator, int length) {
+    protected WilliamsPercentRange(Indicator<Num> indicator, int length) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
         this.indicator = indicator;
-        highestHigh = new LocalMaximum(indicator, length);
-        lowestLow = new LocalMinimum(indicator, length);
+        highestHigh = localMaximum(indicator, length);
+        lowestLow = localMinimum(indicator, length);
         negativeHundred = numOf(-100);
     }
 

@@ -1,11 +1,16 @@
 package trade.invision.indicators.indicators.convergencedivergence;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.risingfalling.local.LocalFallingPercentage;
 import trade.invision.indicators.indicators.risingfalling.local.LocalRisingPercentage;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static trade.invision.indicators.indicators.risingfalling.local.LocalFallingPercentage.localFallingPercentage;
+import static trade.invision.indicators.indicators.risingfalling.local.LocalRisingPercentage.localRisingPercentage;
 
 /**
  * {@link SimpleConvergenceDivergence} is a {@link Boolean} {@link Indicator} to test whether two {@link Num}
@@ -21,20 +26,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class SimpleConvergenceDivergence extends Indicator<Boolean> {
 
     /**
-     * Convenience static method for
-     * {@link #SimpleConvergenceDivergence(Indicator, Indicator, ConvergenceDivergenceType, int, Num)}.
-     */
-    public static SimpleConvergenceDivergence simpleConvergenceDivergence(Indicator<Num> first, Indicator<Num> second,
-            ConvergenceDivergenceType type, int length, Num percentageThreshold) {
-        return new SimpleConvergenceDivergence(first, second, type, length, percentageThreshold);
-    }
-
-    private final Indicator<Num> riseFallFirst;
-    private final Indicator<Num> riseFallSecond;
-    private final Num percentageThreshold;
-
-    /**
-     * Instantiates a new {@link SimpleConvergenceDivergence}.
+     * Gets a {@link SimpleConvergenceDivergence}.
      *
      * @param first               the first {@link Indicator}
      * @param second              the second {@link Indicator}
@@ -44,7 +36,30 @@ public class SimpleConvergenceDivergence extends Indicator<Boolean> {
      *                            a provided value of <code>0.15</code> would represent <code>15%</code>. Must be
      *                            between zero and one.
      */
-    public SimpleConvergenceDivergence(Indicator<Num> first, Indicator<Num> second, ConvergenceDivergenceType type,
+    public static SimpleConvergenceDivergence simpleConvergenceDivergence(Indicator<Num> first, Indicator<Num> second,
+            ConvergenceDivergenceType type, int length, Num percentageThreshold) {
+        return CACHE.get(new CacheKey(first, second, type, length, percentageThreshold),
+                key -> new SimpleConvergenceDivergence(first, second, type, length, percentageThreshold));
+    }
+
+    private static final Cache<CacheKey, SimpleConvergenceDivergence> CACHE =
+            Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> first;
+        Indicator<Num> second;
+        ConvergenceDivergenceType type;
+        int length;
+        Num percentageThreshold;
+    }
+
+    private final Indicator<Num> riseFallFirst;
+    private final Indicator<Num> riseFallSecond;
+    private final Num percentageThreshold;
+
+    protected SimpleConvergenceDivergence(Indicator<Num> first, Indicator<Num> second, ConvergenceDivergenceType type,
             int length, Num percentageThreshold) {
         super(first.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
@@ -53,20 +68,20 @@ public class SimpleConvergenceDivergence extends Indicator<Boolean> {
         this.percentageThreshold = percentageThreshold;
         switch (type) {
             case POSITIVE_CONVERGENCE -> {
-                riseFallFirst = new LocalRisingPercentage(first, length);
-                riseFallSecond = new LocalRisingPercentage(second, length);
+                riseFallFirst = localRisingPercentage(first, length);
+                riseFallSecond = localRisingPercentage(second, length);
             }
             case NEGATIVE_CONVERGENCE -> {
-                riseFallFirst = new LocalFallingPercentage(first, length);
-                riseFallSecond = new LocalFallingPercentage(second, length);
+                riseFallFirst = localFallingPercentage(first, length);
+                riseFallSecond = localFallingPercentage(second, length);
             }
             case POSITIVE_DIVERGENCE -> {
-                riseFallFirst = new LocalRisingPercentage(first, length);
-                riseFallSecond = new LocalFallingPercentage(second, length);
+                riseFallFirst = localRisingPercentage(first, length);
+                riseFallSecond = localFallingPercentage(second, length);
             }
             case NEGATIVE_DIVERGENCE -> {
-                riseFallFirst = new LocalFallingPercentage(first, length);
-                riseFallSecond = new LocalRisingPercentage(second, length);
+                riseFallFirst = localFallingPercentage(first, length);
+                riseFallSecond = localRisingPercentage(second, length);
             }
             default -> throw new UnsupportedOperationException();
         }

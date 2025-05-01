@@ -1,10 +1,15 @@
 package trade.invision.indicators.indicators.closeprice;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.bar.Close;
 import trade.invision.indicators.indicators.previous.PreviousRatio;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
+
+import static trade.invision.indicators.indicators.bar.Close.close;
 
 /**
  * {@link ClosePriceRatio} is a {@link Num} {@link Indicator} to use {@link PreviousRatio} with {@link Close}.
@@ -12,35 +17,32 @@ import trade.invision.num.Num;
 public class ClosePriceRatio extends PreviousRatio {
 
     /**
-     * Convenience static method for {@link #ClosePriceRatio(BarSeries)}.
+     * Calls {@link #closePriceRatio(BarSeries, int)} with <code>n</code> set to <code>1</code>.
      */
     public static ClosePriceRatio closePriceRatio(BarSeries barSeries) {
-        return new ClosePriceRatio(barSeries);
+        return closePriceRatio(barSeries, 1);
     }
 
     /**
-     * Convenience static method for {@link #ClosePriceRatio(BarSeries, int)}.
-     */
-    public static ClosePriceRatio closePriceRatio(BarSeries barSeries, int n) {
-        return new ClosePriceRatio(barSeries, n);
-    }
-
-    /**
-     * Instantiates a new {@link ClosePriceRatio} with <code>n</code> set to <code>1</code>.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public ClosePriceRatio(BarSeries barSeries) {
-        this(barSeries, 1);
-    }
-
-    /**
-     * Instantiates a new {@link ClosePriceRatio}.
+     * Gets a {@link ClosePriceRatio}.
      *
      * @param barSeries the {@link BarSeries}
      * @param n         the previous <i>n</i>-th value to look back at
      */
-    public ClosePriceRatio(BarSeries barSeries, int n) {
-        super(new Close(barSeries), n);
+    public static ClosePriceRatio closePriceRatio(BarSeries barSeries, int n) {
+        return CACHE.get(new CacheKey(barSeries, n), key -> new ClosePriceRatio(barSeries, n));
+    }
+
+    private static final Cache<CacheKey, ClosePriceRatio> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+        int n;
+    }
+
+    protected ClosePriceRatio(BarSeries barSeries, int n) {
+        super(close(barSeries), n);
     }
 }

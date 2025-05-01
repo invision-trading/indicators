@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.bar;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
@@ -10,22 +13,28 @@ import trade.invision.indicators.series.bar.BarSeries;
 public class Overlaps extends Indicator<Boolean> {
 
     /**
-     * Convenience static method for {@link #Overlaps(BarSeries, BarSeries)}.
+     * Gets a {@link Overlaps}.
+     *
+     * @param barSeries the {@link BarSeries}
+     * @param check     the check {@link BarSeries}
      */
     public static Overlaps overlaps(BarSeries barSeries, BarSeries check) {
-        return new Overlaps(barSeries, check);
+        return CACHE.get(new CacheKey(barSeries, check), key -> new Overlaps(barSeries, check));
+    }
+
+    private static final Cache<CacheKey, Overlaps> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+        BarSeries check;
     }
 
     private final BarSeries barSeries;
     private final BarSeries check;
 
-    /**
-     * Instantiates a new {@link Overlaps}.
-     *
-     * @param barSeries the {@link BarSeries}
-     * @param check     the check {@link BarSeries}
-     */
-    public Overlaps(BarSeries barSeries, BarSeries check) {
+    protected Overlaps(BarSeries barSeries, BarSeries check) {
         super(barSeries, 0);
         this.barSeries = barSeries;
         this.check = check;

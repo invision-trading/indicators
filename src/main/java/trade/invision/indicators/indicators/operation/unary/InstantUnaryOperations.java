@@ -9,6 +9,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 import static java.time.ZoneOffset.UTC;
+import static trade.invision.indicators.indicators.operation.unary.UnaryOperation.unaryOperation;
 
 /**
  * {@link InstantUnaryOperations} provides convenience static methods for creating {@link Instant}
@@ -35,7 +36,7 @@ public final class InstantUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Instant> zeroTime(Indicator<Instant> operand, ZoneId zoneId) {
-        return new UnaryOperation<>(o -> o.atZone(zoneId).with(LocalTime.MIN).toInstant(), operand);
+        return unaryOperation(o -> o.atZone(zoneId).with(LocalTime.MIN).toInstant(), operand);
     }
 
     /**
@@ -56,6 +57,6 @@ public final class InstantUnaryOperations {
      * @see UnaryOperation
      */
     public static Indicator<Instant> epochDate(Indicator<Instant> operand) {
-        return new UnaryOperation<>(o -> o.atZone(UTC).with(LocalDate.EPOCH).toInstant(), operand);
+        return unaryOperation(o -> o.atZone(UTC).with(LocalDate.EPOCH).toInstant(), operand);
     }
 }

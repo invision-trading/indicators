@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.rb;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
@@ -21,18 +24,23 @@ public class AbsoluteRealBody extends RealBody {
     }
 
     /**
-     * Convenience static method for {@link #AbsoluteRealBody(BarSeries)}.
-     */
-    public static AbsoluteRealBody absoluteRealBody(BarSeries barSeries) {
-        return new AbsoluteRealBody(barSeries);
-    }
-
-    /**
-     * Instantiates a new {@link AbsoluteRealBody}.
+     * Gets a {@link AbsoluteRealBody}.
      *
      * @param barSeries the {@link BarSeries}
      */
-    public AbsoluteRealBody(BarSeries barSeries) {
+    public static AbsoluteRealBody absoluteRealBody(BarSeries barSeries) {
+        return CACHE.get(new CacheKey(barSeries), key -> new AbsoluteRealBody(barSeries));
+    }
+
+    private static final Cache<CacheKey, AbsoluteRealBody> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        BarSeries barSeries;
+    }
+
+    protected AbsoluteRealBody(BarSeries barSeries) {
         super(barSeries);
     }
 

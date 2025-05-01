@@ -1,5 +1,8 @@
 package trade.invision.indicators.indicators.risingfalling.global;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.num.Num;
 
@@ -11,18 +14,23 @@ import trade.invision.num.Num;
 public class GlobalFallingPercentage extends AbstractGlobalRisingFallingPercentage {
 
     /**
-     * Convenience static method for {@link #GlobalFallingPercentage(Indicator)}.
-     */
-    public static GlobalFallingPercentage globalFallingPercentage(Indicator<Num> indicator) {
-        return new GlobalFallingPercentage(indicator);
-    }
-
-    /**
-     * Instantiates a new {@link GlobalFallingPercentage}.
+     * Gets a {@link GlobalFallingPercentage}.
      *
      * @param indicator the {@link Indicator}
      */
-    public GlobalFallingPercentage(Indicator<Num> indicator) {
+    public static GlobalFallingPercentage globalFallingPercentage(Indicator<Num> indicator) {
+        return CACHE.get(new CacheKey(indicator), key -> new GlobalFallingPercentage(indicator));
+    }
+
+    private static final Cache<CacheKey, GlobalFallingPercentage> CACHE = Caffeine.newBuilder().weakValues().build();
+
+    @Value
+    private static class CacheKey {
+
+        Indicator<Num> indicator;
+    }
+
+    protected GlobalFallingPercentage(Indicator<Num> indicator) {
         super(indicator, false);
     }
 }

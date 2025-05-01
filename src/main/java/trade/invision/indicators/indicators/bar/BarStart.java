@@ -15,7 +15,9 @@ import java.time.Instant;
 public class BarStart extends CachelessIndicator<Instant> {
 
     /**
-     * Convenience static method for {@link #BarStart(BarSeries)}.
+     * Gets a {@link BarStart}.
+     *
+     * @param barSeries the {@link BarSeries}
      */
     public static BarStart barStart(BarSeries barSeries) {
         return new BarStart(barSeries);
@@ -23,12 +25,7 @@ public class BarStart extends CachelessIndicator<Instant> {
 
     private final BarSeries barSeries;
 
-    /**
-     * Instantiates a new {@link BarStart}.
-     *
-     * @param barSeries the {@link BarSeries}
-     */
-    public BarStart(BarSeries barSeries) {
+    protected BarStart(BarSeries barSeries) {
         super(barSeries, 0);
         this.barSeries = barSeries;
     }

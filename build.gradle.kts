@@ -111,3 +111,7 @@ jreleaser {
         }
     }
 }
+
+tasks.build { mustRunAfter(tasks.clean) }
+tasks.publish { mustRunAfter(tasks.build) }
+tasks.jreleaserFullRelease { dependsOn(tasks.clean, tasks.build, tasks.publish) }

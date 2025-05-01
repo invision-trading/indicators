@@ -5,15 +5,11 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.statistical.regression.LinearRegression;
-import trade.invision.indicators.indicators.statistical.regression.LinearRegressionResult;
 import trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType;
 import trade.invision.num.Num;
 
-import java.util.Set;
-
 import static com.google.common.base.Preconditions.checkArgument;
-import static trade.invision.indicators.indicators.statistical.regression.LinearRegression.linearRegression;
-import static trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType.Y;
+import static trade.invision.indicators.indicators.statistical.regression.LinearRegression.linearRegressionY;
 
 /**
  * {@link LeastSquaresMovingAverage} is a {@link Num} {@link Indicator} to provide a Least Squares Moving Average (LSMA)
@@ -50,16 +46,16 @@ public class LeastSquaresMovingAverage extends Indicator<Num> {
         int length;
     }
 
-    private final Indicator<LinearRegressionResult> linearRegression;
+    private final Indicator<Num> linearRegressionY;
 
     protected LeastSquaresMovingAverage(Indicator<Num> indicator, int length) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        linearRegression = linearRegression(indicator, Set.of(Y), length);
+        linearRegressionY = linearRegressionY(indicator, length);
     }
 
     @Override
     protected Num calculate(long index) {
-        return linearRegression.getValue(index).getY();
+        return linearRegressionY.getValue(index);
     }
 }

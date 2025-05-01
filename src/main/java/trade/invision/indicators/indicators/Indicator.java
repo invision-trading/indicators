@@ -140,6 +140,17 @@ public abstract class Indicator<T> {
     }
 
     /**
+     * If {@link #isCaching()} is <code>true</code>, purges the cache by resetting {@link #cacheSeries}.
+     *
+     * @see #caching()
+     */
+    protected void purgeCache() {
+        if (cacheSeries != null) {
+            cacheSeries = new CacheSeries();
+        }
+    }
+
+    /**
      * @return <code>true</code> if this {@link Indicator} has caching enabled, <code>false</code> otherwise
      *
      * @see #caching()

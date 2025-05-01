@@ -8,12 +8,9 @@ import trade.invision.indicators.indicators.statistical.CorrelationCoefficient;
 import trade.invision.indicators.indicators.statistical.regression.LinearRegression;
 import trade.invision.num.Num;
 
-import java.util.Set;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static trade.invision.indicators.indicators.statistical.CorrelationCoefficient.correlationCoefficient;
-import static trade.invision.indicators.indicators.statistical.regression.LinearRegression.linearRegression;
-import static trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType.SLOPE;
+import static trade.invision.indicators.indicators.statistical.regression.LinearRegression.linearRegressionSlope;
 
 /**
  * {@link ComplexConvergenceDivergence} is a {@link Boolean} {@link Indicator} to test whether two {@link Num}
@@ -69,8 +66,8 @@ public class ComplexConvergenceDivergence extends Indicator<Boolean> {
     private final Num slopeThreshold;
     private final Num slopeThresholdNegated;
     private final CorrelationCoefficient correlationCoefficient;
-    private final LinearRegression firstSlope;
-    private final LinearRegression secondSlope;
+    private final Indicator<Num> firstSlope;
+    private final Indicator<Num> secondSlope;
 
     protected ComplexConvergenceDivergence(Indicator<Num> first, Indicator<Num> second, ConvergenceDivergenceType type,
             int length, Num correlationThreshold, Num slopeThreshold, boolean unbiased) {
@@ -90,8 +87,8 @@ public class ComplexConvergenceDivergence extends Indicator<Boolean> {
             correlationCoefficient = null;
         }
         if (!slopeThreshold.isZero(series.getEpsilon())) {
-            firstSlope = linearRegression(first, Set.of(SLOPE), length);
-            secondSlope = linearRegression(second, Set.of(SLOPE), length);
+            firstSlope = linearRegressionSlope(first, length);
+            secondSlope = linearRegressionSlope(second, length);
         } else {
             firstSlope = null;
             secondSlope = null;
@@ -104,7 +101,7 @@ public class ComplexConvergenceDivergence extends Indicator<Boolean> {
             return false;
         }
         if (firstSlope != null && secondSlope != null) {
-            final Num firstSlopeValue = firstSlope.getValue(index).getSlope();
+            final Num firstSlopeValue = firstSlope.getValue(index);
             switch (type) {
                 case POSITIVE_CONVERGENCE, POSITIVE_DIVERGENCE -> {
                     if (firstSlopeValue.isLessThan(slopeThreshold)) {
@@ -118,7 +115,7 @@ public class ComplexConvergenceDivergence extends Indicator<Boolean> {
                 }
                 default -> throw new UnsupportedOperationException();
             }
-            final Num secondSlopeValue = secondSlope.getValue(index).getSlope();
+            final Num secondSlopeValue = secondSlope.getValue(index);
             switch (type) {
                 case POSITIVE_CONVERGENCE, POSITIVE_DIVERGENCE -> {
                     return secondSlopeValue.isGreaterThan(slopeThreshold);

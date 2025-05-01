@@ -13,6 +13,7 @@ import trade.invision.num.Num;
 
 import static trade.invision.indicators.indicators.bar.Volume.volume;
 import static trade.invision.indicators.indicators.barprice.Hlc3.hlc3;
+import static trade.invision.indicators.indicators.operation.unary.UnaryOperation.unaryOperation;
 
 /**
  * {@link DirectionalMoneyFlow} is a {@link Num} {@link Indicator} to provide the Directional Money Flow (DMF) of a
@@ -21,6 +22,34 @@ import static trade.invision.indicators.indicators.barprice.Hlc3.hlc3;
  * @see <a href="https://www.investopedia.com/terms/m/moneyflow.asp">Investopedia</a>
  */
 public class DirectionalMoneyFlow extends Indicator<DirectionalMoneyFlowResult> {
+
+    /**
+     * @see #positiveDirectionalMoneyFlow(BarSeries)
+     */
+    public static Indicator<Num> positiveDmf(BarSeries barSeries) {
+        return positiveDirectionalMoneyFlow(barSeries);
+    }
+
+    /**
+     * Gets {@link DirectionalMoneyFlowResult#getPositive()} from {@link #directionalMoneyFlow(BarSeries)}.
+     */
+    public static Indicator<Num> positiveDirectionalMoneyFlow(BarSeries barSeries) {
+        return unaryOperation(DirectionalMoneyFlowResult::getPositive, directionalMoneyFlow(barSeries));
+    }
+
+    /**
+     * @see #negativeDirectionalMoneyFlow(BarSeries)
+     */
+    public static Indicator<Num> negativeDmf(BarSeries barSeries) {
+        return negativeDirectionalMoneyFlow(barSeries);
+    }
+
+    /**
+     * Gets {@link DirectionalMoneyFlowResult#getNegative()} from {@link #directionalMoneyFlow(BarSeries)}.
+     */
+    public static Indicator<Num> negativeDirectionalMoneyFlow(BarSeries barSeries) {
+        return unaryOperation(DirectionalMoneyFlowResult::getNegative, directionalMoneyFlow(barSeries));
+    }
 
     /**
      * @see #directionalMoneyFlow(BarSeries)

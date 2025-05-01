@@ -4,15 +4,11 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
-import trade.invision.indicators.indicators.statistical.regression.LinearRegressionResult;
 import trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType;
 import trade.invision.num.Num;
 
-import java.util.Set;
-
 import static com.google.common.base.Preconditions.checkArgument;
-import static trade.invision.indicators.indicators.statistical.regression.LinearRegression.linearRegression;
-import static trade.invision.indicators.indicators.statistical.regression.LinearRegressionResultType.NEXT_Y;
+import static trade.invision.indicators.indicators.statistical.regression.LinearRegression.linearRegressionNextY;
 
 /**
  * {@link PredictiveLeastSquaresMovingAverage} is a {@link Num} {@link Indicator} to provide a predictive Least Squares
@@ -52,16 +48,16 @@ public class PredictiveLeastSquaresMovingAverage extends Indicator<Num> {
         int length;
     }
 
-    private final Indicator<LinearRegressionResult> linearRegression;
+    private final Indicator<Num> linearRegressionNextY;
 
     protected PredictiveLeastSquaresMovingAverage(Indicator<Num> indicator, int length) {
         super(indicator.getSeries(), length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        linearRegression = linearRegression(indicator, Set.of(NEXT_Y), length);
+        linearRegressionNextY = linearRegressionNextY(indicator, length);
     }
 
     @Override
     protected Num calculate(long index) {
-        return linearRegression.getValue(index).getNextY();
+        return linearRegressionNextY.getValue(index);
     }
 }

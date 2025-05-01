@@ -5,16 +5,14 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.Value;
 import trade.invision.indicators.indicators.Indicator;
 import trade.invision.indicators.indicators.cumulative.CumulativeSum;
-import trade.invision.indicators.indicators.mf.directional.DirectionalMoneyFlow;
-import trade.invision.indicators.indicators.mf.directional.DirectionalMoneyFlowResult;
 import trade.invision.indicators.series.bar.Bar;
 import trade.invision.indicators.series.bar.BarSeries;
 import trade.invision.num.Num;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static trade.invision.indicators.indicators.cumulative.CumulativeSum.cumulativeSum;
-import static trade.invision.indicators.indicators.mf.directional.DirectionalMoneyFlow.directionalMoneyFlow;
-import static trade.invision.indicators.indicators.operation.unary.UnaryOperation.unaryOperation;
+import static trade.invision.indicators.indicators.mf.directional.DirectionalMoneyFlow.negativeDirectionalMoneyFlow;
+import static trade.invision.indicators.indicators.mf.directional.DirectionalMoneyFlow.positiveDirectionalMoneyFlow;
 
 /**
  * {@link MoneyFlowIndex} is a {@link Num} {@link Indicator} to provide the Money Flow Index (MFI) over a
@@ -56,11 +54,8 @@ public class MoneyFlowIndex extends Indicator<Num> {
     protected MoneyFlowIndex(BarSeries barSeries, int length) {
         super(barSeries, length - 1);
         checkArgument(length > 0, "'length' must be greater than zero!");
-        final DirectionalMoneyFlow directionalMoneyFlow = directionalMoneyFlow(barSeries);
-        positiveMoneyFlow = cumulativeSum(unaryOperation(DirectionalMoneyFlowResult::getPositive,
-                directionalMoneyFlow), length);
-        negativeMoneyFlow = cumulativeSum(unaryOperation(DirectionalMoneyFlowResult::getNegative,
-                directionalMoneyFlow), length);
+        positiveMoneyFlow = cumulativeSum(positiveDirectionalMoneyFlow(barSeries), length);
+        negativeMoneyFlow = cumulativeSum(negativeDirectionalMoneyFlow(barSeries), length);
     }
 
     @Override

@@ -14,6 +14,13 @@ import trade.invision.num.Num;
 public class Volume extends CachelessIndicator<Num> {
 
     /**
+     * @see #volume(BarSeries)
+     */
+    public static Volume v(BarSeries barSeries) {
+        return volume(barSeries);
+    }
+
+    /**
      * Gets a {@link Volume}.
      *
      * @param barSeries the {@link BarSeries}

@@ -14,6 +14,13 @@ import trade.invision.num.Num;
 public class Close extends CachelessIndicator<Num> {
 
     /**
+     * @see #close(BarSeries)
+     */
+    public static Close c(BarSeries barSeries) {
+        return close(barSeries);
+    }
+
+    /**
      * Gets a {@link Close}.
      *
      * @param barSeries the {@link BarSeries}

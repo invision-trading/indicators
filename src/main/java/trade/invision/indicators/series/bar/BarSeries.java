@@ -30,6 +30,13 @@ public class BarSeries extends Series<Bar> {
     }
 
     /**
+     * @see Series#Series(int, NumFactory)
+     */
+    public BarSeries(int maximumLength, @Nullable NumFactory numFactory) {
+        super(maximumLength, numFactory);
+    }
+
+    /**
      * @see Series#Series(Collection, int, NumFactory, Num)
      */
     public BarSeries(@Nullable Collection<Bar> initialValues, int maximumLength,

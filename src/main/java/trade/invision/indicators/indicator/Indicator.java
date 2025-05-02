@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 
 /**
  * {@link Indicator} is an abstract class for performing calculations on a {@link Series} or another {@link Indicator},
- * with optional caching (disabled by default). Calculated values should be of an immutable type. This class is not
- * thread-safe.
+ * with optional result caching (disabled by default). Calculated values should be of an immutable type. This class is
+ * not thread-safe.
  *
  * @param <T> the immutable type
  *

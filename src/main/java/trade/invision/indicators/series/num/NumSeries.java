@@ -27,6 +27,13 @@ public class NumSeries extends Series<NumDatapoint> {
     }
 
     /**
+     * @see Series#Series(int, NumFactory)
+     */
+    public NumSeries(int maximumLength, @Nullable NumFactory numFactory) {
+        super(maximumLength, numFactory);
+    }
+
+    /**
      * @see Series#Series(Collection, int, NumFactory, Num)
      */
     public NumSeries(@Nullable Collection<NumDatapoint> initialValues, int maximumLength,

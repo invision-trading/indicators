@@ -14,6 +14,13 @@ import trade.invision.num.Num;
 public class Open extends CachelessIndicator<Num> {
 
     /**
+     * @see #open(BarSeries)
+     */
+    public static Open o(BarSeries barSeries) {
+        return open(barSeries);
+    }
+
+    /**
      * Gets a {@link Open}.
      *
      * @param barSeries the {@link BarSeries}

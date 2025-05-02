@@ -1,5 +1,6 @@
 package trade.invision.indicators.indicator.ma;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +24,7 @@ import static trade.invision.indicators.indicator.ma.wma.WeightedMovingAverage.w
 /**
  * {@link MovingAverageSupplier} supplies a moving average {@link Indicator} configured with the given options.
  */
-@Value @Builder(toBuilder = true)
+@Value @AllArgsConstructor @Builder(toBuilder = true)
 public class MovingAverageSupplier {
 
     /**

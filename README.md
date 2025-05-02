@@ -57,7 +57,9 @@ end index of a `Series` and perform some action based on that result. The cache 
 `Indicator` use the calculated values of non-ending indices, as opposed to only using the calculated value of the end
 index. `Indicator` implementations that utilize recursion should extend
 [`RecursiveIndicator`](src/main/java/trade/invision/indicators/indicator/RecursiveIndicator.java), which forces caching
-and prevents `StackOverflowError` exceptions. Typically, an `Indicator` will be one of the following three types:
+and prevents
+[`StackOverflowError`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/StackOverflowError.html)
+exceptions. Typically, an `Indicator` will be one of the following three types:
 [`Num`](https://javadoc.io/doc/trade.invision/num/latest/trade/invision/num/Num.html) (decimal number),
 [`Boolean`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Boolean.html) (true/false), or
 [`Instant`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Instant.html) (timestamp). Each
@@ -75,6 +77,7 @@ here's a simple example:
   import trade.invision.indicators.indicator.barprice.Hlc3;
   import trade.invision.indicators.indicator.barprice.Ohlc4;
   import trade.invision.indicators.indicator.bullishbearish.global.GlobalBullishPercentage;
+  import trade.invision.indicators.indicator.crossed.Crossed;
   import trade.invision.indicators.indicator.ma.sma.SimpleMovingAverage;
   import trade.invision.indicators.indicator.statistical.StandardDeviation;
   import trade.invision.indicators.series.bar.Bar;
@@ -82,14 +85,20 @@ here's a simple example:
   import trade.invision.num.Num;
   import trade.invision.num.NumFactory;
   
+  import java.io.IOException;
+  import java.io.InputStream;
+  import java.net.URI;
   import java.time.Instant;
   
-  import static java.time.temporal.ChronoUnit.MINUTES;
+  import static java.lang.Long.parseLong;
+  import static java.time.Instant.ofEpochMilli;
+  import static java.time.temporal.ChronoUnit.DAYS;
   import static trade.invision.indicators.indicator.bar.Close.close;
   import static trade.invision.indicators.indicator.barprice.Hlc3.typicalPrice;
   import static trade.invision.indicators.indicator.barprice.Ohlc4.ohlc4;
   import static trade.invision.indicators.indicator.bullishbearish.global.GlobalBullishPercentage.globalBullishPercentage;
-  import static trade.invision.indicators.indicator.ma.MovingAverageSupplier.emaSupplier;
+  import static trade.invision.indicators.indicator.crossed.Crossed.crossed;
+  import static trade.invision.indicators.indicator.ma.MovingAverageSupplier.wwmaSupplier;
   import static trade.invision.indicators.indicator.ma.sma.SimpleMovingAverage.simpleMovingAverage;
   import static trade.invision.indicators.indicator.rsi.RelativeStrengthIndex.rsi;
   import static trade.invision.indicators.indicator.statistical.StandardDeviation.stddev;
@@ -100,20 +109,22 @@ here's a simple example:
 ```java
 final NumFactory numFactory = decimalNum64Factory();
 final BarSeries barSeries = new BarSeries(20, numFactory);
-// Add some random 'Bar' data to 'barSeries'.
-for (int index = 0; index < barSeries.getMaximumLength(); index++) {
-    final Instant start = Instant.parse("2025-01-01T00:00:00Z").plus(index, MINUTES);
-    final Instant end = start.plus(1, MINUTES);
-    final Num random = numFactory.of(index + 10).add(numFactory.random().multiply(10));
-    final Num open = random.add(numFactory.random().subtract(numFactory.half()).multiply(5));
-    final Num close = random.add(numFactory.random().subtract(numFactory.half()).multiply(5));
-    final Num high = random.add(5);
-    final Num low = random.subtract(5);
-    final Num volume = numFactory.hundred();
-    final Num tradeCount = numFactory.hundred();
-    final Bar bar = new Bar(start, end, open, high, low, close, volume, tradeCount);
-    barSeries.add(bar);
-    System.out.println("Added: " + bar);
+// Get AAPL 1D bar data from 2025-01-01 to 2025-02-01.
+try (final InputStream inputStream = URI.create("https://pastebin.com/raw/dnLSgw44").toURL().openStream()) {
+    for (String barDataLine : new String(inputStream.readAllBytes()).split("\n")) {
+        final String[] barDataCsv = barDataLine.trim().split(",");
+        final Instant start = ofEpochMilli(parseLong(barDataCsv[5]));
+        final Instant end = start.plus(1, DAYS);
+        final Num open = numFactory.of(barDataCsv[1]);
+        final Num high = numFactory.of(barDataCsv[3]);
+        final Num low = numFactory.of(barDataCsv[4]);
+        final Num close = numFactory.of(barDataCsv[2]);
+        final Num volume = numFactory.of(barDataCsv[0]);
+        final Num tradeCount = numFactory.of(barDataCsv[6]);
+        final Bar bar = new Bar(start, end, open, high, low, close, volume, tradeCount);
+        barSeries.add(bar);
+        System.out.println("Added: " + bar);
+    }
 }
 
 // Calculate the Simple Moving Average (SMA) using the bar average price.
@@ -125,14 +136,14 @@ for (long index = barSeries.getStartIndex(); index <= barSeries.getEndIndex(); i
 
 // Calculate the Standard Deviation (stddev) using the bar typical price.
 final Hlc3 typicalPrice = typicalPrice(barSeries);
-final StandardDeviation stddev = stddev(typicalPrice, 5, true);
+final StandardDeviation stddev = stddev(typicalPrice, 5, false);
 for (long index = barSeries.getStartIndex(); index <= barSeries.getEndIndex(); index++) {
     System.out.printf("HLC3 5 STDDEV at %d: %s\n", index, stddev.getValue(index));
 }
 
-// Calculate the Relative Strength Index (RSI) using the bar close price and an Exponential Moving Average (EMA).
+// Calculate the Relative Strength Index (RSI) using the bar close price and Welles Wilder Moving Average (WWMA).
 final Indicator<Num> close = close(barSeries);
-final Indicator<Num> rsi = rsi(close, 10, emaSupplier());
+final Indicator<Num> rsi = rsi(close, 10, wwmaSupplier());
 for (long index = barSeries.getStartIndex(); index <= barSeries.getEndIndex(); index++) {
     System.out.printf("C 10 RSI at %d: %s\n", index, rsi.getValue(index));
 }
@@ -140,7 +151,14 @@ for (long index = barSeries.getStartIndex(); index <= barSeries.getEndIndex(); i
 // Calculate the percentage of bullish bars.
 final GlobalBullishPercentage globalBullishPercentage = globalBullishPercentage(barSeries);
 for (long index = barSeries.getStartIndex(); index <= barSeries.getEndIndex(); index++) {
-    System.out.printf("Bullish %% at %d: %s%%\n", index, globalBullishPercentage.getValue(index).multiply(100).round());
+    System.out.printf("Bullish %% at %d: %s%%\n", index,
+            globalBullishPercentage.getValue(index).multiply(100).round());
+}
+
+// Calculate SMA crossovers with bar close price.
+final Crossed crossed = crossed(sma, close);
+for (long index = barSeries.getStartIndex(); index <= barSeries.getEndIndex(); index++) {
+    System.out.printf("OHLC4 20 SMA crossed C at %d: %s\n", index, crossed.getValue(index));
 }
 ```
 
@@ -153,7 +171,7 @@ and additions that this library provides:
 - Configurable `Indicator` result caching.
 - `Indicator` instance caching.
 - Several optimizations to reduce memory consumption and improve execution time for common access pattern (e.g.
-  consecutive indices, identical indices, reusing `Indicator` instances with identical configurations).
+  consecutive indices, identical indices, caching `Indicator` instances with identical configurations).
 - Configurable moving average types for `Indicator` implementations that depend on a moving average.
 - Configurable epsilon per `Series`.
 - Generic `Series` interface, allowing for `NumSeries` and such.

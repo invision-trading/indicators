@@ -83,9 +83,7 @@ here's a simple example:
   import trade.invision.indicators.series.bar.Bar;
   import trade.invision.indicators.series.bar.BarSeries;
   import trade.invision.num.Num;
-  import trade.invision.num.NumFactory;
   
-  import java.io.IOException;
   import java.io.InputStream;
   import java.net.URI;
   import java.time.Instant;
@@ -102,25 +100,23 @@ here's a simple example:
   import static trade.invision.indicators.indicator.ma.sma.SimpleMovingAverage.simpleMovingAverage;
   import static trade.invision.indicators.indicator.rsi.RelativeStrengthIndex.rsi;
   import static trade.invision.indicators.indicator.statistical.StandardDeviation.stddev;
-  import static trade.invision.num.DecimalNum.decimalNum64Factory;
 ```
 </details>
 
 ```java
-final NumFactory numFactory = decimalNum64Factory();
-final BarSeries barSeries = new BarSeries(20, numFactory);
+final BarSeries barSeries = new BarSeries(20); // Store a maximum of 20 bars in memory
 // Get AAPL 1D bar data from 2025-01-01 to 2025-02-01.
 try (final InputStream inputStream = URI.create("https://pastebin.com/raw/dnLSgw44").toURL().openStream()) {
     for (String barDataLine : new String(inputStream.readAllBytes()).split("\n")) {
         final String[] barDataCsv = barDataLine.trim().split(",");
         final Instant start = ofEpochMilli(parseLong(barDataCsv[5]));
         final Instant end = start.plus(1, DAYS);
-        final Num open = numFactory.of(barDataCsv[1]);
-        final Num high = numFactory.of(barDataCsv[3]);
-        final Num low = numFactory.of(barDataCsv[4]);
-        final Num close = numFactory.of(barDataCsv[2]);
-        final Num volume = numFactory.of(barDataCsv[0]);
-        final Num tradeCount = numFactory.of(barDataCsv[6]);
+        final Num open = barSeries.numOf(barDataCsv[1]);
+        final Num high = barSeries.numOf(barDataCsv[3]);
+        final Num low = barSeries.numOf(barDataCsv[4]);
+        final Num close = barSeries.numOf(barDataCsv[2]);
+        final Num volume = barSeries.numOf(barDataCsv[0]);
+        final Num tradeCount = barSeries.numOf(barDataCsv[6]);
         final Bar bar = new Bar(start, end, open, high, low, close, volume, tradeCount);
         barSeries.add(bar);
         System.out.println("Added: " + bar);
@@ -170,9 +166,9 @@ and additions that this library provides:
 - Usage of improved `Num` interface via the [Num](https://github.com/invision-trading/num) library.
 - Configurable `Indicator` result caching.
 - `Indicator` instance caching.
-- Several optimizations to reduce memory consumption and improve execution time for common access pattern (e.g.
+- Several optimizations to reduce memory consumption and improve execution time for common access patterns (e.g.
   consecutive indices, identical indices, caching `Indicator` instances with identical configurations).
-- Configurable moving average types for `Indicator` implementations that depend on a moving average.
+- Configurable moving average types for `Indicator` implementations that utilize moving averages.
 - Configurable epsilon per `Series`.
 - Generic `Series` interface, allowing for `NumSeries` and such.
 - Documentation improvements.

@@ -2,10 +2,11 @@ package trade.invision.indicators.series;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import trade.invision.num.DoubleNum;
+import trade.invision.num.DecimalNum;
 import trade.invision.num.Num;
 import trade.invision.num.NumFactory;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Math.max;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
-import static trade.invision.num.DoubleNum.doubleNumFactory;
+import static trade.invision.num.DecimalNum.decimalNum64Factory;
 
 /**
  * {@link Series} is a class that provides a simple interface for storing and retrieving values from a series. Values
@@ -89,14 +90,15 @@ public class Series<T> {
      *
      * @param initialValues the initial {@link Collection} of values, or <code>null</code> for no initial values
      * @param maximumLength the {@link #getMaximumLength()}
-     * @param numFactory    the {@link #getNumFactory()}, or <code>null</code> for {@link DoubleNum#doubleNumFactory()}
+     * @param numFactory    the {@link #getNumFactory()}, or <code>null</code> for
+     *                      {@link DecimalNum#decimalNum64Factory()}
      * @param epsilon       the {@link #getEpsilon()}, or <code>null</code> for {@link NumFactory#zero()}
      */
     public Series(@Nullable Collection<T> initialValues, int maximumLength,
             @Nullable NumFactory numFactory, @Nullable Num epsilon) {
         checkArgument(maximumLength > 0, "'maximumLength' must be greater than zero!");
         this.maximumLength = maximumLength;
-        this.numFactory = numFactory != null ? numFactory : doubleNumFactory();
+        this.numFactory = numFactory != null ? numFactory : decimalNum64Factory();
         this.epsilon = epsilon != null ? epsilon : this.numFactory.zero();
         // 'ArrayList' has the fastest sequential access time.
         values = initialValues != null ? new ArrayList<>(initialValues) : new ArrayList<>(0);
@@ -212,5 +214,33 @@ public class Series<T> {
      */
     public List<T> listView() {
         return unmodifiableList(values);
+    }
+
+    /**
+     * Convenience method for {@link #getNumFactory()} {@link NumFactory#of(Number)}.
+     */
+    public Num numOf(Number number) {
+        return numFactory.of(number);
+    }
+
+    /**
+     * Convenience method for {@link #getNumFactory()} {@link NumFactory#of(BigDecimal)}.
+     */
+    public Num numOf(BigDecimal bigDecimal) {
+        return numFactory.of(bigDecimal);
+    }
+
+    /**
+     * Convenience method for {@link #getNumFactory()} {@link NumFactory#of(String)}.
+     */
+    public Num numOf(String string) {
+        return numFactory.of(string);
+    }
+
+    /**
+     * Convenience method for {@link #getNumFactory()} {@link NumFactory#of(Num)}.
+     */
+    public Num numOf(Num num) {
+        return numFactory.of(num);
     }
 }

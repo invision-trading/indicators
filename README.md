@@ -35,7 +35,7 @@ For `pom.xml`:
 
 There are two base classes in this library to be aware of:
 [`Series`](src/main/java/trade/invision/indicators/series/Series.java) and
-[`Indicator`](src/main/java/trade/invision/indicators/indicator/Indicator.java).
+[`Indicator`](src/main/java/trade/invision/indicators/indicators/Indicator.java).
 
 `Series` is a class that provides a simple interface for storing and retrieving values from a series. Values
 can only be added to the `Series`, except for the last value, which can be replaced with a new value. When the
@@ -56,7 +56,7 @@ caching is disabled by default since the typical access pattern is to continuall
 end index of a `Series` and perform some action based on that result. The cache should be enabled when consumers of an
 `Indicator` use the calculated values of non-ending indices, as opposed to only using the calculated value of the end
 index. `Indicator` implementations that utilize recursion should extend
-[`RecursiveIndicator`](src/main/java/trade/invision/indicators/indicator/RecursiveIndicator.java), which forces caching
+[`RecursiveIndicator`](src/main/java/trade/invision/indicators/indicators/RecursiveIndicator.java), which forces caching
 and prevents
 [`StackOverflowError`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/StackOverflowError.html)
 exceptions. Typically, an `Indicator` will be one of the following three types:
@@ -73,13 +73,13 @@ here's a simple example:
   <summary>Imports</summary>
 
   ```java
-  import trade.invision.indicators.indicator.Indicator;
-  import trade.invision.indicators.indicator.barprice.Hlc3;
-  import trade.invision.indicators.indicator.barprice.Ohlc4;
-  import trade.invision.indicators.indicator.bullishbearish.global.GlobalBullishPercentage;
-  import trade.invision.indicators.indicator.crossed.Crossed;
-  import trade.invision.indicators.indicator.ma.sma.SimpleMovingAverage;
-  import trade.invision.indicators.indicator.statistical.StandardDeviation;
+  import trade.invision.indicators.indicators.Indicator;
+  import trade.invision.indicators.indicators.barprice.Hlc3;
+  import trade.invision.indicators.indicators.barprice.Ohlc4;
+  import trade.invision.indicators.indicators.bullishbearish.global.GlobalBullishPercentage;
+  import trade.invision.indicators.indicators.crossed.Crossed;
+  import trade.invision.indicators.indicators.ma.sma.SimpleMovingAverage;
+  import trade.invision.indicators.indicators.statistical.StandardDeviation;
   import trade.invision.indicators.series.bar.Bar;
   import trade.invision.indicators.series.bar.BarSeries;
   import trade.invision.num.Num;
@@ -91,16 +91,16 @@ here's a simple example:
   import static java.lang.Long.parseLong;
   import static java.time.Instant.ofEpochMilli;
   import static java.time.temporal.ChronoUnit.DAYS;
-  import static trade.invision.indicators.indicator.bar.Close.close;
-  import static trade.invision.indicators.indicator.barprice.Hlc3.typicalPrice;
-  import static trade.invision.indicators.indicator.barprice.Ohlc4.ohlc4;
-  import static trade.invision.indicators.indicator.bullishbearish.global.GlobalBullishPercentage.globalBullishPercentage;
-  import static trade.invision.indicators.indicator.crossed.Crossed.crossed;
-  import static trade.invision.indicators.indicator.ma.MovingAverageSupplier.wwmaSupplier;
-  import static trade.invision.indicators.indicator.ma.sma.SimpleMovingAverage.simpleMovingAverage;
-  import static trade.invision.indicators.indicator.rsi.RelativeStrengthIndex.rsi;
-  import static trade.invision.indicators.indicator.statistical.StandardDeviation.stddev;
-```
+  import static trade.invision.indicators.indicators.bar.Close.close;
+  import static trade.invision.indicators.indicators.barprice.Hlc3.typicalPrice;
+  import static trade.invision.indicators.indicators.barprice.Ohlc4.ohlc4;
+  import static trade.invision.indicators.indicators.bullishbearish.global.GlobalBullishPercentage.globalBullishPercentage;
+  import static trade.invision.indicators.indicators.crossed.Crossed.crossed;
+  import static trade.invision.indicators.indicators.ma.MovingAverageSupplier.wwmaSupplier;
+  import static trade.invision.indicators.indicators.ma.sma.SimpleMovingAverage.simpleMovingAverage;
+  import static trade.invision.indicators.indicators.rsi.RelativeStrengthIndex.rsi;
+  import static trade.invision.indicators.indicators.statistical.StandardDeviation.stddev;
+  ```
 </details>
 
 ```java

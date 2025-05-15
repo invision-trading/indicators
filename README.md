@@ -12,13 +12,13 @@ time series data, such as [OHLC bars](https://www.investopedia.com/terms/c/candl
 For `build.gradle.kts`:
 
 ```kotlin
-implementation("trade.invision", "indicators", "1.1.0")
+implementation("trade.invision", "indicators", "1.2.0")
 ```
 
 For `build.gradle`:
 
 ```groovy
-implementation group: 'trade.invision', name: 'indicators', version: '1.1.0'
+implementation group: 'trade.invision', name: 'indicators', version: '1.2.0'
 ```
 
 For `pom.xml`:
@@ -27,7 +27,7 @@ For `pom.xml`:
 <dependency>
     <groupId>trade.invision</groupId>
     <artifactId>indicators</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 

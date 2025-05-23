@@ -43,6 +43,20 @@ public final class NumUnaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#exp()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> exp(Indicator<Num> operand) {
+        return unaryOperation(Num::exp, operand);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#exponential()} unary operation on the given
      * <code>operand</code>.
      *
@@ -54,6 +68,20 @@ public final class NumUnaryOperations {
      */
     public static Indicator<Num> exponential(Indicator<Num> operand) {
         return unaryOperation(Num::exponential, operand);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#sqrt()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> sqrt(Indicator<Num> operand) {
+        return unaryOperation(Num::sqrt, operand);
     }
 
     /**
@@ -71,6 +99,20 @@ public final class NumUnaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#cbrt()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> cbrt(Indicator<Num> operand) {
+        return unaryOperation(Num::cbrt, operand);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#cubeRoot()} unary operation on the given
      * <code>operand</code>.
      *
@@ -82,6 +124,20 @@ public final class NumUnaryOperations {
      */
     public static Indicator<Num> cubeRoot(Indicator<Num> operand) {
         return unaryOperation(Num::cubeRoot, operand);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#ln()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> ln(Indicator<Num> operand) {
+        return unaryOperation(Num::ln, operand);
     }
 
     /**
@@ -99,6 +155,20 @@ public final class NumUnaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#log10()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> log10(Indicator<Num> operand) {
+        return unaryOperation(Num::log10, operand);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#commonLogarithm()} unary operation on the
      * given <code>operand</code>.
      *
@@ -113,6 +183,20 @@ public final class NumUnaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#log2()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> log2(Indicator<Num> operand) {
+        return unaryOperation(Num::log2, operand);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#binaryLogarithm()} unary operation on the
      * given <code>operand</code>.
      *
@@ -124,6 +208,20 @@ public final class NumUnaryOperations {
      */
     public static Indicator<Num> binaryLogarithm(Indicator<Num> operand) {
         return unaryOperation(Num::binaryLogarithm, operand);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#abs()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> abs(Indicator<Num> operand) {
+        return unaryOperation(Num::abs, operand);
     }
 
     /**
@@ -225,6 +323,20 @@ public final class NumUnaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#deg()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> deg(Indicator<Num> operand) {
+        return unaryOperation(Num::deg, operand);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#degrees()} unary operation on the given
      * <code>operand</code>.
      *
@@ -236,6 +348,20 @@ public final class NumUnaryOperations {
      */
     public static Indicator<Num> degrees(Indicator<Num> operand) {
         return unaryOperation(Num::degrees, operand);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#rad()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> rad(Indicator<Num> operand) {
+        return unaryOperation(Num::rad, operand);
     }
 
     /**
@@ -281,6 +407,20 @@ public final class NumUnaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#sin()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> sin(Indicator<Num> operand) {
+        return unaryOperation(Num::sin, operand);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#sine()} unary operation on the given
      * <code>operand</code>.
      *
@@ -292,6 +432,20 @@ public final class NumUnaryOperations {
      */
     public static Indicator<Num> sine(Indicator<Num> operand) {
         return unaryOperation(Num::sine, operand);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#cos()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> cos(Indicator<Num> operand) {
+        return unaryOperation(Num::cos, operand);
     }
 
     /**
@@ -309,6 +463,20 @@ public final class NumUnaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#tan()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> tan(Indicator<Num> operand) {
+        return unaryOperation(Num::tan, operand);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#tangent()} unary operation on the given
      * <code>operand</code>.
      *
@@ -320,6 +488,20 @@ public final class NumUnaryOperations {
      */
     public static Indicator<Num> tangent(Indicator<Num> operand) {
         return unaryOperation(Num::tangent, operand);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#asin()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> asin(Indicator<Num> operand) {
+        return unaryOperation(Num::asin, operand);
     }
 
     /**
@@ -337,6 +519,20 @@ public final class NumUnaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#acos()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> acos(Indicator<Num> operand) {
+        return unaryOperation(Num::acos, operand);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#inverseCosine()} unary operation on the given
      * <code>operand</code>.
      *
@@ -348,6 +544,20 @@ public final class NumUnaryOperations {
      */
     public static Indicator<Num> inverseCosine(Indicator<Num> operand) {
         return unaryOperation(Num::inverseCosine, operand);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#atan()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> atan(Indicator<Num> operand) {
+        return unaryOperation(Num::atan, operand);
     }
 
     /**
@@ -365,6 +575,20 @@ public final class NumUnaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#sinh()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> sinh(Indicator<Num> operand) {
+        return unaryOperation(Num::sinh, operand);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#hyperbolicSine()} unary operation on the
      * given <code>operand</code>.
      *
@@ -376,6 +600,20 @@ public final class NumUnaryOperations {
      */
     public static Indicator<Num> hyperbolicSine(Indicator<Num> operand) {
         return unaryOperation(Num::hyperbolicSine, operand);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#cosh()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> cosh(Indicator<Num> operand) {
+        return unaryOperation(Num::cosh, operand);
     }
 
     /**
@@ -393,6 +631,20 @@ public final class NumUnaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#tanh()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> tanh(Indicator<Num> operand) {
+        return unaryOperation(Num::tanh, operand);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#hyperbolicTangent()} unary operation on the
      * given <code>operand</code>.
      *
@@ -404,6 +656,20 @@ public final class NumUnaryOperations {
      */
     public static Indicator<Num> hyperbolicTangent(Indicator<Num> operand) {
         return unaryOperation(Num::hyperbolicTangent, operand);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#asinh()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> asinh(Indicator<Num> operand) {
+        return unaryOperation(Num::asinh, operand);
     }
 
     /**
@@ -421,6 +687,20 @@ public final class NumUnaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#acosh()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> acosh(Indicator<Num> operand) {
+        return unaryOperation(Num::acosh, operand);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#inverseHyperbolicCosine()} unary operation on
      * the given <code>operand</code>.
      *
@@ -432,6 +712,20 @@ public final class NumUnaryOperations {
      */
     public static Indicator<Num> inverseHyperbolicCosine(Indicator<Num> operand) {
         return unaryOperation(Num::inverseHyperbolicCosine, operand);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#atanh()} unary operation on the given
+     * <code>operand</code>.
+     *
+     * @param operand the operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see UnaryOperation
+     */
+    public static Indicator<Num> atanh(Indicator<Num> operand) {
+        return unaryOperation(Num::atanh, operand);
     }
 
     /**

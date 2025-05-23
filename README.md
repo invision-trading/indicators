@@ -167,7 +167,7 @@ and additions that this library provides:
 - Configurable `Indicator` result caching.
 - `Indicator` instance caching.
 - Several optimizations to reduce memory consumption and improve execution time for common access patterns (e.g.
-  consecutive indices, identical indices, caching `Indicator` instances with identical configurations).
+  consecutive indices, identical indices, caching and reusing `Indicator` instances with identical configurations).
 - Configurable moving average types for `Indicator` implementations that utilize moving averages.
 - Configurable epsilon per `Series`.
 - Generic `Series` interface, allowing for `NumSeries` and such.

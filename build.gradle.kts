@@ -15,7 +15,7 @@ repositories {
     mavenCentral()
 }
 
-val numVersion = "1.8.0"
+val numVersion = "1.9.0"
 
 dependencies {
     // Jetbrains Annotations

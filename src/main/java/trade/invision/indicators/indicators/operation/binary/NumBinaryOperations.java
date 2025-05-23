@@ -72,6 +72,21 @@ public final class NumBinaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#mod(Num)} binary operation on the given
+     * operands.
+     *
+     * @param dividend the dividend operand
+     * @param divisor  the divisor operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see BinaryOperation
+     */
+    public static Indicator<Num> mod(Indicator<Num> dividend, Indicator<Num> divisor) {
+        return binaryOperation(Num::mod, dividend, divisor);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#remainder(Num)} binary operation on the given
      * operands.
      *
@@ -84,6 +99,21 @@ public final class NumBinaryOperations {
      */
     public static Indicator<Num> remainder(Indicator<Num> dividend, Indicator<Num> divisor) {
         return binaryOperation(Num::remainder, dividend, divisor);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#pow(Num)} binary operation on the given
+     * operands.
+     *
+     * @param base     the base operand
+     * @param exponent the exponent operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see BinaryOperation
+     */
+    public static Indicator<Num> pow(Indicator<Num> base, Indicator<Num> exponent) {
+        return binaryOperation(Num::pow, base, exponent);
     }
 
     /**
@@ -117,6 +147,21 @@ public final class NumBinaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#log(Num)} binary operation on the given
+     * operands.
+     *
+     * @param antiLogarithm the anti-logarithm operand
+     * @param base          the base operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see BinaryOperation
+     */
+    public static Indicator<Num> log(Indicator<Num> antiLogarithm, Indicator<Num> base) {
+        return binaryOperation(Num::log, antiLogarithm, base);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#logarithm(Num)} binary operation on the given
      * operands.
      *
@@ -129,6 +174,21 @@ public final class NumBinaryOperations {
      */
     public static Indicator<Num> logarithm(Indicator<Num> antiLogarithm, Indicator<Num> base) {
         return binaryOperation(Num::logarithm, antiLogarithm, base);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#atan2(Num)} binary operation on the given
+     * operands.
+     *
+     * @param y the y operand
+     * @param x the x operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see BinaryOperation
+     */
+    public static Indicator<Num> atan2(Indicator<Num> y, Indicator<Num> x) {
+        return binaryOperation(Num::atan2, y, x);
     }
 
     /**
@@ -147,6 +207,21 @@ public final class NumBinaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#hypot(Num)} binary operation on the given
+     * operands.
+     *
+     * @param x the x operand
+     * @param y the y operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see BinaryOperation
+     */
+    public static Indicator<Num> hypot(Indicator<Num> x, Indicator<Num> y) {
+        return binaryOperation(Num::hypot, x, y);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#hypotenuse(Num)} binary operation on the
      * given operands.
      *
@@ -159,6 +234,21 @@ public final class NumBinaryOperations {
      */
     public static Indicator<Num> hypotenuse(Indicator<Num> x, Indicator<Num> y) {
         return binaryOperation(Num::hypotenuse, x, y);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#avg(Num)} binary operation on the given
+     * operands.
+     *
+     * @param left  the left operand
+     * @param right the right operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see BinaryOperation
+     */
+    public static Indicator<Num> avg(Indicator<Num> left, Indicator<Num> right) {
+        return binaryOperation(Num::avg, left, right);
     }
 
     /**
@@ -177,6 +267,21 @@ public final class NumBinaryOperations {
     }
 
     /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#min(Num)} binary operation on the given
+     * operands.
+     *
+     * @param left  the left operand
+     * @param right the right operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see BinaryOperation
+     */
+    public static Indicator<Num> min(Indicator<Num> left, Indicator<Num> right) {
+        return binaryOperation(Num::min, left, right);
+    }
+
+    /**
      * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#minimum(Num)} binary operation on the given
      * operands.
      *
@@ -189,6 +294,21 @@ public final class NumBinaryOperations {
      */
     public static Indicator<Num> minimum(Indicator<Num> left, Indicator<Num> right) {
         return binaryOperation(Num::minimum, left, right);
+    }
+
+    /**
+     * Creates a {@link Num} {@link Indicator} that invokes the {@link Num#max(Num)} binary operation on the given
+     * operands.
+     *
+     * @param left  the left operand
+     * @param right the right operand
+     *
+     * @return the {@link Num} {@link Indicator}
+     *
+     * @see BinaryOperation
+     */
+    public static Indicator<Num> max(Indicator<Num> left, Indicator<Num> right) {
+        return binaryOperation(Num::max, left, right);
     }
 
     /**

@@ -21,60 +21,60 @@ public enum MovingAverageType {
     /**
      * @see SimpleMovingAverage
      */
-    SMA,
+    SIMPLE,
 
     /**
      * @see ExponentialMovingAverage
      */
-    EMA,
+    EXPONENTIAL,
 
     /**
      * @see DoubleExponentialMovingAverage
      */
-    DEMA,
+    DOUBLE_EXPONENTIAL,
 
     /**
      * @see TripleExponentialMovingAverage
      */
-    TEMA,
+    TRIPLE_EXPONENTIAL,
 
     /**
      * @see WellesWilderMovingAverage
      */
-    WWMA,
+    WELLES_WILDER,
 
     /**
      * @see ZeroLagExponentialMovingAverage
      */
-    ZLEMA,
+    ZERO_LAG_EXPONENTIAL,
 
     /**
      * @see HullMovingAverage
      */
-    HMA,
+    HULL,
 
     /**
      * @see KaufmansAdaptiveMovingAverage
      */
-    KAMA,
+    KAUFMANS_ADAPTIVE,
 
     /**
      * @see LeastSquaresMovingAverage
      */
-    LSMA,
+    LEAST_SQUARES,
 
     /**
      * @see PredictiveLeastSquaresMovingAverage
      */
-    PLSMA,
+    PREDICTIVE_LEAST_SQUARES,
 
     /**
      * @see WeightedMovingAverage
      */
-    WMA,
+    WEIGHTED,
 
     /**
      * @see LinearlyWeightedMovingAverage
      */
-    LWMA
+    LINEARLY_WEIGHTED
 }

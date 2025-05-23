@@ -5,6 +5,10 @@ import lombok.Builder;
 import lombok.Value;
 import org.jetbrains.annotations.Nullable;
 import trade.invision.indicators.indicators.Indicator;
+import trade.invision.indicators.indicators.ma.ema.DoubleExponentialMovingAverage;
+import trade.invision.indicators.indicators.ma.ema.ExponentialMovingAverage;
+import trade.invision.indicators.indicators.ma.ema.TripleExponentialMovingAverage;
+import trade.invision.indicators.indicators.ma.kama.KaufmansAdaptiveMovingAverage;
 import trade.invision.num.Num;
 
 import static trade.invision.indicators.indicators.ma.MovingAverageType.*;
@@ -28,95 +32,200 @@ import static trade.invision.indicators.indicators.ma.wma.WeightedMovingAverage.
 public class MovingAverageSupplier {
 
     /**
-     * Creates a {@link MovingAverageSupplier} with {@link #getType()} set to {@link MovingAverageType#SMA}.
+     * Calls {@link MovingAverageSupplierBuilder#build()} on {@link #simpleBuilder()}.
      */
-    public static MovingAverageSupplier smaSupplier() {
-        return MovingAverageSupplier.builder().type(SMA).build();
+    public static MovingAverageSupplier simple() {
+        return simpleBuilder().build();
     }
 
     /**
-     * Creates a {@link MovingAverageSupplier} with {@link #getType()} set to {@link MovingAverageType#EMA}.
+     * Creates a {@link MovingAverageSupplierBuilder} with {@link #getType()} set to {@link MovingAverageType#SIMPLE}.
      */
-    public static MovingAverageSupplier emaSupplier() {
-        return MovingAverageSupplier.builder().type(EMA).build();
+    public static MovingAverageSupplierBuilder simpleBuilder() {
+        return MovingAverageSupplier.builder().type(SIMPLE);
     }
 
     /**
-     * Creates a {@link MovingAverageSupplier} with {@link #getType()} set to {@link MovingAverageType#DEMA}.
+     * Calls {@link MovingAverageSupplierBuilder#build()} on {@link #exponentialBuilder()}.
      */
-    public static MovingAverageSupplier demaSupplier() {
-        return MovingAverageSupplier.builder().type(DEMA).build();
+    public static MovingAverageSupplier exponential() {
+        return exponentialBuilder().build();
     }
 
     /**
-     * Creates a {@link MovingAverageSupplier} with {@link #getType()} set to {@link MovingAverageType#TEMA}.
+     * Creates a {@link MovingAverageSupplierBuilder} with {@link #getType()} set to
+     * {@link MovingAverageType#EXPONENTIAL}.
      */
-    public static MovingAverageSupplier temaSupplier() {
-        return MovingAverageSupplier.builder().type(TEMA).build();
+    public static MovingAverageSupplierBuilder exponentialBuilder() {
+        return MovingAverageSupplier.builder().type(EXPONENTIAL);
     }
 
     /**
-     * Creates a {@link MovingAverageSupplier} with {@link #getType()} set to {@link MovingAverageType#WWMA}.
+     * Calls {@link MovingAverageSupplierBuilder#build()} on {@link #doubleExponentialBuilder()}.
      */
-    public static MovingAverageSupplier wwmaSupplier() {
-        return MovingAverageSupplier.builder().type(WWMA).build();
+    public static MovingAverageSupplier doubleExponential() {
+        return doubleExponentialBuilder().build();
     }
 
     /**
-     * Creates a {@link MovingAverageSupplier} with {@link #getType()} set to {@link MovingAverageType#ZLEMA}.
+     * Creates a {@link MovingAverageSupplierBuilder} with {@link #getType()} set to
+     * {@link MovingAverageType#DOUBLE_EXPONENTIAL}.
      */
-    public static MovingAverageSupplier zlemaSupplier() {
-        return MovingAverageSupplier.builder().type(ZLEMA).build();
+    public static MovingAverageSupplierBuilder doubleExponentialBuilder() {
+        return MovingAverageSupplier.builder().type(DOUBLE_EXPONENTIAL);
     }
 
     /**
-     * Creates a {@link MovingAverageSupplier} with {@link #getType()} set to {@link MovingAverageType#HMA}.
+     * Calls {@link MovingAverageSupplierBuilder#build()} on {@link #tripleExponentialBuilder()}.
      */
-    public static MovingAverageSupplier hmaSupplier() {
-        return MovingAverageSupplier.builder().type(HMA).build();
+    public static MovingAverageSupplier tripleExponential() {
+        return tripleExponentialBuilder().build();
     }
 
     /**
-     * Creates a {@link MovingAverageSupplier} with {@link #getType()} set to {@link MovingAverageType#KAMA}.
+     * Creates a {@link MovingAverageSupplierBuilder} with {@link #getType()} set to
+     * {@link MovingAverageType#TRIPLE_EXPONENTIAL}.
      */
-    public static MovingAverageSupplier kamaSupplier() {
-        return MovingAverageSupplier.builder().type(KAMA).build();
+    public static MovingAverageSupplierBuilder tripleExponentialBuilder() {
+        return MovingAverageSupplier.builder().type(TRIPLE_EXPONENTIAL);
     }
 
     /**
-     * Creates a {@link MovingAverageSupplier} with {@link #getType()} set to {@link MovingAverageType#LSMA}.
+     * Calls {@link MovingAverageSupplierBuilder#build()} on {@link #wellesWilderBuilder()}.
      */
-    public static MovingAverageSupplier lsmaSupplier() {
-        return MovingAverageSupplier.builder().type(LSMA).build();
+    public static MovingAverageSupplier wellesWilder() {
+        return wellesWilderBuilder().build();
     }
 
     /**
-     * Creates a {@link MovingAverageSupplier} with {@link #getType()} set to {@link MovingAverageType#PLSMA}.
+     * Creates a {@link MovingAverageSupplierBuilder} with {@link #getType()} set to
+     * {@link MovingAverageType#WELLES_WILDER}.
      */
-    public static MovingAverageSupplier plsmaSupplier() {
-        return MovingAverageSupplier.builder().type(PLSMA).build();
+    public static MovingAverageSupplierBuilder wellesWilderBuilder() {
+        return MovingAverageSupplier.builder().type(WELLES_WILDER);
     }
 
     /**
-     * Creates a {@link MovingAverageSupplier} with {@link #getType()} set to {@link MovingAverageType#WMA}.
+     * Calls {@link MovingAverageSupplierBuilder#build()} on {@link #zeroLagExponentialBuilder()}.
      */
-    public static MovingAverageSupplier wmaSupplier() {
-        return MovingAverageSupplier.builder().type(WMA).build();
+    public static MovingAverageSupplier zeroLagExponential() {
+        return zeroLagExponentialBuilder().build();
     }
 
     /**
-     * Creates a {@link MovingAverageSupplier} with {@link #getType()} set to {@link MovingAverageType#LWMA}.
+     * Creates a {@link MovingAverageSupplierBuilder} with {@link #getType()} set to
+     * {@link MovingAverageType#ZERO_LAG_EXPONENTIAL}.
      */
-    public static MovingAverageSupplier lwmaSupplier() {
-        return MovingAverageSupplier.builder().type(LWMA).build();
+    public static MovingAverageSupplierBuilder zeroLagExponentialBuilder() {
+        return MovingAverageSupplier.builder().type(ZERO_LAG_EXPONENTIAL);
     }
 
+    /**
+     * Calls {@link MovingAverageSupplierBuilder#build()} on {@link #hullBuilder()}.
+     */
+    public static MovingAverageSupplier hull() {
+        return hullBuilder().build();
+    }
+
+    /**
+     * Creates a {@link MovingAverageSupplierBuilder} with {@link #getType()} set to {@link MovingAverageType#HULL}.
+     */
+    public static MovingAverageSupplierBuilder hullBuilder() {
+        return MovingAverageSupplier.builder().type(HULL);
+    }
+
+    /**
+     * Calls {@link MovingAverageSupplierBuilder#build()} on {@link #kaufmansAdaptiveBuilder()}.
+     */
+    public static MovingAverageSupplier kaufmansAdaptive() {
+        return kaufmansAdaptiveBuilder().build();
+    }
+
+    /**
+     * Creates a {@link MovingAverageSupplierBuilder} with {@link #getType()} set to
+     * {@link MovingAverageType#KAUFMANS_ADAPTIVE}.
+     */
+    public static MovingAverageSupplierBuilder kaufmansAdaptiveBuilder() {
+        return MovingAverageSupplier.builder().type(KAUFMANS_ADAPTIVE);
+    }
+
+    /**
+     * Calls {@link MovingAverageSupplierBuilder#build()} on {@link #leastSquaresBuilder()}.
+     */
+    public static MovingAverageSupplier leastSquares() {
+        return leastSquaresBuilder().build();
+    }
+
+    /**
+     * Creates a {@link MovingAverageSupplierBuilder} with {@link #getType()} set to
+     * {@link MovingAverageType#LEAST_SQUARES}.
+     */
+    public static MovingAverageSupplierBuilder leastSquaresBuilder() {
+        return MovingAverageSupplier.builder().type(LEAST_SQUARES);
+    }
+
+    /**
+     * Calls {@link MovingAverageSupplierBuilder#build()} on {@link #predictiveLeastSquaresBuilder()}.
+     */
+    public static MovingAverageSupplier predictiveLeastSquares() {
+        return predictiveLeastSquaresBuilder().build();
+    }
+
+    /**
+     * Creates a {@link MovingAverageSupplierBuilder} with {@link #getType()} set to
+     * {@link MovingAverageType#PREDICTIVE_LEAST_SQUARES}.
+     */
+    public static MovingAverageSupplierBuilder predictiveLeastSquaresBuilder() {
+        return MovingAverageSupplier.builder().type(PREDICTIVE_LEAST_SQUARES);
+    }
+
+    /**
+     * Calls {@link MovingAverageSupplierBuilder#build()} on {@link #weightedBuilder()}.
+     */
+    public static MovingAverageSupplier weighted() {
+        return weightedBuilder().build();
+    }
+
+    /**
+     * Creates a {@link MovingAverageSupplierBuilder} with {@link #getType()} set to
+     * {@link MovingAverageType#WEIGHTED}.
+     */
+    public static MovingAverageSupplierBuilder weightedBuilder() {
+        return MovingAverageSupplier.builder().type(WEIGHTED);
+    }
+
+    /**
+     * Calls {@link MovingAverageSupplierBuilder#build()} on {@link #linearlyWeightedBuilder()}.
+     */
+    public static MovingAverageSupplier linearlyWeighted() {
+        return linearlyWeightedBuilder().build();
+    }
+
+    /**
+     * Creates a {@link MovingAverageSupplierBuilder} with {@link #getType()} set to
+     * {@link MovingAverageType#LINEARLY_WEIGHTED}.
+     */
+    public static MovingAverageSupplierBuilder linearlyWeightedBuilder() {
+        return MovingAverageSupplier.builder().type(LINEARLY_WEIGHTED);
+    }
+
+    /**
+     * The {@link MovingAverageType}.
+     */
     MovingAverageType type;
-    @Nullable Num emaSmoothing;
-    @Nullable Num demaSmoothing;
-    @Nullable Num temaSmoothing;
-    @Nullable Integer kamaFastLength;
-    @Nullable Integer kamaSlowLength;
+    /**
+     * The <code>smoothing</code> argument for {@link ExponentialMovingAverage}, {@link DoubleExponentialMovingAverage},
+     * and {@link TripleExponentialMovingAverage}.
+     */
+    @Nullable Num smoothing;
+    /**
+     * The <code>fastLength</code> argument for {@link KaufmansAdaptiveMovingAverage}.
+     */
+    @Nullable Integer fastLength;
+    /**
+     * The <code>slowLength</code> argument for {@link KaufmansAdaptiveMovingAverage}.
+     */
+    @Nullable Integer slowLength;
 
     /**
      * Creates a moving average {@link Num} {@link Indicator} of the given {@link #getType()} and configured with the
@@ -129,19 +238,19 @@ public class MovingAverageSupplier {
      */
     public Indicator<Num> supply(Indicator<Num> indicator, int length) {
         return switch (type) {
-            case SMA -> sma(indicator, length);
-            case EMA -> emaSmoothing != null ? ema(indicator, length, emaSmoothing) : ema(indicator, length);
-            case DEMA -> demaSmoothing != null ? dema(indicator, length, demaSmoothing) : dema(indicator, length);
-            case TEMA -> temaSmoothing != null ? tema(indicator, length, temaSmoothing) : tema(indicator, length);
-            case WWMA -> wwma(indicator, length);
-            case ZLEMA -> zlema(indicator, length);
-            case HMA -> hma(indicator, length);
-            case KAMA -> kamaSlowLength != null && kamaFastLength != null ?
-                    kama(indicator, length, kamaFastLength, kamaSlowLength) : kama(indicator, length);
-            case LSMA -> lsma(indicator, length);
-            case PLSMA -> plsma(indicator, length);
-            case WMA -> wma(indicator, length);
-            case LWMA -> lwma(indicator, length);
+            case SIMPLE -> sma(indicator, length);
+            case EXPONENTIAL -> smoothing != null ? ema(indicator, length, smoothing) : ema(indicator, length);
+            case DOUBLE_EXPONENTIAL -> smoothing != null ? dema(indicator, length, smoothing) : dema(indicator, length);
+            case TRIPLE_EXPONENTIAL -> smoothing != null ? tema(indicator, length, smoothing) : tema(indicator, length);
+            case WELLES_WILDER -> wwma(indicator, length);
+            case ZERO_LAG_EXPONENTIAL -> zlema(indicator, length);
+            case HULL -> hma(indicator, length);
+            case KAUFMANS_ADAPTIVE -> slowLength != null && fastLength != null ?
+                    kama(indicator, length, fastLength, slowLength) : kama(indicator, length);
+            case LEAST_SQUARES -> lsma(indicator, length);
+            case PREDICTIVE_LEAST_SQUARES -> plsma(indicator, length);
+            case WEIGHTED -> wma(indicator, length);
+            case LINEARLY_WEIGHTED -> lwma(indicator, length);
         };
     }
 }

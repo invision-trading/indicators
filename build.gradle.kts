@@ -1,11 +1,12 @@
 import org.jreleaser.model.Active.ALWAYS
 import org.jreleaser.model.Active.NEVER
+import java.time.Duration.ofHours
 
 plugins {
     `java-library`
-    id("io.freefair.lombok") version "8.13.1"
+    id("io.freefair.lombok") version "8.14"
     `maven-publish`
-    id("org.jreleaser") version "1.17.0"
+    id("org.jreleaser") version "1.20.0"
 }
 
 group = "trade.invision"
@@ -18,22 +19,15 @@ repositories {
 val numVersion = "1.9.0"
 
 dependencies {
-    // Jetbrains Annotations
-    implementation("org.jetbrains", "annotations", "24.1.0")
-
-    // Google Guava
-    implementation("com.google.guava", "guava", "33.2.1-jre")
-
-    // Caffeine
-    implementation("com.github.ben-manes.caffeine", "caffeine", "3.2.0")
-
-    // Num
+    implementation("org.jetbrains", "annotations", "26.0.2")
+    implementation("com.google.guava", "guava", "33.4.8-jre")
+    implementation("com.github.ben-manes.caffeine", "caffeine", "3.2.2")
     api("trade.invision", "num", numVersion)
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
     withJavadocJar()
     withSourcesJar()
 }
@@ -41,7 +35,8 @@ java {
 tasks.javadoc.configure {
     options {
         (this as CoreJavadocOptions).addBooleanOption("Xdoclint:none", true)
-        addStringOption("link", "https://docs.oracle.com/en/java/javase/21/docs/api/")
+        addStringOption("link",
+                "https://docs.oracle.com/en/java/javase/${java.targetCompatibility.majorVersion}/docs/api/")
         addStringOption("link", "https://javadoc.io/doc/trade.invision/num/${numVersion}/")
     }
 }
@@ -98,9 +93,8 @@ jreleaser {
                     active = ALWAYS
                     url = "https://central.sonatype.com/api/v1/publisher"
                     stagingRepository(stagingDeployDirectory.path)
-                    // Timeout of 1 hour.
-                    maxRetries = 60
-                    retryDelay = 60
+                    maxRetries = ofHours(1).toSeconds().toInt()
+                    retryDelay = ofHours(1).toSeconds().toInt()
                 }
             }
         }

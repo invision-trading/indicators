@@ -193,3 +193,9 @@ guidelines for creating `Indicator` class implementations are as follows:
 - Prefer to use `Num`, `Boolean`, or `Instant` as the type for the `Indicator`. Use `Num` even in cases where an
   `Indicator` only uses integer values. This greatly improves interoperability between `Indicator` implementations and
   is more convenient.
+
+## Maintained by Invision
+
+This project is maintained by [Invision](https://invision.trade). Invision enables you to automate and test your
+investment and trading strategies across billions of data points in seconds using quantitative finance and algorithmic
+trading programs you build on our code or no-code platform.
